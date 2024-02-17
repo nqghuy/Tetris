@@ -1,5 +1,4 @@
-#ifndef Game_h
-#define Game_h
+#pragma once
 
 #include <SDL.h>
 #include <SDL_image.h>
@@ -26,4 +25,4 @@ private:
     SDL_Renderer *renderer;
     bool quit;
 } ;
-#endif
+

@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "Playing_field.h"
+#include  "Tetromino.h"
 
 game :: game()
 {
@@ -91,6 +92,9 @@ void game :: handleEvents()
 
         Well well;
         well.draw(renderer);
+
+        tetromino tmp;
+        tmp.draw(renderer);
 
         SDL_RenderPresent(renderer);
     }
