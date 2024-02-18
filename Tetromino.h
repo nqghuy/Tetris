@@ -55,14 +55,22 @@ static bool tetromino_shape[TOTAL_OF_BLOCKS][TETRAD_SIZE][TETRAD_SIZE] =
     {0, 0, 0, 0}}
 };
 
-class tetromino
+class Tetromino
 {
 public:
-    tetromino();
-    ~tetromino();
+    Tetromino(Tetro_Type _TetrominoType, int x, int y);
+    ~Tetromino();
     void draw(SDL_Renderer *renderer);
+    void Rotate();
+    void speed_up();
+    void slow_down();
+    void Move();
+    int TeTroVelocity = 36;
+    void handle_events(SDL_Event &e);
 private:
-    Tetro_Type type;
-    SDL_Color tetrominoColor;
-    bool shape[TETRAD_SIZE][TETRAD_SIZE];
+    int PosX, PosY;
+    int VelX, VelY;
+    Tetro_Type TetrominoType;
+    SDL_Color TetrominoColor;
+    bool TetrominoShape[TETRAD_SIZE][TETRAD_SIZE];
 };

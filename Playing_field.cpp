@@ -23,3 +23,13 @@ void Well :: draw (SDL_Renderer *renderer)
         }
     }
 }
+
+int Well :: get_x()
+{
+    return (SCREEN_WIDTH - width) / 2;
+}
+
+int Well :: get_y()
+{
+    return (SCREEN_HEIGHT - height) / 2;
+}

@@ -12,9 +12,10 @@ class Well
 public:
     Well();
     void draw(SDL_Renderer *renderer);
+    int get_x();
+    int get_y();
 private:
     int width = TILE_SIZE * WIDE_CELLS;
     int height = TILE_SIZE * HEIGHT_CELLS;
-
     bool matrix[10][20];
 };
