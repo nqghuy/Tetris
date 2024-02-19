@@ -83,20 +83,20 @@ void game :: handleEvents()
 {
     SDL_Event e;
     static Well well;
-    Tetro_Type _TetrominoType = T_BLOCK;
-    static Tetromino tmp(_TetrominoType, SCREEN_WIDTH / 2, well.get_y());
+    static Tetromino tetromino(Tetro_Type(rand() % 7), SCREEN_WIDTH / 2, well.get_y());
     while (SDL_PollEvent(&e))
     {
         if (e.type == SDL_QUIT){
             quit = true;
         }
-        tmp.handle_events(e);
+        tetromino.handle_events(e);
+        tetromino.Move();
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
         SDL_RenderClear(renderer);
 
         well.draw(renderer);
 
-        tmp.draw(renderer);
+        tetromino.draw(renderer);
 
         SDL_RenderPresent(renderer);
     }
