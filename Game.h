@@ -1,4 +1,5 @@
-#pragma once
+#ifndef Game_h
+#define Game_h
 
 #include <SDL.h>
 #include <SDL_image.h>
@@ -8,8 +9,6 @@
 
 using namespace std;
 
-const int SCREEN_HEIGHT = 800;
-const int SCREEN_WIDTH = 640;
 
 class game
 {
@@ -25,4 +24,4 @@ private:
     SDL_Renderer *renderer;
     bool quit;
 } ;
-
+#endif

@@ -3,7 +3,7 @@
 #include <SDL_image.h>
 #include <SDL_mixer.h>
 #include <SDL_ttf.h>
-
+#include "Data.h"
 #include "Game.h"
 
 using namespace std;

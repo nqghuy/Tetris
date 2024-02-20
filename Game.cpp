@@ -90,7 +90,8 @@ void game :: handleEvents()
             quit = true;
         }
         tetromino.handle_events(e);
-        tetromino.Move();
+        tetromino.Move(well);
+
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
         SDL_RenderClear(renderer);
 

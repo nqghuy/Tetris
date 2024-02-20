@@ -1,6 +1,7 @@
 #include "Tetromino.h"
 #include <iostream>
 #include "Game.h"
+#include "Playing_field.h"
 using namespace std;
 Tetromino :: Tetromino(Tetro_Type _TetrominoType, int x, int y)
 {
@@ -8,7 +9,7 @@ Tetromino :: Tetromino(Tetro_Type _TetrominoType, int x, int y)
     TetrominoColor = Tetromino_color[TetrominoType];
     for (int i = 0; i < TETRAD_SIZE; i++){
         for (int j = 0; j < TETRAD_SIZE; j++){
-            TetrominoShape[i][j] = tetromino_shape[TetrominoType * 4 + 1][i][j];
+            TetrominoShape[i][j] = tetromino_shape[TetrominoType * 4 ][i][j];
         }
     }
     angle = 0;
@@ -26,9 +27,8 @@ void Tetromino :: draw(SDL_Renderer *renderer)
         for (int j = 0; j < TETRAD_SIZE; j++){
             if (TetrominoShape[i][j]){
                 SDL_SetRenderDrawColor(renderer, TetrominoColor.r, TetrominoColor. g, TetrominoColor.b, 255);
-                SDL_Rect rect = {PosX + i * TILE_SIZE, PosY + j * TILE_SIZE, TILE_SIZE, TILE_SIZE};
+                SDL_Rect rect = {PosX + j * TILE_SIZE, PosY + i * TILE_SIZE, TILE_SIZE, TILE_SIZE};
                 SDL_RenderFillRect(renderer, &rect);
-
                 SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
                 SDL_RenderDrawRect(renderer, &rect);
             }
@@ -50,11 +50,14 @@ void Tetromino :: Rotate()
     }
 }
 
-void Tetromino :: Move()
+void Tetromino :: Move(Well &well)
 {
+
     PosX += VelX;
     PosY += VelY;
-
+    if (this->check_left_right_collision(well)){
+        PosX -= VelX;
+    }
 }
 
 void Tetromino :: handle_events(SDL_Event &e){
@@ -88,6 +91,40 @@ void Tetromino :: handle_events(SDL_Event &e){
                 break;
         }
     }
+}
+
+bool Tetromino :: check_left_right_collision(Well &well)
+{
+    for (int i = 0; i < TETRAD_SIZE; i++){
+        for (int j = 0; j < TETRAD_SIZE; j++){
+            if(this->TetrominoShape[i][j] == true){
+                int right = PosX + (j + 1) * TILE_SIZE;
+                int left = PosX + j * TILE_SIZE;
+                if (right > well.get_width() || left < well.get_x())
+                    return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool Tetromino :: isBlock(int x, int y)
+{
+    return this->TetrominoShape[x][y];
+}
+
+int Tetromino :: get_pos_x(){
+    return PosX;
+}
+
+int Tetromino :: get_pos_y()
+{
+    return PosY;
+}
+
+SDL_Color Tetromino :: get_color()
+{
+    return TetrominoColor;
 }
 
 

@@ -1,7 +1,9 @@
-#pragma once
-#include "Playing_field.h"
+#ifndef Tetromino_h
+#define Tetromino_h
+#include "Data.h"
+#include <SDL.h>
 
-const int TETRAD_SIZE = 4;
+class Well;
 
 enum Tetro_Type{
     I_BLOCK, J_BLOCK, L_BLOCK, O_BLOCK, S_BLOCK, T_BLOCK, Z_BLOCK, TOTAL_OF_BLOCKS
@@ -30,15 +32,16 @@ static bool tetromino_shape[TOTAL_OF_BLOCKS * 4][TETRAD_SIZE][TETRAD_SIZE] =
     {0, 0, 1, 0},
     {0, 0, 1, 0}},
 
-    {{0, 1, 0, 0},
-    {0, 1, 0, 0},
-    {0, 1, 0, 0},
-    {0, 1, 0, 0}},
-
     {{0, 0, 0, 0},
     {1, 1, 1, 1},
     {0, 0, 0, 0},
     {0, 0, 0, 0}},
+
+    {{0, 0, 1, 0},
+    {0, 0, 1, 0},
+    {0, 0, 1, 0},
+    {0, 0, 1, 0}},
+
 
     //J_BLOCK
     {{1, 0, 0, 0},
@@ -175,9 +178,16 @@ public:
     ~Tetromino();
     void draw(SDL_Renderer *renderer);
     void Rotate();
+    void Move(Well &well);
+    void handle_events(SDL_Event &e);
+    bool isBlock(int x, int y);
+    int get_pos_x();
+    int get_pos_y();
+    SDL_Color get_color();
+    bool check_left_right_collision(Well &well);
+    //grid coordinate
     void Move();
     int TetroVelocity = TILE_SIZE;
-    void handle_events(SDL_Event &e);
 private:
     Tetro_Type TetrominoType;
     int PosX, PosY;
@@ -186,5 +196,8 @@ private:
     SDL_Color TetrominoColor;
     bool TetrominoShape[TETRAD_SIZE][TETRAD_SIZE];
 };
+
+#endif // Tetromino_h
+
 
 
