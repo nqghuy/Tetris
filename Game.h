@@ -9,19 +9,35 @@
 
 using namespace std;
 
-
+//used to operate the game
 class game
 {
 public:
+    //constructor
     game();
+
+    //destructor
     ~game();
+
+    //initialize SDL and create the window
     bool init(const char *title, int x, int y, int w, int h);
+
+    //check if the game is running
     bool running();
+
+    //handle events from queue
     void handleEvents();
+
+    //close the game
     void close_game();
 private:
+    //the window for the game
     SDL_Window *window;
+
+    //the renderer for the window
     SDL_Renderer *renderer;
+
+    //return true if quit the game
     bool quit;
 } ;
 #endif

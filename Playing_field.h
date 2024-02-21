@@ -9,17 +9,32 @@
 class Well
 {
 public:
+    //constructor
     Well();
+
+    //destructor
+    ~Well();
+
+    //draw the well in the screen
     void draw(SDL_Renderer *renderer);
+
+    //get the coordinate of the well rect
     int get_x();
     int get_y();
+
+    //get the dimension of the well
     int get_width();
     int get_height();
 private:
+    //the dimension of the well
     int width = TILE_SIZE * WIDE_CELLS;
     int height = TILE_SIZE * HEIGHT_CELLS;
-    bool matrix[10][20];
-    SDL_Color cell_colors[10][20];
+
+    //return true if there is a tile in this coordinates
+    bool matrix[WIDE_CELLS][HEIGHT_CELLS];
+
+    //the color corresponding to each cell
+    SDL_Color cell_colors[WIDE_CELLS][HEIGHT_CELLS];
 };
 
 #endif

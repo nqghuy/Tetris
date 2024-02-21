@@ -81,24 +81,32 @@ bool game :: running()
 
 void game :: handleEvents()
 {
+    //event to be handled
     SDL_Event e;
+
+    // the well to play
     static Well well;
+
+    //the first tetromino
     static Tetromino tetromino(Tetro_Type(rand() % 7), SCREEN_WIDTH / 2, well.get_y());
     while (SDL_PollEvent(&e))
     {
         if (e.type == SDL_QUIT){
             quit = true;
         }
+        //handle tetromino
         tetromino.handle_events(e);
         tetromino.Move(well);
 
+        //clear screen
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
         SDL_RenderClear(renderer);
 
+        //draw well and tetromino
         well.draw(renderer);
-
         tetromino.draw(renderer);
 
+        //display on the screen
         SDL_RenderPresent(renderer);
     }
 }

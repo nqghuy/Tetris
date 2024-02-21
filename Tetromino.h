@@ -3,13 +3,15 @@
 #include "Data.h"
 #include <SDL.h>
 
+//avoid circular dependencies
 class Well;
 
+//types of tetromino
 enum Tetro_Type{
     I_BLOCK, J_BLOCK, L_BLOCK, O_BLOCK, S_BLOCK, T_BLOCK, Z_BLOCK, TOTAL_OF_BLOCKS
 };
 
-
+//colors of each type
 static SDL_Color Tetromino_color[TOTAL_OF_BLOCKS] =
 {{0, 255, 255},
 {0, 100, 255},
@@ -19,6 +21,7 @@ static SDL_Color Tetromino_color[TOTAL_OF_BLOCKS] =
 {128, 0, 255},
 {255, 0, 0}};
 
+//shape of each type (include rotated shape)
 static bool tetromino_shape[TOTAL_OF_BLOCKS * 4][TETRAD_SIZE][TETRAD_SIZE] =
 {
     //I_BLOCK
@@ -174,26 +177,56 @@ static bool tetromino_shape[TOTAL_OF_BLOCKS * 4][TETRAD_SIZE][TETRAD_SIZE] =
 class Tetromino
 {
 public:
+    //constructor, x, y is the position
     Tetromino(Tetro_Type _TetrominoType, int x, int y);
+
+    //destructor
     ~Tetromino();
+
+    //draw tetromino in the screen
     void draw(SDL_Renderer *renderer);
+
+    //rotate the tetromino when up key is pressed
     void Rotate();
+
+    //move down, left and right
     void Move(Well &well);
+
+    //handle event e
     void handle_events(SDL_Event &e);
+
+    //check if coordinate x, y is one of the part of the shap
     bool isBlock(int x, int y);
+
+    //return coordinate according to the window
     int get_pos_x();
     int get_pos_y();
+
+    //return tetromino's color
     SDL_Color get_color();
+
+    //check if left or right collision happens
     bool check_left_right_collision(Well &well);
-    //grid coordinate
-    void Move();
+
+    //the tetromino's velocity when move a block
     int TetroVelocity = TILE_SIZE;
 private:
+    //type of tetromino
     Tetro_Type TetrominoType;
+
+    //position according to window
     int PosX, PosY;
+
+    //current velocity
     int VelX, VelY;
+
+    //used to rotate, 0 is 0 degree, 1 is 90 degree...
     int angle;
+
+    //color corresponding to the type
     SDL_Color TetrominoColor;
+
+    //the shape matrix (true if is is a block
     bool TetrominoShape[TETRAD_SIZE][TETRAD_SIZE];
 };
 
