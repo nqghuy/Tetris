@@ -194,4 +194,18 @@ SDL_Color Tetromino :: get_color()
     return TetrominoColor;
 }
 
+bool Tetromino :: free_fall()
+{
+    this->y_coordinate++;
+    while(this->check_left_collision()){
+        this->x_coordinate++;
+    }
+    while (this->check_right_collision()){
+        x_coordinate--;
+    }
+    while (this->check_bottom_collision())
+    {
+        y_coordinate--;
+    }
+}
 

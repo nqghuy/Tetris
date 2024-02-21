@@ -214,6 +214,8 @@ public:
 
     //the tetromino's velocity when move a block
     int TetroVelocity = 1;
+
+    bool free_fall();
 private:
     //type of tetromino
     Tetro_Type TetrominoType;

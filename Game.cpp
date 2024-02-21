@@ -89,6 +89,13 @@ void game :: handleEvents()
 
     //the first tetromino
     static Tetromino tetromino(Tetro_Type(rand() % 7), WIDE_CELLS / 2, 0);
+
+    //current time
+    int currentTime;
+
+    //after 1s, the tetromino will fall
+    static int moveTime = SDL_GetTicks();
+
     while (SDL_PollEvent(&e))
     {
         if (e.type == SDL_QUIT){
@@ -97,18 +104,23 @@ void game :: handleEvents()
         //handle tetromino
         tetromino.handle_events(e);
         tetromino.Move(well);
-
-        //clear screen
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-        SDL_RenderClear(renderer);
-
-        //draw well and tetromino
-        well.draw(renderer);
-        tetromino.draw(renderer, well);
-
-        //display on the screen
-        SDL_RenderPresent(renderer);
     }
+    currentTime = SDL_GetTicks();
+    if (currentTime > moveTime){
+        moveTime += 1000;
+        tetromino.free_fall();
+    }
+    //clear screen
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_RenderClear(renderer);
+
+    //draw well and tetromino
+    well.draw(renderer);
+    tetromino.draw(renderer, well);
+
+    //display on the screen
+    SDL_RenderPresent(renderer);
+
 }
 
 void game :: close_game()
