@@ -29,6 +29,10 @@ public:
     //get the dimension of the well
     int get_width();
     int get_height();
+
+    void Unite(Tetromino *t);
+
+    bool isBlock(int x, int y);
 private:
     //the dimension of the well
     int width = TILE_SIZE * WIDE_CELLS;

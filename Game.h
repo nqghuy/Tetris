@@ -6,6 +6,9 @@
 #include <SDL_mixer.h>
 #include <SDL_ttf.h>
 #include <iostream>
+#include "Playing_field.h"
+#include  "Tetromino.h"
+
 
 using namespace std;
 
@@ -31,6 +34,8 @@ public:
     //close the game
     void close_game();
 private:
+    Well well ;
+    Tetromino tetromino;
     //the window for the game
     SDL_Window *window;
 

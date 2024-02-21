@@ -1,13 +1,13 @@
 #include "Game.h"
-#include "Playing_field.h"
-#include  "Tetromino.h"
 
-game :: game()
-{
-    window = NULL;
-    renderer = NULL;
-    quit = false;
+game::game()
+    : well((SCREEN_WIDTH - TILE_SIZE * WIDE_CELLS) / 2, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2),
+      tetromino(Tetro_Type(rand() % 7), WIDE_CELLS / 2, 0),
+      window(nullptr),
+      renderer(nullptr),
+      quit(false){
 }
+
 
 game :: ~game()
 {
@@ -84,12 +84,6 @@ void game :: handleEvents()
     //event to be handled
     SDL_Event e;
 
-    // the well to play
-    static Well well((SCREEN_WIDTH - TILE_SIZE * WIDE_CELLS) / 2, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2);
-
-    //the first tetromino
-    static Tetromino tetromino(Tetro_Type(rand() % 7), WIDE_CELLS / 2, 0);
-
     //current time
     int currentTime;
 
@@ -102,13 +96,13 @@ void game :: handleEvents()
             quit = true;
         }
         //handle tetromino
-        tetromino.handle_events(e);
+        tetromino.handle_events(e, well);
         tetromino.Move(well);
     }
     currentTime = SDL_GetTicks();
     if (currentTime > moveTime){
         moveTime += 1000;
-        tetromino.free_fall();
+        tetromino.free_fall(well);
     }
     //clear screen
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
@@ -120,7 +114,10 @@ void game :: handleEvents()
 
     //display on the screen
     SDL_RenderPresent(renderer);
-
+    if (!tetromino.get_active()){
+        tetromino = Tetromino(Tetro_Type(rand() % 7), WIDE_CELLS / 2, 0);
+        SDL_FlushEvents(SDL_USEREVENT, SDL_LASTEVENT);
+    }
 }
 
 void game :: close_game()

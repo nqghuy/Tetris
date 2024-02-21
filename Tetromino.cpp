@@ -1,10 +1,11 @@
 #include "Tetromino.h"
 #include <iostream>
-#include "Game.h"
 #include "Playing_field.h"
+#include <iostream>
 using namespace std;
 Tetromino :: Tetromino(Tetro_Type _TetrominoType, int x, int y)
 {
+    active = true;
     TetrominoType = _TetrominoType;
     TetrominoColor = Tetromino_color[TetrominoType];
     for (int i = 0; i < TETRAD_SIZE; i++){
@@ -44,7 +45,7 @@ void Tetromino :: draw(SDL_Renderer *renderer, Well &well)
 }
 
 //rotate the tetromino by using next shape
-void Tetromino :: Rotate()
+void Tetromino :: Rotate(Well &well)
 {
 
     angle++;
@@ -56,40 +57,24 @@ void Tetromino :: Rotate()
             TetrominoShape[i][j] = tetromino_shape[TetrominoType * 4 + angle][i][j];
         }
     }
-    while(this->check_left_collision()){
-        this->x_coordinate++;
-    }
-    while (this->check_right_collision()){
-        x_coordinate--;
-    }
-    while (this->check_bottom_collision())
-    {
-        y_coordinate--;
-    }
+    handle_collision(well);
 }
 
 void Tetromino :: Move(Well &well)
 {
     x_coordinate += VelX;
     y_coordinate += VelY;
-
-    //check if a collision happens
-    if (this->check_left_collision() || this->check_right_collision()){
-        x_coordinate -= VelX;
-    }
-    if (this->check_bottom_collision()){
-        y_coordinate -= VelY;
-    }
+    handle_collision(well);
 }
 
-void Tetromino :: handle_events(SDL_Event &e){
+void Tetromino :: handle_events(SDL_Event &e, Well &well){
     //when player is pressing a key
     if(e.type == SDL_KEYDOWN && e.key.repeat == 0){
         switch (e.key.keysym.sym)
         {
         //key up: rotate
         case SDLK_UP:
-            this->Rotate();
+            this->Rotate(well);
             break;
 
         //key down: increase y velocity
@@ -113,13 +98,19 @@ void Tetromino :: handle_events(SDL_Event &e){
         switch (e.key.keysym.sym){
             //opposite to pressing a key
             case (SDLK_DOWN):
-                VelY -= TetroVelocity;
+                if(VelY != 0){
+                    VelY -= TetroVelocity;
+                }
                 break;
             case SDLK_RIGHT :
-                VelX -= TetroVelocity;
+                if (VelX != 0){
+                    VelX -= TetroVelocity;
+                }
                 break;
             case SDLK_LEFT:
-                VelX += TetroVelocity;
+                if (VelX != 0){
+                    VelX += TetroVelocity;
+                }
                 break;
         }
     }
@@ -159,7 +150,7 @@ bool Tetromino :: check_right_collision()
     return false;
 }
 
-bool Tetromino :: check_bottom_collision()
+bool Tetromino :: check_bottom_collision(Well &well)
 {
     for (int i = 0; i < TETRAD_SIZE; i++){
         for (int j = 0; j < TETRAD_SIZE; j++){
@@ -172,6 +163,23 @@ bool Tetromino :: check_bottom_collision()
                 }
             }
         }
+    }
+    return false;
+}
+
+void Tetromino :: handle_collision(Well &well)
+{
+    while(this->check_left_collision()){
+        this->x_coordinate++;
+    }
+    while (this->check_right_collision()){
+        x_coordinate--;
+    }
+    while (this->check_bottom_collision(well))
+    {
+        y_coordinate--;
+        well.Unite(this);
+        active = false;
     }
 }
 
@@ -194,18 +202,14 @@ SDL_Color Tetromino :: get_color()
     return TetrominoColor;
 }
 
-bool Tetromino :: free_fall()
+bool Tetromino :: free_fall(Well &well)
 {
     this->y_coordinate++;
-    while(this->check_left_collision()){
-        this->x_coordinate++;
-    }
-    while (this->check_right_collision()){
-        x_coordinate--;
-    }
-    while (this->check_bottom_collision())
-    {
-        y_coordinate--;
-    }
+    handle_collision(well);
+}
+
+bool Tetromino :: get_active()
+{
+    return active;
 }
 

@@ -187,13 +187,13 @@ public:
     void draw(SDL_Renderer *renderer, Well &well);
 
     //rotate the tetromino when up key is pressed
-    void Rotate();
+    void Rotate(Well &well);
 
     //move down, left and right
     void Move(Well &well);
 
     //handle event e
-    void handle_events(SDL_Event &e);
+    void handle_events(SDL_Event &e, Well &well);
 
     //check if coordinate x, y is one of the part of the shape
     bool isBlock(int x, int y);
@@ -210,18 +210,27 @@ public:
     bool check_right_collision();
 
     //check if bottom collision happens
-    bool check_bottom_collision();
+    bool check_bottom_collision(Well &well);
+
+    //handle if there is any collision
+    void handle_collision(Well &well);
 
     //the tetromino's velocity when move a block
     int TetroVelocity = 1;
 
-    bool free_fall();
+    bool free_fall(Well &well);
+
+    bool get_active();
+
+
 private:
+    bool active;
     //type of tetromino
     Tetro_Type TetrominoType;
 
     //position according to well
     int x_coordinate, y_coordinate;
+
 
     //current velocity
     int VelX, VelY;
