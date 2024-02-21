@@ -85,10 +85,10 @@ void game :: handleEvents()
     SDL_Event e;
 
     // the well to play
-    static Well well;
+    static Well well((SCREEN_WIDTH - TILE_SIZE * WIDE_CELLS) / 2, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2);
 
     //the first tetromino
-    static Tetromino tetromino(Tetro_Type(rand() % 7), SCREEN_WIDTH / 2, well.get_y());
+    static Tetromino tetromino(Tetro_Type(rand() % 7), WIDE_CELLS / 2, 0);
     while (SDL_PollEvent(&e))
     {
         if (e.type == SDL_QUIT){
@@ -104,7 +104,7 @@ void game :: handleEvents()
 
         //draw well and tetromino
         well.draw(renderer);
-        tetromino.draw(renderer);
+        tetromino.draw(renderer, well);
 
         //display on the screen
         SDL_RenderPresent(renderer);

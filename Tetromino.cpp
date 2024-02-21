@@ -13,15 +13,15 @@ Tetromino :: Tetromino(Tetro_Type _TetrominoType, int x, int y)
         }
     }
     angle = 0;
-    PosX = x;
-    PosY = y;
+    x_coordinate = x;
+    y_coordinate = y;
     VelX = 0;
     VelY = 0;
 }
 
 Tetromino ::~Tetromino(){}
 
-void Tetromino :: draw(SDL_Renderer *renderer)
+void Tetromino :: draw(SDL_Renderer *renderer, Well &well)
 {
     for (int i = 0; i < TETRAD_SIZE; i++){
         for (int j = 0; j < TETRAD_SIZE; j++){
@@ -30,7 +30,7 @@ void Tetromino :: draw(SDL_Renderer *renderer)
                 SDL_SetRenderDrawColor(renderer, TetrominoColor.r, TetrominoColor. g, TetrominoColor.b, 255);
 
                 //rect of each tile
-                SDL_Rect rect = {PosX + j * TILE_SIZE, PosY + i * TILE_SIZE, TILE_SIZE, TILE_SIZE};
+                SDL_Rect rect = {well.get_pos_x(this->x_coordinate) + j * TILE_SIZE, well.get_pos_y(this->y_coordinate) + i * TILE_SIZE, TILE_SIZE, TILE_SIZE};
 
                 //fill rect
                 SDL_RenderFillRect(renderer, &rect);
@@ -56,16 +56,29 @@ void Tetromino :: Rotate()
             TetrominoShape[i][j] = tetromino_shape[TetrominoType * 4 + angle][i][j];
         }
     }
+    while(this->check_left_collision()){
+        this->x_coordinate++;
+    }
+    while (this->check_right_collision()){
+        x_coordinate--;
+    }
+    while (this->check_bottom_collision())
+    {
+        y_coordinate--;
+    }
 }
 
 void Tetromino :: Move(Well &well)
 {
-    PosX += VelX;
-    PosY += VelY;
+    x_coordinate += VelX;
+    y_coordinate += VelY;
 
     //check if a collision happens
-    if (this->check_left_right_collision(well)){
-        PosX -= VelX;
+    if (this->check_left_collision() || this->check_right_collision()){
+        x_coordinate -= VelX;
+    }
+    if (this->check_bottom_collision()){
+        y_coordinate -= VelY;
     }
 }
 
@@ -112,19 +125,16 @@ void Tetromino :: handle_events(SDL_Event &e){
     }
 }
 
-bool Tetromino :: check_left_right_collision(Well &well)
+bool Tetromino :: check_left_collision()
 {
     for (int i = 0; i < TETRAD_SIZE; i++){
         for (int j = 0; j < TETRAD_SIZE; j++){
             if(this->TetrominoShape[i][j] == true){
-                //right border
-                int right = PosX + (j + 1) * TILE_SIZE;
-
                 //left border
-                int left = PosX + j * TILE_SIZE;
+                int left = x_coordinate + j;
 
                 //check if collision
-                if (right > well.get_width() || left < well.get_x())
+                if (left < 0)
                     return true;
             }
         }
@@ -132,18 +142,51 @@ bool Tetromino :: check_left_right_collision(Well &well)
     return false;
 }
 
+bool Tetromino :: check_right_collision()
+{
+    for (int i = 0; i < TETRAD_SIZE; i++){
+        for (int j = 0; j < TETRAD_SIZE; j++){
+            if(this->TetrominoShape[i][j] == true){
+                //right border
+                int right = x_coordinate + 1 + j;
+
+                //check if collision
+                if (right > WIDE_CELLS)
+                    return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool Tetromino :: check_bottom_collision()
+{
+    for (int i = 0; i < TETRAD_SIZE; i++){
+        for (int j = 0; j < TETRAD_SIZE; j++){
+            if (TetrominoShape[i][j])
+            {
+                int bottom = this->y_coordinate + i;
+                if (bottom >= HEIGHT_CELLS)
+                {
+                    return true;
+                }
+            }
+        }
+    }
+}
+
 bool Tetromino :: isBlock(int x, int y)
 {
     return this->TetrominoShape[x][y];
 }
 
-int Tetromino :: get_pos_x(){
-    return PosX;
+int Tetromino :: get_x_axis_coor(){
+    return x_coordinate;
 }
 
-int Tetromino :: get_pos_y()
+int Tetromino :: get_y_axis_coor()
 {
-    return PosY;
+    return y_coordinate;
 }
 
 SDL_Color Tetromino :: get_color()

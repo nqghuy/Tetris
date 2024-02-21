@@ -40,10 +40,10 @@ static bool tetromino_shape[TOTAL_OF_BLOCKS * 4][TETRAD_SIZE][TETRAD_SIZE] =
     {0, 0, 0, 0},
     {0, 0, 0, 0}},
 
-    {{0, 0, 1, 0},
-    {0, 0, 1, 0},
-    {0, 0, 1, 0},
-    {0, 0, 1, 0}},
+    {{0, 1, 0, 0},
+    {0, 1, 0, 0},
+    {0, 1, 0, 0},
+    {0, 1, 0, 0}},
 
 
     //J_BLOCK
@@ -184,7 +184,7 @@ public:
     ~Tetromino();
 
     //draw tetromino in the screen
-    void draw(SDL_Renderer *renderer);
+    void draw(SDL_Renderer *renderer, Well &well);
 
     //rotate the tetromino when up key is pressed
     void Rotate();
@@ -195,27 +195,31 @@ public:
     //handle event e
     void handle_events(SDL_Event &e);
 
-    //check if coordinate x, y is one of the part of the shap
+    //check if coordinate x, y is one of the part of the shape
     bool isBlock(int x, int y);
 
-    //return coordinate according to the window
-    int get_pos_x();
-    int get_pos_y();
+    //return coordinate according to the well
+    int get_x_axis_coor();
+    int get_y_axis_coor();
 
     //return tetromino's color
     SDL_Color get_color();
 
     //check if left or right collision happens
-    bool check_left_right_collision(Well &well);
+    bool check_left_collision();
+    bool check_right_collision();
+
+    //check if bottom collision happens
+    bool check_bottom_collision();
 
     //the tetromino's velocity when move a block
-    int TetroVelocity = TILE_SIZE;
+    int TetroVelocity = 1;
 private:
     //type of tetromino
     Tetro_Type TetrominoType;
 
-    //position according to window
-    int PosX, PosY;
+    //position according to well
+    int x_coordinate, y_coordinate;
 
     //current velocity
     int VelX, VelY;

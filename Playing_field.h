@@ -10,7 +10,7 @@ class Well
 {
 public:
     //constructor
-    Well();
+    Well(int _x, int _y);
 
     //destructor
     ~Well();
@@ -22,6 +22,10 @@ public:
     int get_x();
     int get_y();
 
+    //get the position according to the window with the coordinate
+    int get_pos_x(int PosX);
+    int get_pos_y(int PosY);
+
     //get the dimension of the well
     int get_width();
     int get_height();
@@ -29,6 +33,9 @@ private:
     //the dimension of the well
     int width = TILE_SIZE * WIDE_CELLS;
     int height = TILE_SIZE * HEIGHT_CELLS;
+
+    //the coordinate according to the window;
+    int x, y;
 
     //return true if there is a tile in this coordinates
     bool matrix[WIDE_CELLS][HEIGHT_CELLS];

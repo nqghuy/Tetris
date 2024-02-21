@@ -2,7 +2,9 @@
 #include "Game.h"
 #include <bits/stdc++.h>
 
-Well :: Well (){
+Well :: Well (int _x, int _y){
+    x = _x;
+    y = _y;
     //marked no tetromino unites with well
     memset(matrix, false, sizeof(matrix));
 
@@ -30,7 +32,7 @@ void Well :: draw (SDL_Renderer *renderer)
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
     //the well rect
-    SDL_Rect rect = {(SCREEN_WIDTH - width) / 2, (SCREEN_HEIGHT - height) / 2, width, height};
+    SDL_Rect rect = {x, y, width, height};
 
     //fill well with black
     SDL_RenderFillRect(renderer, &rect);
@@ -89,5 +91,15 @@ int Well :: get_width()
 int Well :: get_height()
 {
     return this->get_y() + height;
+}
+
+int Well :: get_pos_x(int PosX)
+{
+    return this->get_x() + PosX * TILE_SIZE;
+}
+
+int Well :: get_pos_y(int PosY)
+{
+    return this->get_y() + PosY * TILE_SIZE;
 }
 
