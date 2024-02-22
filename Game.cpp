@@ -90,20 +90,25 @@ void game :: handleEvents()
     //after 1s, the tetromino will fall
     static int moveTime = SDL_GetTicks();
 
+    currentTime = SDL_GetTicks();
+    if (currentTime > moveTime){
+        moveTime += 1000;
+        tetromino.free_fall(well);
+    }
+
     while (SDL_PollEvent(&e))
     {
         if (e.type == SDL_QUIT){
             quit = true;
         }
         //handle tetromino
-        tetromino.handle_events(e, well);
-        tetromino.Move(well);
+        if(tetromino.get_active()){
+            tetromino.handle_events(e, well);
+            tetromino.Move(well);
+        }
+
     }
-    currentTime = SDL_GetTicks();
-    if (currentTime > moveTime){
-        moveTime += 1000;
-        tetromino.free_fall(well);
-    }
+
     //clear screen
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderClear(renderer);

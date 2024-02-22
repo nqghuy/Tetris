@@ -2,7 +2,6 @@
 #define Playing_field_h
 
 #include <SDL.h>
-#include <iostream>
 #include "Tetromino.h"
 #include "Data.h"
 
@@ -30,8 +29,10 @@ public:
     int get_width();
     int get_height();
 
+    //t will no longer be controlled
     void Unite(Tetromino *t);
 
+    //true if there is a block in coordinate x,y
     bool isBlock(int x, int y);
 private:
     //the dimension of the well
