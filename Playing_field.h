@@ -34,6 +34,11 @@ public:
 
     //true if there is a block in coordinate x,y
     bool isBlock(int x, int y);
+
+    //check if a row is filled
+    bool filled_line(int line);
+
+    void deleted_line(int line);
 private:
     //the dimension of the well
     int width = TILE_SIZE * WIDE_CELLS;

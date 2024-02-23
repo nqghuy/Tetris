@@ -116,9 +116,38 @@ void Well :: Unite(Tetromino *t)
             }
         }
     }
+    for (int j = HEIGHT_CELLS - 1; j >= 0; j--){
+        if (filled_line(j)){
+            deleted_line(j);
+            j++;
+        }
+    }
 }
 
 bool Well :: isBlock(int x, int y)
 {
     return matrix[x][y];
+}
+
+bool Well :: filled_line(int line)
+{
+    for (int i = 0; i < WIDE_CELLS; i++)
+    {
+        if (!matrix[i][line])
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+void Well :: deleted_line(int line)
+{
+    for (int j = line; j >= 1; j--)
+    {
+        for (int i = 0; i < WIDE_CELLS; i++){
+            matrix[i][j] = matrix[i][j - 1];
+            cell_colors[i][j] = cell_colors[i][j - 1];
+        }
+    }
 }
