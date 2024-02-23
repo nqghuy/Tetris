@@ -1,5 +1,9 @@
 #include "Game.h"
 
+Mix_Music *gPlayingMusic;
+
+Mix_Chunk *gNiceSoundEffect;
+
 game::game()
     : well((SCREEN_WIDTH - TILE_SIZE * WIDE_CELLS) / 2, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2),
       tetromino(Tetro_Type(rand() % 7), WIDE_CELLS / 2, 0),
@@ -11,8 +15,11 @@ game::game()
 
 game :: ~game()
 {
+
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
+    window = NULL;
+    renderer = NULL;
 }
 
 bool game :: init(const char *title, int x, int y, int w, int h)
@@ -74,6 +81,26 @@ bool game :: init(const char *title, int x, int y, int w, int h)
     return success;
 }
 
+bool game :: loadMedia()
+{
+    bool success = true;
+    if (!background.loadFromFile(renderer, "Assets/Pictures/background4.png")){
+        cout << "failed to load background";
+        success = false;
+    }
+    gPlayingMusic = Mix_LoadMUS("Assets/Music/Music.mp3");
+    if (gPlayingMusic == NULL){
+        cout << "failed to load music\n";
+        success = false;
+    }
+    gNiceSoundEffect = Mix_LoadWAV("C:/Tetris/Assets/Music/nice.mp3");
+    if(gNiceSoundEffect == NULL){
+        cout << "failed to load nice sound effects";
+        success = true;
+    }
+    return success;
+}
+
 bool game :: running()
 {
     return (!quit);
@@ -113,20 +140,31 @@ void game :: handleEvents()
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderClear(renderer);
 
+    background.render(renderer, 0, 0);
+
     //draw well and tetromino
     well.draw(renderer);
     tetromino.draw(renderer, well);
 
     //display on the screen
     SDL_RenderPresent(renderer);
+
     if (!tetromino.get_active()){
         tetromino = Tetromino(Tetro_Type(rand() % 7), WIDE_CELLS / 2, 0);
         SDL_FlushEvents(SDL_USEREVENT, SDL_LASTEVENT);
     }
 }
 
+void game :: play_music()
+{
+    if(Mix_PlayingMusic() == 0){
+        Mix_PlayMusic(gPlayingMusic, -1);
+    }
+}
+
 void game :: close_game()
 {
+    background.free();
     SDL_Quit();
     TTF_Quit();
     IMG_Quit();

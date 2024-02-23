@@ -7,8 +7,9 @@
 #include <SDL_ttf.h>
 #include <iostream>
 #include "Playing_field.h"
-#include  "Tetromino.h"
-
+#include "Tetromino.h"
+#include "Texture.h"
+#include <SDL_mixer.h>
 
 using namespace std;
 
@@ -31,11 +32,22 @@ public:
     //handle events from queue
     void handleEvents();
 
+    //load background and music
+    bool loadMedia();
+
+    void play_music();
+
     //close the game
     void close_game();
 private:
+    LTexture background;
+
+    //field to play
     Well well ;
+
+    //tetromino will be controlled
     Tetromino tetromino;
+
     //the window for the game
     SDL_Window *window;
 

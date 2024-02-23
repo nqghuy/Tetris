@@ -35,12 +35,6 @@ void Well :: draw (SDL_Renderer *renderer)
     //fill well with black
     SDL_RenderFillRect(renderer, &rect);
 
-    //red color
-    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-
-    //draw border
-    SDL_RenderDrawRect(renderer, &rect);
-
     //white color
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     for (int i = 0; i < WIDE_CELLS; i++){
@@ -68,6 +62,11 @@ void Well :: draw (SDL_Renderer *renderer)
             SDL_RenderDrawPoint(renderer, i * TILE_SIZE + (SCREEN_WIDTH - width) / 2, j * TILE_SIZE + (SCREEN_HEIGHT - height) / 2);
         }
     }
+    //red color
+    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+
+    //draw border
+    SDL_RenderDrawRect(renderer, &rect);
 }
 
 int Well :: get_x()
@@ -116,12 +115,15 @@ void Well :: Unite(Tetromino *t)
             }
         }
     }
+    bool sound = false;
     for (int j = HEIGHT_CELLS - 1; j >= 0; j--){
         if (filled_line(j)){
             deleted_line(j);
             j++;
+            sound = true;
         }
     }
+    if(sound) Mix_PlayChannel(-1, gNiceSoundEffect, 0);
 }
 
 bool Well :: isBlock(int x, int y)

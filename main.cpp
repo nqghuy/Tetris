@@ -11,7 +11,7 @@ using namespace std;
 int main(int argc, char *argv[])
 {
     //use to random type of tetromino
-    srand(time(NULL));
+    srand(time(0));
 
     //initialize a game
     game *tetris = new game;
@@ -21,9 +21,12 @@ int main(int argc, char *argv[])
         cout << "failed to init sdl" << endl;
     }
 
+    tetris->loadMedia();
+
     //game runs
     while (tetris->running()){
         tetris->handleEvents();
+        tetris->play_music();
     }
 
     //close game
