@@ -39,6 +39,11 @@ public:
 
     //close the game
     void close_game();
+
+    void display();
+
+    bool is_paused();
+
 private:
     LTexture background;
 
@@ -56,5 +61,7 @@ private:
 
     //return true if quit the game
     bool quit;
+
+    bool pause;
 } ;
 #endif

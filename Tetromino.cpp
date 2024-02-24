@@ -259,3 +259,12 @@ bool Tetromino :: get_active()
     return active;
 }
 
+Tetro_Type Tetromino :: get_random_type()
+{
+    Tetro_Type newType = Tetro_Type(rand() % 7);
+    if (newType == this->TetrominoType){
+        newType = Tetro_Type(rand() % 7);
+    }
+    return newType;
+}
+

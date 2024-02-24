@@ -218,7 +218,7 @@ public:
     //get active
     bool get_active();
 
-
+    Tetro_Type get_random_type();
 private:
     //false if cannot move down
     bool active;
@@ -240,6 +240,7 @@ private:
 
     //the shape matrix (true if is is a block
     bool TetrominoShape[TETRAD_SIZE][TETRAD_SIZE];
+
 };
 
 #endif // Tetromino_h

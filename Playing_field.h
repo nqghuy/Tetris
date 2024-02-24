@@ -39,6 +39,10 @@ public:
     bool filled_line(int line);
 
     void deleted_line(int line);
+
+    bool get_lose();
+
+    bool set_lose();
 private:
     //the dimension of the well
     int width = TILE_SIZE * WIDE_CELLS;
@@ -52,6 +56,8 @@ private:
 
     //the color corresponding to each cell
     SDL_Color cell_colors[WIDE_CELLS][HEIGHT_CELLS];
+
+    bool lose;
 };
 
 #endif

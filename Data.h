@@ -20,3 +20,4 @@ extern Mix_Music *gPlayingMusic;
 
 extern Mix_Chunk *gNiceSoundEffect;
 
+extern Mix_Chunk *gLoseSoundEffect;

@@ -12,6 +12,7 @@ Well :: Well (int _x, int _y){
             cell_colors[i][j] = {0, 0, 0, 255};
         }
     }
+    lose = false;
 };
 
 Well :: ~Well()
@@ -152,4 +153,14 @@ void Well :: deleted_line(int line)
             cell_colors[i][j] = cell_colors[i][j - 1];
         }
     }
+}
+
+bool Well :: get_lose()
+{
+    return lose;
+}
+
+bool Well :: set_lose()
+{
+    lose = true;
 }
