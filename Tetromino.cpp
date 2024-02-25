@@ -22,6 +22,23 @@ Tetromino ::~Tetromino(){}
 
 void Tetromino :: draw(SDL_Renderer *renderer, Well &well)
 {
+    bool check = false;
+    for (int i = 0; i < TETRAD_SIZE; i++){
+        if(!check){
+            for (int j = 0; j < TETRAD_SIZE; j++){
+                if(TetrominoShape[i][j]){
+                    if (this->y_coordinate + i < HIDDEN_ROWS){
+                        return;
+                    }
+                    else {
+                        check = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+    }
     for (int i = 0; i < TETRAD_SIZE; i++){
         for (int j = 0; j < TETRAD_SIZE; j++){
             if (TetrominoShape[i][j]){

@@ -7,7 +7,10 @@ const int TILE_SIZE = 36;
 const int WIDE_CELLS = 10;
 
 //the number of height cells
-const int HEIGHT_CELLS = 20;
+const int HEIGHT_CELLS = 22;
+
+//the number of hidden rows
+const int HIDDEN_ROWS = 2;
 
 //screen dimensions
 const int SCREEN_HEIGHT = 860;

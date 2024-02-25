@@ -1,5 +1,6 @@
 #include "Game.h"
-
+#include <iostream>
+using namespace std;
 Mix_Music *gPlayingMusic;
 
 Mix_Chunk *gNiceSoundEffect;
@@ -140,7 +141,7 @@ void game :: handleEvents()
             }
         }
         else{
-            if (e.type == SDL_KEYDOWN && e.key.repeat == 0 && e.key.keysym.sym == SDLK_KP_ENTER){
+            if (e.type == SDL_KEYDOWN && e.key.repeat == 0 && e.key.keysym.sym == SDLK_RETURN){
                 well = Well((SCREEN_WIDTH - TILE_SIZE * WIDE_CELLS) / 2, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2);
                 tetromino = Tetromino(tetromino.get_random_type(), WIDE_CELLS / 2, 0);
             }

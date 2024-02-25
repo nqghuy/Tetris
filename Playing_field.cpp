@@ -31,7 +31,7 @@ void Well :: draw (SDL_Renderer *renderer)
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
     //the well rect
-    SDL_Rect rect = {x, y, width, height};
+    SDL_Rect rect = {x, y + HIDDEN_ROWS * TILE_SIZE, width, height - HIDDEN_ROWS * TILE_SIZE};
 
     //fill well with black
     SDL_RenderFillRect(renderer, &rect);
@@ -39,7 +39,7 @@ void Well :: draw (SDL_Renderer *renderer)
     //white color
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     for (int i = 0; i < WIDE_CELLS; i++){
-        for (int j = 0; j < HEIGHT_CELLS; j++){
+        for (int j = HIDDEN_ROWS; j < HEIGHT_CELLS; j++){
             //if there is a tetromino uniting with the well
             if (matrix[i][j]){
                 //get the tetromino color
@@ -49,14 +49,14 @@ void Well :: draw (SDL_Renderer *renderer)
                 SDL_SetRenderDrawColor(renderer, curColor.r, curColor. g, curColor.b, 255);
 
                 //the rect of each tile
-                SDL_Rect rect = {this->get_x() + i * TILE_SIZE, this->get_y() + j * TILE_SIZE, TILE_SIZE, TILE_SIZE};
+                SDL_Rect tileRect = {this->get_x() + i * TILE_SIZE, this->get_y() + j * TILE_SIZE, TILE_SIZE, TILE_SIZE};
 
                 //file rect
-                SDL_RenderFillRect(renderer, &rect);
+                SDL_RenderFillRect(renderer, &tileRect);
 
                 //draw black color
                 SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-                SDL_RenderDrawRect(renderer, &rect);
+                SDL_RenderDrawRect(renderer, &tileRect);
             }
             //draw white point
             SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
