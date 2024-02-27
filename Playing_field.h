@@ -4,12 +4,12 @@
 #include <SDL.h>
 #include "Tetromino.h"
 #include "Data.h"
-
+#include "Score.h"
 class Well
 {
 public:
     //constructor
-    Well(int _x, int _y);
+    Well(SDL_Renderer *renderer, int _x, int _y);
 
     //destructor
     ~Well();
@@ -44,6 +44,8 @@ public:
 
     bool set_lose();
 private:
+    Score score;
+
     //the dimension of the well
     int width = TILE_SIZE * WIDE_CELLS;
     int height = TILE_SIZE * HEIGHT_CELLS;

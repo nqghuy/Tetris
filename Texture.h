@@ -1,3 +1,5 @@
+#pragma once
+
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
@@ -24,7 +26,7 @@ public:
     bool loadFromFile(SDL_Renderer *renderer, string file);
 
 //    //create image from font string
-//    bool loadFromRenderedText(SDL_Renderer *renderer, string textTexture, SDL_Color);
+    bool loadFromRenderedText(SDL_Renderer *renderer, TTF_Font *font, string textTexture, SDL_Color);
 
     //render texture at given point
     void render(SDL_Renderer *renderer, int, int, SDL_Rect* = NULL, double angle = 0, SDL_Point* center = NULL, SDL_RendererFlip = SDL_FLIP_NONE);

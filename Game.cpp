@@ -6,8 +6,11 @@ Mix_Music *gPlayingMusic;
 Mix_Chunk *gNiceSoundEffect;
 
 Mix_Chunk *gLoseSoundEffect;
+
+TTF_Font *ScoreFont;
+
 game::game()
-    : well((SCREEN_WIDTH - TILE_SIZE * WIDE_CELLS) / 2, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2),
+    : well(renderer, (SCREEN_WIDTH - TILE_SIZE * WIDE_CELLS) / 2, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2),
       tetromino(Tetro_Type(rand() % 7), WIDE_CELLS / 2, 0),
       window(nullptr),
       renderer(nullptr),
@@ -105,6 +108,10 @@ bool game :: loadMedia()
         cout << "failed to load oh_oh sound effects";
         success = false;
     }
+    ScoreFont = TTF_OpenFont("Assets/Font/montserrat/MontserratAlternates-Black.otf", 28);
+    if (ScoreFont == NULL){
+        cout << "failed to load font\n";
+    }
     return success;
 }
 
@@ -142,7 +149,7 @@ void game :: handleEvents()
         }
         else{
             if (e.type == SDL_KEYDOWN && e.key.repeat == 0 && e.key.keysym.sym == SDLK_RETURN){
-                well = Well((SCREEN_WIDTH - TILE_SIZE * WIDE_CELLS) / 2, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2);
+                well = Well(renderer, (SCREEN_WIDTH - TILE_SIZE * WIDE_CELLS) / 2, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2);
                 tetromino = Tetromino(tetromino.get_random_type(), WIDE_CELLS / 2, 0);
             }
         }

@@ -43,37 +43,37 @@ bool LTexture :: loadFromFile(SDL_Renderer *renderer, string file)
     return mTexture != NULL;
 }
 
-//bool LTexture :: loadFromRenderedText(SDL_Renderer *renderer, string textTexture, SDL_Color color)
-//{
-//    free();
-//    // final texture
-//    SDL_Texture *newTexture = NULL;
-//
-//    //surface to create texture
-//    SDL_Surface *newSurface = NULL;
-//    newSurface = TTF_RenderText_Solid(gFont, textTexture.c_str(), color);
-//    if (newSurface == NULL)
-//    {
-//        cout << "unable to load new surface. ERROR: " << TTF_GetError() << endl;
-//    }
-//    else
-//    {
-//        newTexture = SDL_CreateTextureFromSurface(renderer, newSurface);
-//        if (newTexture == NULL)
-//        {
-//            cout << "failed to create texture. ERROR: " << SDL_GetError();
-//        }
-//        else
-//        {
-//            mTexture = newTexture;
-//            mWidth = newSurface->w;
-//            mHeight = newSurface->h;
-//        }
-//        SDL_FreeSurface(newSurface);
-//    }
-//    return mTexture != NULL;
-//
-//}
+bool LTexture :: loadFromRenderedText(SDL_Renderer *renderer, TTF_Font *font, string textTexture, SDL_Color color)
+{
+    free();
+    // final texture
+    SDL_Texture *newTexture = NULL;
+
+    //surface to create texture
+    SDL_Surface *newSurface = NULL;
+    newSurface = TTF_RenderText_Solid(font, textTexture.c_str(), color);
+    if (newSurface == NULL)
+    {
+        cout << "unable to load new surface. ERROR: " << TTF_GetError() << endl;
+    }
+    else
+    {
+        newTexture = SDL_CreateTextureFromSurface(renderer, newSurface);
+        if (newTexture == NULL)
+        {
+            cout << "failed to create texture. ERROR: " << SDL_GetError();
+        }
+        else
+        {
+            mTexture = newTexture;
+            mWidth = newSurface->w;
+            mHeight = newSurface->h;
+        }
+        SDL_FreeSurface(newSurface);
+    }
+    return mTexture != NULL;
+
+}
 
 void LTexture :: render (SDL_Renderer *renderer, int x, int y, SDL_Rect *clip, double angle, SDL_Point *center, SDL_RendererFlip flip)
 {

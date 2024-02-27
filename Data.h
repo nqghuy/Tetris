@@ -1,5 +1,7 @@
 #pragma once
 #include <SDL_mixer.h>
+#include <SDL_ttf.h>
+
 //the size of a tile(block)
 const int TILE_SIZE = 36;
 
@@ -24,3 +26,5 @@ extern Mix_Music *gPlayingMusic;
 extern Mix_Chunk *gNiceSoundEffect;
 
 extern Mix_Chunk *gLoseSoundEffect;
+
+extern TTF_Font *ScoreFont;

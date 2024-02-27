@@ -1,6 +1,9 @@
 #include "Playing_field.h"
 #include <bits/stdc++.h>
-Well :: Well (int _x, int _y){
+Well :: Well (SDL_Renderer *renderer, int _x, int _y)
+:   score(renderer)
+{
+
     x = _x;
     y = _y;
     //marked no tetromino unites with well
@@ -68,6 +71,8 @@ void Well :: draw (SDL_Renderer *renderer)
 
     //draw border
     SDL_RenderDrawRect(renderer, &rect);
+
+    score.draw(renderer, *this, ScoreFont);
 }
 
 int Well :: get_x()
@@ -117,13 +122,16 @@ void Well :: Unite(Tetromino *t)
         }
     }
     bool sound = false;
+    int line = 0;
     for (int j = HEIGHT_CELLS - 1; j >= 0; j--){
         if (filled_line(j)){
             deleted_line(j);
+            line++;
             j++;
             sound = true;
         }
     }
+    score.set_score(40 * (line));
     if(sound) Mix_PlayChannel(-1, gNiceSoundEffect, 0);
 }
 
