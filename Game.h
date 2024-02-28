@@ -40,11 +40,15 @@ public:
     //close the game
     void close_game();
 
+    //draw game
     void display();
 
+    //if game is losed and not played
     bool is_paused();
 
+
 private:
+    //background
     LTexture background;
 
     //field to play
@@ -62,6 +66,7 @@ private:
     //return true if quit the game
     bool quit;
 
+    //lose game state and not play
     bool pause;
 } ;
 #endif

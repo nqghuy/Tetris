@@ -23,6 +23,8 @@ Tetromino ::~Tetromino(){}
 void Tetromino :: draw(SDL_Renderer *renderer, Well &well)
 {
     bool check = false;
+
+    //if tetromino is in hidden rows, do not draw
     for (int i = 0; i < TETRAD_SIZE; i++){
         if(!check){
             for (int j = 0; j < TETRAD_SIZE; j++){
@@ -62,13 +64,17 @@ void Tetromino :: draw(SDL_Renderer *renderer, Well &well)
 //rotate the tetromino by using next shape
 void Tetromino :: Rotate(Well &well)
 {
-
+    //used if not rotate
     bool old_shape[TETRAD_SIZE][TETRAD_SIZE];
     bool old_angle = angle;
+
+    //next shape
     angle++;
     if (angle == 4){
         angle = 0;
     }
+
+    //set new shape
     for (int i = 0; i < TETRAD_SIZE; i++){
         for (int j = 0; j < TETRAD_SIZE; j++){
             old_shape[i][j] = TetrominoShape[i][j];
@@ -76,6 +82,8 @@ void Tetromino :: Rotate(Well &well)
 
         }
     }
+
+    //if collision, do not rotate
     if (this->check_bottom_collision(well) || this->check_left_collision(well) || this->check_right_collision(well)){
         for (int i = 0; i < TETRAD_SIZE; i++){
             for (int j = 0; j < TETRAD_SIZE; j++){
@@ -88,9 +96,14 @@ void Tetromino :: Rotate(Well &well)
 
 void Tetromino :: Move(Well &well)
 {
+    //set new coordinate
     x_coordinate += VelX;
     y_coordinate += VelY;
+
+    //if go to last row
     bool finished = false;
+
+    //check collision
     while(this->check_left_collision(well) && VelX < 0){
         this->x_coordinate++;
         VelX++;
@@ -100,11 +113,15 @@ void Tetromino :: Move(Well &well)
         this->x_coordinate--;
         VelX--;
     }
+
+    //set finised true if go to last row
     if (this->check_bottom_collision(well))
     {
         this->y_coordinate--;
         finished = true;
     }
+
+    //Unite tetromino with well and set active
     if(finished){
         well.Unite(this);
         active = false;
@@ -223,6 +240,7 @@ bool Tetromino :: check_bottom_collision(Well &well)
                 int x = this->x_coordinate + j;
                 int y = this->y_coordinate + i;
 
+                //if collision
                 if (bottom >= HEIGHT_CELLS)
                 {
                     return true;
@@ -259,13 +277,20 @@ SDL_Color Tetromino :: get_color()
 
 bool Tetromino :: free_fall(Well &well)
 {
+    //fall
     this-y_coordinate++;
+
+    //marked if tetromino goes to the last row
     bool finised = false;
+
+    //well unite tetromino and set active
     if(this->check_bottom_collision(well)){
         y_coordinate--;
         well.Unite(this);
         active = false;
     }
+
+    //if bottom collision
     else if (this->check_bottom_collision(well) || this->check_left_collision(well)){
         y_coordinate--;
     }
@@ -276,6 +301,7 @@ bool Tetromino :: get_active()
     return active;
 }
 
+
 Tetro_Type Tetromino :: get_random_type()
 {
     Tetro_Type newType = Tetro_Type(rand() % 7);
@@ -284,4 +310,5 @@ Tetro_Type Tetromino :: get_random_type()
     }
     return newType;
 }
+
 

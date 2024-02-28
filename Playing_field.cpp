@@ -1,7 +1,8 @@
 #include "Playing_field.h"
 #include <bits/stdc++.h>
-Well :: Well (SDL_Renderer *renderer, int _x, int _y)
-:   score(renderer)
+
+Well :: Well (SDL_Renderer *renderer, int _x, int _y, int _topScore)
+:   score(renderer, _topScore)
 {
 
     x = _x;
@@ -30,14 +31,18 @@ Well :: ~Well()
 
 void Well :: draw (SDL_Renderer *renderer)
 {
+    wellFrame = gWellFrame;
+
     //black color
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
-    //the well rect
-    SDL_Rect rect = {x, y + HIDDEN_ROWS * TILE_SIZE, width, height - HIDDEN_ROWS * TILE_SIZE};
+//    //the well rect
+//    SDL_Rect rect = {x, y + HIDDEN_ROWS * TILE_SIZE, width, height - HIDDEN_ROWS * TILE_SIZE};
 
-    //fill well with black
-    SDL_RenderFillRect(renderer, &rect);
+    wellFrame.render(renderer, x - TILE_SIZE, y + TILE_SIZE);
+
+//    //fill well with black
+//    SDL_RenderFillRect(renderer, &rect);
 
     //white color
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
@@ -66,12 +71,6 @@ void Well :: draw (SDL_Renderer *renderer)
             SDL_RenderDrawPoint(renderer, i * TILE_SIZE + (SCREEN_WIDTH - width) / 2, j * TILE_SIZE + (SCREEN_HEIGHT - height) / 2);
         }
     }
-    //red color
-    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-
-    //draw border
-    SDL_RenderDrawRect(renderer, &rect);
-
     score.draw(renderer, *this, ScoreFont);
 }
 
@@ -121,8 +120,13 @@ void Well :: Unite(Tetromino *t)
             }
         }
     }
+    //play sound when delete line(s)
     bool sound = false;
+
+    //line count to get score
     int line = 0;
+
+
     for (int j = HEIGHT_CELLS - 1; j >= 0; j--){
         if (filled_line(j)){
             deleted_line(j);
@@ -131,7 +135,11 @@ void Well :: Unite(Tetromino *t)
             sound = true;
         }
     }
+
+    //set score
     score.set_score(40 * (line));
+
+    //play sound if....
     if(sound) Mix_PlayChannel(-1, gNiceSoundEffect, 0);
 }
 
@@ -171,4 +179,14 @@ bool Well :: get_lose()
 bool Well :: set_lose()
 {
     lose = true;
+}
+
+int Well :: get_top_score()
+{
+    return score.get_top_score();
+}
+
+int Well :: get_current_score()
+{
+    return score.get_current_score();
 }

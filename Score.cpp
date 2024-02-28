@@ -1,14 +1,11 @@
 #include "Score.h"
 #include <string>
 #include "Playing_field.h"
-Score :: Score(SDL_Renderer *renderer)
+
+Score :: Score(SDL_Renderer *renderer, int _topScore)
 {
-    topScore = 0;
+    topScore = _topScore;
     currentScore = 0;
-//    PromptCurrentScore.loadFromRenderedText(renderer, font, "SCORE", {0, 0, 0, 255});
-//    PromptTopScore.loadFromRenderedText(renderer, font, "TOP SCORE", {0, 0, 0, 255});
-//    currentScoreTexture.loadFromRenderedText(renderer, font, "0", {0, 255, 0, 255});
-//    topScoreTexture.loadFromRenderedText(renderer, font, "0", {0, 255, 0, 255});
 }
 
 void Score :: set_score(int addScore)
@@ -23,50 +20,68 @@ void Score :: set_top_score(int newTopScore)
 
 void Score :: draw(SDL_Renderer *renderer, Well &well, TTF_Font *scoreFont)
 {
-    if (!PromptCurrentScore.loadFromRenderedText(renderer, scoreFont, "SCORE", {0, 0, 0, 255}))
+    //load texture
+    if (!PromptCurrentScore.loadFromRenderedText(renderer, scoreFont, "SCORE", {255, 255, 255, 255}))
     {
         cout << "failed to load prompt current score\n";
     }
-    if (!PromptTopScore.loadFromRenderedText(renderer, scoreFont, "TOP SCORE", {0, 0, 0, 255}))
+    if (!PromptTopScore.loadFromRenderedText(renderer, scoreFont, "TOP SCORE", {255, 255, 255, 255}))
     {
         cout << "failed to load prompt top score\n";
     }
-    if(!currentScoreTexture.loadFromRenderedText(renderer, scoreFont, to_string(currentScore), {0, 255, 0, 255}))
+    if(!currentScoreTexture.loadFromRenderedText(renderer, scoreFont, to_string(currentScore), {255, 255, 255, 255}))
     {
         cout << "failed to load current score texture\n";
     }
 
-    if (!topScoreTexture.loadFromRenderedText(renderer, scoreFont, "0", {0, 255, 0, 255})){
+    if (!topScoreTexture.loadFromRenderedText(renderer, scoreFont, to_string(topScore), {255, 255, 255, 255})){
         cout << "failed to load top score texture\n";
     }
 
-    currentScoreTexture.loadFromRenderedText(renderer, scoreFont, to_string(currentScore), {0, 0, 0, 255});
-    SDL_Rect topScoreRect = {well.get_x() + 500, well.get_y(), 300, 300};
-    SDL_Rect currentScoreRect = {topScoreRect.x, topScoreRect.y + 300, 300, 300};
+    //draw top score frame
+    scoreFrame = gScoreFrame;
 
-    cout << topScoreRect.x << " " << topScoreRect.y << " " << topScoreRect.w << " " << topScoreRect.h << "\n";
+    //minimal the code
+    int x = well.get_width();
+    int y = well.get_y() + TILE_SIZE;
 
-    SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
-    SDL_RenderFillRect(renderer, &topScoreRect);
-    SDL_RenderFillRect(renderer, &currentScoreRect);
+    //draw frame
+    scoreFrame.render(renderer, x, y);
 
-    SDL_SetRenderDrawColor(renderer, 0, 200, 0, 255);
-    SDL_RenderDrawRect(renderer, &topScoreRect);
-    SDL_RenderDrawRect(renderer, &currentScoreRect);
+    //draw "TOP SCORE" and top score num
+    PromptTopScore.render(renderer, x + (scoreFrame.getWidth() - PromptTopScore.getWidth()) / 2, y + TILE_SIZE);
+    topScoreTexture.render(renderer, x + (scoreFrame.getWidth() - topScoreTexture.getWidth()) / 2, y + (scoreFrame.getHeight() - topScoreTexture.getHeight())/ 2);
 
-    PromptTopScore.render(renderer, topScoreRect.x + (topScoreRect.w - PromptTopScore.getWidth()) / 2, topScoreRect.y);
-    PromptCurrentScore.render(renderer, currentScoreRect.x + (currentScoreRect.w - PromptCurrentScore.getWidth()) / 2, currentScoreRect.y);
 
-    topScoreTexture.render(renderer, topScoreRect.x + (topScoreRect.w - PromptTopScore.getWidth()) / 2, topScoreRect.y + (topScoreRect.h - topScoreTexture.getHeight()) / 2) ;
-    currentScoreTexture.render(renderer, currentScoreRect. x + (currentScoreRect.w - currentScoreTexture.getWidth()) / 2, currentScoreRect.y + (currentScoreRect.h - currentScoreTexture.getHeight()) / 2 );
+    //set position for current score texture
+    y += scoreFrame.getHeight();
+
+    //draw current score frame
+    scoreFrame.render(renderer, x, y);
+
+    //draw "SCORE" and current score texture
+    PromptCurrentScore.render(renderer, x + (scoreFrame.getWidth() - PromptCurrentScore.getWidth()) / 2, y + TILE_SIZE);
+    currentScoreTexture.render(renderer, x + (scoreFrame.getWidth() - currentScoreTexture.getWidth()) / 2, y + (scoreFrame.getHeight() - currentScoreTexture.getHeight())/ 2);
+
 }
 
 Score :: ~Score()
 {
+    //free memory
+    scoreFrame.free();
     PromptCurrentScore.free();
     PromptTopScore.free();
     currentScoreTexture.free();
     topScoreTexture.free();
 }
 
+int Score :: get_top_score()
+{
+    return topScore;
+}
+
+int Score :: get_current_score()
+{
+    return currentScore;
+}
 

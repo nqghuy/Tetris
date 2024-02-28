@@ -1,6 +1,8 @@
 #include "Game.h"
 #include <iostream>
+#include <algorithm>
 using namespace std;
+
 Mix_Music *gPlayingMusic;
 
 Mix_Chunk *gNiceSoundEffect;
@@ -9,8 +11,13 @@ Mix_Chunk *gLoseSoundEffect;
 
 TTF_Font *ScoreFont;
 
+LTexture gWellFrame;
+
+LTexture gScoreFrame;
+
+
 game::game()
-    : well(renderer, (SCREEN_WIDTH - TILE_SIZE * WIDE_CELLS) / 2, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2),
+    : well(renderer, (SCREEN_WIDTH - TILE_SIZE * WIDE_CELLS) / 2, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2, 0),
       tetromino(Tetro_Type(rand() % 7), WIDE_CELLS / 2, 0),
       window(nullptr),
       renderer(nullptr),
@@ -89,10 +96,14 @@ bool game :: init(const char *title, int x, int y, int w, int h)
 bool game :: loadMedia()
 {
     bool success = true;
+
+    //load background
     if (!background.loadFromFile(renderer, "Assets/Pictures/background4.png")){
         cout << "failed to load background";
         success = false;
     }
+
+    //load music and sound effects
     gPlayingMusic = Mix_LoadMUS("Assets/Music/Music.mp3");
     if (gPlayingMusic == NULL){
         cout << "failed to load music\n";
@@ -108,9 +119,23 @@ bool game :: loadMedia()
         cout << "failed to load oh_oh sound effects";
         success = false;
     }
+
+    //load font
     ScoreFont = TTF_OpenFont("Assets/Font/montserrat/MontserratAlternates-Black.otf", 28);
     if (ScoreFont == NULL){
         cout << "failed to load font\n";
+        success = false;
+    }
+
+    //load frame
+    if(!gWellFrame.loadFromFile(renderer, "Assets/Pictures/frame.png"))
+    {
+        cout << "failed to load media\n";
+        success = false;
+    }
+    if (!gScoreFrame.loadFromFile(renderer, "Assets/Pictures/score_frame.png")){
+        cout << "failed to load score frame\n";
+        success = false;
     }
     return success;
 }
@@ -131,10 +156,12 @@ void game :: handleEvents()
     //after 1s, the tetromino will fall
     static int moveTime = SDL_GetTicks();
     currentTime = SDL_GetTicks();
-        if (currentTime > moveTime){
-            moveTime += 1000;
-            tetromino.free_fall(well);
-        }
+
+    //free fall
+    if (currentTime > moveTime){
+        moveTime += 1000;
+        tetromino.free_fall(well);
+    }
     while (SDL_PollEvent(&e))
     {
         if (e.type == SDL_QUIT){
@@ -147,23 +174,35 @@ void game :: handleEvents()
                 tetromino.Move(well);
             }
         }
-        else{
+        else{//if lose, press enter to reset game, get top score
             if (e.type == SDL_KEYDOWN && e.key.repeat == 0 && e.key.keysym.sym == SDLK_RETURN){
-                well = Well(renderer, (SCREEN_WIDTH - TILE_SIZE * WIDE_CELLS) / 2, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2);
+                //new top score
+                int _topScore = max(well.get_current_score(), well.get_top_score());
+
+                //reset well
+                well = Well(renderer, (SCREEN_WIDTH - TILE_SIZE * WIDE_CELLS) / 2, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2, _topScore);
+
+                //reset tetromino
                 tetromino = Tetromino(tetromino.get_random_type(), WIDE_CELLS / 2, 0);
             }
         }
     }
 
+    //draw
     display();
     if (!is_paused()){
+        //if the tetromino is finised
         if (!tetromino.get_active()){
+            //new tetrimino
             tetromino = Tetromino(tetromino.get_random_type(), WIDE_CELLS / 2, 0);
-            moveTime += 1000;
+
+            //if lose game
             if (tetromino.check_bottom_collision(well)){
                 well.set_lose();
                 Mix_PlayChannel(-1, gLoseSoundEffect, 0);
             }
+
+            //remove all before events
             SDL_FlushEvents(SDL_USEREVENT, SDL_LASTEVENT);
         }
 

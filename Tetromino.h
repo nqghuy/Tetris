@@ -218,6 +218,7 @@ public:
     //get active
     bool get_active();
 
+    //decrease the percentage of two similar tetrads
     Tetro_Type get_random_type();
 private:
     //false if cannot move down

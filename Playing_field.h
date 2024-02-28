@@ -9,7 +9,7 @@ class Well
 {
 public:
     //constructor
-    Well(SDL_Renderer *renderer, int _x, int _y);
+    Well(SDL_Renderer *renderer, int _x, int _y, int _topScore);
 
     //destructor
     ~Well();
@@ -38,12 +38,25 @@ public:
     //check if a row is filled
     bool filled_line(int line);
 
+    //deleted filled line
     void deleted_line(int line);
 
+    //true if lose
     bool get_lose();
 
+    //set game lose
     bool set_lose();
+
+    //get top score
+    int get_top_score();
+
+    //get current score
+    int get_current_score();
 private:
+    //brick well frame
+    LTexture wellFrame;
+
+    //current and top score
     Score score;
 
     //the dimension of the well
@@ -59,6 +72,7 @@ private:
     //the color corresponding to each cell
     SDL_Color cell_colors[WIDE_CELLS][HEIGHT_CELLS];
 
+    //cannot play
     bool lose;
 };
 
