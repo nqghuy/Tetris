@@ -62,8 +62,8 @@ static bool tetromino_shape[TOTAL_OF_BLOCKS * 4][TETRAD_SIZE][TETRAD_SIZE] =
     {0, 0, 1, 0},
     {0, 0, 0, 0}},
 
-    {{1, 0, 0, 0},
-    {1, 0, 0, 0},
+    {{0, 1, 0, 0},
+    {0, 1, 0, 0},
     {1, 1, 0, 0},
     {0, 0, 0, 0}},
 

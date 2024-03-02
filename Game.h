@@ -10,18 +10,18 @@
 #include "Tetromino.h"
 #include "Texture.h"
 #include <SDL_mixer.h>
-
+#include "Menu.h"
 using namespace std;
 
 //used to operate the game
-class game
+class Game
 {
 public:
     //constructor
-    game();
+    Game(SDL_Renderer *renderer);
 
     //destructor
-    ~game();
+    ~Game();
 
     //initialize SDL and create the window
     bool init(const char *title, int x, int y, int w, int h);
@@ -30,7 +30,7 @@ public:
     bool running();
 
     //handle events from queue
-    void handleEvents();
+    void handleEvents(SDL_Renderer *renderer, SDL_Event &e);
 
     //load background and music
     bool loadMedia();
@@ -41,27 +41,19 @@ public:
     void close_game();
 
     //draw game
-    void display();
+    void display(SDL_Renderer *renderer);
 
     //if game is losed and not played
     bool is_paused();
 
+    void set_active();
 
 private:
-    //background
-    LTexture background;
-
     //field to play
     Well well ;
 
     //tetromino will be controlled
     Tetromino tetromino;
-
-    //the window for the game
-    SDL_Window *window;
-
-    //the renderer for the window
-    SDL_Renderer *renderer;
 
     //return true if quit the game
     bool quit;

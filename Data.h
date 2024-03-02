@@ -38,3 +38,4 @@ extern TTF_Font *ScoreFont;
 extern LTexture gWellFrame;
 
 extern LTexture gScoreFrame;
+

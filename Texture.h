@@ -5,7 +5,9 @@
 #include <SDL_ttf.h>
 #include <iostream>
 #include <string>
+
 using namespace std;
+
 class LTexture
 {
 private:
@@ -25,7 +27,7 @@ public:
     //load image from file
     bool loadFromFile(SDL_Renderer *renderer, string file);
 
-//    //create image from font string
+    //create image from font string
     bool loadFromRenderedText(SDL_Renderer *renderer, TTF_Font *font, string textTexture, SDL_Color);
 
     //render texture at given point
