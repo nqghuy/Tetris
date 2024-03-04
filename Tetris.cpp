@@ -28,6 +28,7 @@ Tetris :: ~Tetris()
     renderer = NULL;
     game = NULL;
     menu = NULL;
+    background.free();
 }
 
 bool Tetris :: init(const char *title, int x, int y, int w, int h)
@@ -168,6 +169,7 @@ void Tetris :: handle_events()
             game->handleEvents(renderer, e);
         }
     }
+    
     if (!menu->get_active()){
         game->set_active();
     }
@@ -179,13 +181,38 @@ void Tetris :: display()
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderClear(renderer);
 
+    //show background
     background.render(renderer, 0, 0);
+
+    //if not play, show menu
     if (menu->get_active()){
         menu->display(renderer);
     }
+    
+    //else show game
     else game->display(renderer);
+
+    //present into screen
     SDL_RenderPresent(renderer);
 }
 
+void Tetris :: close_game(){
+    gPlayingMusic = NULL;
+    gNiceSoundEffect = NULL;
+    gLoseSoundEffect = NULL;
+    ScoreFont = NULL;
+    Mix_FreeMusic(gPlayingMusic);
+    Mix_FreeChunk(gNiceSoundEffect);
+    Mix_FreeChunk(gLoseSoundEffect);
+    gWellFrame.free();
+    gScoreFrame.free();
+
+    SDL_DestroyRenderer( renderer );
+	SDL_DestroyWindow( window );
+	TTF_Quit();
+	IMG_Quit();
+	Mix_Quit();
+	SDL_Quit();
+}
 
 

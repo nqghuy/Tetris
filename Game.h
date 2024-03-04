@@ -35,6 +35,7 @@ public:
     //load background and music
     bool loadMedia();
 
+    //play music during the game
     void play_music();
 
     //close the game

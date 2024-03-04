@@ -13,6 +13,7 @@ int main(int argc, char *argv[])
     //use to random type of tetromino
     srand(time(0));
 
+    //new tetris game
     Tetris *tetris = new Tetris;
 
     //check if initialize false

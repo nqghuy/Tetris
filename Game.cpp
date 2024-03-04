@@ -9,14 +9,7 @@ Game::Game(SDL_Renderer *renderer)
       quit(true){
 }
 
-Game :: ~Game()
-{
-//
-//    SDL_DestroyWindow(window);
-//    SDL_DestroyRenderer(renderer);
-//    window = NULL;
-//    renderer = NULL;
-}
+Game :: ~Game(){}
 
 bool Game :: running()
 {
@@ -25,18 +18,6 @@ bool Game :: running()
 
 void Game :: handleEvents(SDL_Renderer *renderer, SDL_Event &e)
 {
-    //current time
-    int currentTime;
-
-    //after 1s, the tetromino will fall
-    static int moveTime = SDL_GetTicks();
-    currentTime = SDL_GetTicks();
-
-    //free fall
-    if (currentTime > moveTime){
-        moveTime += 1000;
-        tetromino.free_fall(well);
-    }
 
     //handle tetromino
     if (!is_paused()){
@@ -94,6 +75,19 @@ void Game :: close_game()
 
 void Game :: display(SDL_Renderer *renderer)
 {
+    //current time
+    int currentTime;
+
+    //after 1s, the tetromino will fall
+    static int moveTime = SDL_GetTicks();
+    currentTime = SDL_GetTicks();
+
+    //free fall
+    if (currentTime > moveTime){
+        moveTime += 1000;
+        tetromino.free_fall(well);
+    }
+
     //draw well and tetromino
     well.draw(renderer);
 
