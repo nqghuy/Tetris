@@ -1,7 +1,7 @@
 #ifndef Playing_field_h
 #define Playing_field_h
 
-#include <SDL.h>
+#include "include/SDL2/SDL.h"
 #include "Tetromino.h"
 #include "Data.h"
 #include "Score.h"

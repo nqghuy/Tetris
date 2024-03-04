@@ -1,7 +1,7 @@
 #pragma once
 #include "Data.h"
 #include "Texture.h"
-#include <SDL.h>
+#include "include/SDL2/SDL.h"
 
 class Menu
 {

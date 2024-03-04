@@ -1,15 +1,15 @@
 #ifndef Game_h
 #define Game_h
 
-#include <SDL.h>
-#include <SDL_image.h>
-#include <SDL_mixer.h>
-#include <SDL_ttf.h>
+#include "include/SDL2/SDL.h"
+#include "include/SDL2/SDL_image.h"
+#include "include/SDL2/SDL_mixer.h"
+#include "include/SDL2/SDL_ttf.h"
 #include <iostream>
 #include "Playing_field.h"
 #include "Tetromino.h"
 #include "Texture.h"
-#include <SDL_mixer.h>
+#include "include/SDL2/SDL_mixer.h"
 #include "Menu.h"
 using namespace std;
 

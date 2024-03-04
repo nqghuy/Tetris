@@ -1,6 +1,6 @@
 #pragma once
-#include <SDL_mixer.h>
-#include <SDL_ttf.h>
+#include "include/SDL2/SDL_mixer.h"
+#include "include/SDL2/SDL_ttf.h"
 #include "Texture.h"
 
 //the size of a tile(block)

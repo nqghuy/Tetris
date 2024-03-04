@@ -1,7 +1,7 @@
 #ifndef Tetromino_h
 #define Tetromino_h
 #include "Data.h"
-#include <SDL.h>
+#include "include/SDL2/SDL.h"
 
 //avoid circular dependencies
 class Well;
