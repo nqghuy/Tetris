@@ -242,6 +242,7 @@ private:
     //the shape matrix (true if is is a block
     bool TetrominoShape[TETRAD_SIZE][TETRAD_SIZE];
 
+    void drop(Well &well);
 };
 
 #endif // Tetromino_h

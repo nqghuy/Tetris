@@ -152,7 +152,11 @@ void Tetromino :: handle_events(SDL_Event &e, Well &well){
         case SDLK_LEFT:
             this->VelX--;
             break;
+        case SDLK_SPACE:
+            this->drop(well);
+            break;
         }
+        
     }
     //when player release a key
     else if (e.type == SDL_KEYUP && e.key.repeat == 0){
@@ -311,4 +315,12 @@ Tetro_Type Tetromino :: get_random_type()
     return newType;
 }
 
+void Tetromino :: drop(Well &well){
+    while(!this->check_bottom_collision(well)){
+        y_coordinate++;
+    }
+    // y_coordinate--;
+    // well.Unite(this);
+    // active = false;
+}
 
