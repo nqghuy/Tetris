@@ -8,9 +8,15 @@ Mix_Chunk *gLoseSoundEffect;
 
 TTF_Font *ScoreFont;
 
+LTexture gScoreFrame;
+
 LTexture gWellFrame;
 
-LTexture gScoreFrame;
+LTexture gLoseBackground;
+
+LTexture gReplayButton;
+
+LTexture gHomeButton;
 
 Tetris :: Tetris()
 {
@@ -99,6 +105,19 @@ bool Tetris :: load_media()
         cout << "failed to load background";
         success = false;
     }
+    
+    if(!gLoseBackground.loadFromFile(renderer, "Assets/Pictures/lose.jpg")){
+        cout << "failed to load lose texture\n";
+        success = false;
+    }
+
+    if(!gReplayButton.loadFromFile(renderer, "Assets/Pictures/replayButton.jpg")){
+        cout << "failed to load button texture\n";
+        success = false;
+    }
+    if(!gHomeButton.loadFromFile(renderer, "Assets/Pictures/home.png")){
+        cout << "failed to load home button\n";
+    }
 
     //load music and sound effects
     gPlayingMusic = Mix_LoadMUS("Assets/Music/Music.mp3");
@@ -157,6 +176,8 @@ void Tetris :: handle_events()
     //event to be handled
     SDL_Event e;
 
+    bool playing = game->running();
+
     while (SDL_PollEvent(&e))
     {
         if (e.type == SDL_QUIT){
@@ -170,8 +191,13 @@ void Tetris :: handle_events()
         }
     }
     
-    if (!menu->get_active()){
+    if (!menu->get_active() && !playing){
+        game = new Game(renderer);
         game->set_active();
+    }
+
+    if(!game->running()){
+        menu->set_active();
     }
 }
 
@@ -188,7 +214,7 @@ void Tetris :: display()
     if (menu->get_active()){
         menu->display(renderer);
     }
-    
+
     //else show game
     else game->display(renderer);
 

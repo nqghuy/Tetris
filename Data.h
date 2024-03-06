@@ -39,3 +39,9 @@ extern LTexture gWellFrame;
 
 extern LTexture gScoreFrame;
 
+extern LTexture gLoseBackground;
+
+extern LTexture gReplayButton;
+
+extern LTexture gHomeButton;
+

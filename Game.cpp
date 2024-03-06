@@ -27,7 +27,7 @@ void Game :: handleEvents(SDL_Renderer *renderer, SDL_Event &e)
         }
     }
     else{//if lose, press enter to reset game, get top score
-        if (e.type == SDL_KEYDOWN && e.key.repeat == 0 && e.key.keysym.sym == SDLK_RETURN){
+        if (well.press_play_again(e)){
             //new top score
             int _topScore = max(well.get_current_score(), well.get_top_score());
 
@@ -36,6 +36,9 @@ void Game :: handleEvents(SDL_Renderer *renderer, SDL_Event &e)
 
             //reset tetromino
             tetromino = Tetromino(tetromino.get_random_type(), WIDE_CELLS / 2 - 1, 0);
+        }
+        else if(well.return_home(e)){
+            quit = true;
         }
     }
 
@@ -73,6 +76,8 @@ void Game :: close_game()
     IMG_Quit();
 }
 
+
+
 void Game :: display(SDL_Renderer *renderer)
 {
     //current time
@@ -94,6 +99,9 @@ void Game :: display(SDL_Renderer *renderer)
     if (!well.get_lose()){
         tetromino.draw(renderer, well);
     }
+    else{
+        well.draw_lose_background(renderer);
+    }
 
     //display on the screen
     SDL_RenderPresent(renderer);
@@ -107,5 +115,6 @@ bool Game :: is_paused()
 void Game :: set_active()
 {
     quit = false;
+    
 }
 

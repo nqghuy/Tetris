@@ -19,6 +19,8 @@ Well :: Well (SDL_Renderer *renderer, int _x, int _y, int _topScore)
     lose = false;
 };
 
+int Well :: buttonDistance = 100;
+
 Well :: ~Well()
 {
     memset(matrix, 0, sizeof(matrix));
@@ -32,17 +34,20 @@ Well :: ~Well()
 void Well :: draw (SDL_Renderer *renderer)
 {
     wellFrame = gWellFrame;
-
+    loseBackground = gLoseBackground;
+    replayButton = gReplayButton;
+    homeButton = gHomeButton;
+    
     //black color
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
-//    //the well rect
-//    SDL_Rect rect = {x, y + HIDDEN_ROWS * TILE_SIZE, width, height - HIDDEN_ROWS * TILE_SIZE};
+   //the well rect
+   SDL_Rect rect = {x, y + HIDDEN_ROWS * TILE_SIZE, width, height - HIDDEN_ROWS * TILE_SIZE};
 
     wellFrame.render(renderer, x - TILE_SIZE, y + TILE_SIZE);
 
-//    //fill well with black
-//    SDL_RenderFillRect(renderer, &rect);
+   //fill well with black
+   SDL_RenderFillRect(renderer, &rect);
 
     //white color
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
@@ -72,6 +77,10 @@ void Well :: draw (SDL_Renderer *renderer)
         }
     }
     score.draw(renderer, *this, ScoreFont);
+
+    if(this->lose == true){
+        this->draw_lose_background(renderer);
+    }
 }
 
 int Well :: get_x()
@@ -189,4 +198,37 @@ int Well :: get_top_score()
 int Well :: get_current_score()
 {
     return score.get_current_score();
+}
+
+void Well :: draw_lose_background(SDL_Renderer *renderer){
+    loseBackground.render(renderer, (SCREEN_WIDTH - loseBackground.getWidth()) / 2, (SCREEN_HEIGHT - loseBackground.getHeight()) / 2);
+    replayButton.render(renderer, (SCREEN_WIDTH - replayButton.getWidth()) / 2, (SCREEN_HEIGHT - replayButton.getHeight()) / 2 + buttonDistance);
+
+    homeButton.render(renderer, (SCREEN_WIDTH - replayButton.getWidth()) / 2 - buttonDistance, (SCREEN_HEIGHT - replayButton.getHeight()) / 2 + buttonDistance);
+}
+
+bool Well :: press_play_again(SDL_Event &e){
+    int x, y;
+    SDL_GetMouseState(&x, &y);
+    
+    int replayButton_x = (SCREEN_WIDTH - replayButton.getWidth()) / 2;
+    int replayButton_y = (SCREEN_HEIGHT - replayButton.getHeight()) / 2 + buttonDistance;
+
+    if (e.type == SDL_MOUSEBUTTONDOWN && x >= replayButton_x && x <= replayButton_x + replayButton.getWidth() && y >= replayButton_y && y <= replayButton_y + replayButton.getHeight()){
+        return true;
+    }
+    return false;
+}
+
+bool Well :: return_home(SDL_Event &e){
+    int x, y;
+    SDL_GetMouseState(&x, &y);
+    
+    int homeButton_x = (SCREEN_WIDTH - replayButton.getWidth()) / 2 - buttonDistance;
+    int homeButton_y = (SCREEN_HEIGHT - homeButton.getHeight()) / 2 + buttonDistance;
+
+    if (e.type == SDL_MOUSEBUTTONDOWN && x >= homeButton_x && x <= homeButton_x + homeButton.getWidth() && y >= homeButton_y && y <= homeButton_y + homeButton.getHeight()){
+        return true;
+    }
+    return false;
 }

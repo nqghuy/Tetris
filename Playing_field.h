@@ -14,6 +14,8 @@ public:
     //destructor
     ~Well();
 
+    void load_media(SDL_Renderer *renderer);
+
     //draw the well in the screen
     void draw(SDL_Renderer *renderer);
 
@@ -52,9 +54,24 @@ public:
 
     //get current score
     int get_current_score();
+
+    void draw_lose_background(SDL_Renderer *renderer);
+
+    bool press_play_again(SDL_Event &e);
+
+    bool return_home(SDL_Event &e);
+
+    static int buttonDistance;
+
 private:
     //brick well frame
     LTexture wellFrame;
+
+    LTexture loseBackground;
+
+    LTexture replayButton;
+
+    LTexture homeButton;
 
     //current and top score
     Score score;

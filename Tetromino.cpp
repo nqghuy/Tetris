@@ -319,6 +319,8 @@ void Tetromino :: drop(Well &well){
     while(!this->check_bottom_collision(well)){
         y_coordinate++;
     }
+    VelX = 0;
+    VelY = 0;
     // y_coordinate--;
     // well.Unite(this);
     // active = false;

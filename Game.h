@@ -32,9 +32,6 @@ public:
     //handle events from queue
     void handleEvents(SDL_Renderer *renderer, SDL_Event &e);
 
-    //load background and music
-    bool loadMedia();
-
     //play music during the game
     void play_music();
 
