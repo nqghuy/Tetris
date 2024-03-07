@@ -18,7 +18,7 @@ class Game
 {
 public:
     //constructor
-    Game(SDL_Renderer *renderer);
+    Game(SDL_Renderer *renderer, GameMode _gameMode = SinglePlay);
 
     //destructor
     ~Game();
@@ -47,6 +47,8 @@ public:
     void set_active();
 
 private:
+    GameMode gameMode;
+
     //field to play
     Well well ;
 

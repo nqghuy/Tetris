@@ -19,7 +19,9 @@ public:
     void display(SDL_Renderer *renderer);
 
     //handle event
-    void handle_event(SDL_Event &e);
+    bool click_play(SDL_Event &e);
+
+    bool click_battle(SDL_Event &e);
 
     //if we are in menu
     bool get_active();
@@ -32,6 +34,9 @@ private:
 
     //play button texture
     LTexture PlayButton;
+
+    //battle button texture
+    LTexture BattleButton;
 
     //true if we are in menu
     bool active;

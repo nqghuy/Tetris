@@ -100,6 +100,7 @@ void Tetromino :: Move(Well &well)
     x_coordinate += VelX;
     y_coordinate += VelY;
 
+
     //if go to last row
     bool finished = false;
 
@@ -126,9 +127,10 @@ void Tetromino :: Move(Well &well)
         well.Unite(this);
         active = false;
     }
+
 }
 
-void Tetromino :: handle_events(SDL_Event &e, Well &well){
+void Tetromino :: handle_event2(SDL_Event &e, Well &well){
     //when player is pressing a key
     if(e.type == SDL_KEYDOWN && e.key.repeat == 0){
         switch (e.key.keysym.sym)
@@ -152,11 +154,11 @@ void Tetromino :: handle_events(SDL_Event &e, Well &well){
         case SDLK_LEFT:
             this->VelX--;
             break;
-        case SDLK_SPACE:
+        
+        case SDLK_RETURN:
             this->drop(well);
             break;
         }
-        
     }
     //when player release a key
     else if (e.type == SDL_KEYUP && e.key.repeat == 0){
@@ -178,6 +180,67 @@ void Tetromino :: handle_events(SDL_Event &e, Well &well){
                 }
                 break;
         }
+    }
+}
+
+void Tetromino :: handle_event1(SDL_Event &e, Well &well){
+    //when player is pressing a key
+    if(e.type == SDL_KEYDOWN && e.key.repeat == 0){
+        switch (e.key.keysym.sym)
+        {
+        //key up: rotate
+        case SDLK_w:
+            this->Rotate(well);
+            break;
+
+        //key down: increase y velocity
+        case SDLK_s:
+            this->VelY++;
+            break;
+
+        //key right: increase x velocity
+        case SDLK_d:
+            this->VelX++;
+            break;
+
+        //key left: decrease x veloity
+        case SDLK_a:
+            this->VelX--;
+            break;
+        case SDLK_SPACE:
+            this->drop(well);
+            break;
+        }
+    }
+    //when player release a key
+    else if (e.type == SDL_KEYUP && e.key.repeat == 0){
+        switch (e.key.keysym.sym){
+            //opposite to pressing a key
+            case (SDLK_s):
+                if(VelY != 0){
+                    VelY--;
+                }
+                break;
+            case SDLK_d:
+                if (VelX != 0){
+                    VelX--;
+                }
+                break;
+            case SDLK_a:
+                if (VelX != 0){
+                    VelX++;
+                }
+                break;
+        }
+    }
+}
+
+void Tetromino :: handle_events(SDL_Event &e, Well &well, GameMode gameMode){
+    if (gameMode == SinglePlay || gameMode == Player1){
+        handle_event1(e, well);
+    }
+    else{
+        handle_event2(e, well);
     }
 }
 
@@ -282,7 +345,7 @@ SDL_Color Tetromino :: get_color()
 bool Tetromino :: free_fall(Well &well)
 {
     //fall
-    this-y_coordinate++;
+    this->y_coordinate++;
 
     //marked if tetromino goes to the last row
     bool finised = false;

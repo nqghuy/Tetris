@@ -3,10 +3,19 @@
 #include <algorithm>
 using namespace std;
 
-Game::Game(SDL_Renderer *renderer)
-    : well(renderer, (SCREEN_WIDTH - TILE_SIZE * WIDE_CELLS) / 2 - 1, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2, 0),
-      tetromino(Tetro_Type(rand() % 7), WIDE_CELLS / 2, 0),
-      quit(true){
+Game::Game(SDL_Renderer *renderer, GameMode _gameMode)
+    :
+      tetromino(Tetro_Type(rand() % 7), WIDE_CELLS / 2, 0), quit(true),
+      well(renderer, (SCREEN_WIDTH - TILE_SIZE * WIDE_CELLS) / 2, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2, 0)
+
+      {
+        gameMode = _gameMode;
+        if (_gameMode == Player1){
+            well = Well(renderer, (SCREEN_WIDTH - TILE_SIZE * WIDE_CELLS) / 2 - TILE_SIZE * WIDE_CELLS, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2, 0);
+        }
+        else if (_gameMode == Player2){
+            well = Well(renderer, (SCREEN_WIDTH - TILE_SIZE * WIDE_CELLS) / 2 + TILE_SIZE * WIDE_CELLS, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2, 0);
+        }
 }
 
 Game :: ~Game(){}
@@ -22,7 +31,7 @@ void Game :: handleEvents(SDL_Renderer *renderer, SDL_Event &e)
     //handle tetromino
     if (!is_paused()){
         if(tetromino.get_active()){
-            tetromino.handle_events(e, well);
+            tetromino.handle_events(e, well, gameMode);
             tetromino.Move(well);
         }
     }

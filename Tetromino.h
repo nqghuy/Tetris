@@ -192,8 +192,12 @@ public:
     //move down, left and right and check collision
     void Move(Well &well);
 
+    void handle_event1(SDL_Event &e, Well &well);
+
+    void handle_event2(SDL_Event &e, Well &well);
+
     //handle event e
-    void handle_events(SDL_Event &e, Well &well);
+    void handle_events(SDL_Event &e, Well &well, GameMode gameMode);
 
     //check if coordinate x, y is one of the part of the shape
     bool isBlock(int x, int y);

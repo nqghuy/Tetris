@@ -2,6 +2,7 @@
 
 #include "Game.h"
 #include "Menu.h"
+#include "Battle.h"
 
 class Tetris
 {
@@ -45,6 +46,8 @@ private:
 
     //game to play
     Game *game;
+
+    Battle *battle;
 
     //menu before playing
     Menu *menu;

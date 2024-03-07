@@ -45,3 +45,9 @@ extern LTexture gReplayButton;
 
 extern LTexture gHomeButton;
 
+enum GameMode{
+     SinglePlay,
+     Player1,
+     Player2
+};
+

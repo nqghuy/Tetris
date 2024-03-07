@@ -17,7 +17,7 @@ public:
     void load_media(SDL_Renderer *renderer);
 
     //draw the well in the screen
-    void draw(SDL_Renderer *renderer);
+    void draw(SDL_Renderer *renderer, GameMode gameMode = SinglePlay);
 
     //get the coordinate of the well rect
     int get_x();
@@ -64,15 +64,6 @@ public:
     static int buttonDistance;
 
 private:
-    //brick well frame
-    LTexture wellFrame;
-
-    LTexture loseBackground;
-
-    LTexture replayButton;
-
-    LTexture homeButton;
-
     //current and top score
     Score score;
 

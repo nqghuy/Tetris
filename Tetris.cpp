@@ -23,8 +23,9 @@ Tetris :: Tetris()
     window = NULL;
     renderer = NULL;
     renderer = NULL;
-    game = new Game(renderer);
+    game = new Game(renderer, SinglePlay);
     menu = new Menu;
+    battle = new Battle(renderer);
     quit = false;
 }
 
@@ -176,7 +177,7 @@ void Tetris :: handle_events()
     //event to be handled
     SDL_Event e;
 
-    bool playing = game->running();
+    bool playing = game->running() ;
 
     while (SDL_PollEvent(&e))
     {
@@ -184,21 +185,31 @@ void Tetris :: handle_events()
             quit = true;
         }
         if (menu->get_active()){
-            menu->handle_event(e);
+            if(menu->click_play(e)){
+                game->set_active();
+            }
+            else if(menu->click_battle(e)){
+                battle->set_active();
+            }
         }
-        else{
+        else if (game->running()){
             game->handleEvents(renderer, e);
+            if(!game->running()){
+                menu->set_active();
+                game = new Game (renderer);
+            }
         }
+        else (battle->handle_event(renderer, e));
     }
     
-    if (!menu->get_active() && !playing){
-        game = new Game(renderer);
-        game->set_active();
-    }
+    // if (!menu->get_active() && !playing){
+    //     game = new Game(renderer);
+    //     game->set_active();
+    // }
 
-    if(!game->running()){
-        menu->set_active();
-    }
+    // if(!game->running() && !battle->get_active()){
+    //     menu->set_active();
+    // }
 }
 
 void Tetris :: display()
@@ -216,7 +227,11 @@ void Tetris :: display()
     }
 
     //else show game
-    else game->display(renderer);
+    else if(game->running()) {
+        game->display(renderer);
+    }
+
+    else battle->display(renderer);
 
     //present into screen
     SDL_RenderPresent(renderer);
