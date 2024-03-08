@@ -199,7 +199,13 @@ void Tetris :: handle_events()
                 game = new Game (renderer);
             }
         }
-        else (battle->handle_event(renderer, e));
+        else {
+            battle->handle_event(renderer, e);
+            if (!battle->get_active()){
+                menu->set_active();
+                battle = new Battle(renderer);
+            }
+        }
     }
     
     // if (!menu->get_active() && !playing){

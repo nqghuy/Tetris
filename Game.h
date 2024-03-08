@@ -60,5 +60,7 @@ private:
 
     //lose game state and not play
     bool pause;
+
+    int moveTime;
 } ;
 #endif

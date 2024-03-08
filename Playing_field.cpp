@@ -46,6 +46,7 @@ void Well :: draw (SDL_Renderer *renderer, GameMode gameMode)
 
     //white color
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    
     for (int i = 0; i < WIDE_CELLS; i++){
         for (int j = HIDDEN_ROWS; j < HEIGHT_CELLS; j++){
             //if there is a tetromino uniting with the well
@@ -57,7 +58,7 @@ void Well :: draw (SDL_Renderer *renderer, GameMode gameMode)
                 SDL_SetRenderDrawColor(renderer, curColor.r, curColor. g, curColor.b, 255);
 
                 //the rect of each tile
-                SDL_Rect tileRect = {this->get_x() + i * TILE_SIZE, this->get_y() + j * TILE_SIZE, TILE_SIZE, TILE_SIZE};
+                SDL_Rect tileRect = {x + i * TILE_SIZE, y + j * TILE_SIZE, TILE_SIZE, TILE_SIZE};
 
                 //file rect
                 SDL_RenderFillRect(renderer, &tileRect);
@@ -68,7 +69,7 @@ void Well :: draw (SDL_Renderer *renderer, GameMode gameMode)
             }
             //draw white point
             SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-            SDL_RenderDrawPoint(renderer, i * TILE_SIZE + (SCREEN_WIDTH - width) / 2, j * TILE_SIZE + (SCREEN_HEIGHT - height) / 2);
+            SDL_RenderDrawPoint(renderer, i * TILE_SIZE + x, j * TILE_SIZE + y);
         }
     }
     score.draw(renderer, *this, ScoreFont);
@@ -80,12 +81,12 @@ void Well :: draw (SDL_Renderer *renderer, GameMode gameMode)
 
 int Well :: get_x()
 {
-    return (SCREEN_WIDTH - width) / 2;
+    return x;
 }
 
 int Well :: get_y()
 {
-    return (SCREEN_HEIGHT - height) / 2;
+    return y;
 }
 
 int Well :: get_width()
@@ -100,12 +101,12 @@ int Well :: get_height()
 
 int Well :: get_pos_x(int PosX)
 {
-    return this->get_x() + PosX * TILE_SIZE;
+    return x + PosX * TILE_SIZE;
 }
 
 int Well :: get_pos_y(int PosY)
 {
-    return this->get_y() + PosY * TILE_SIZE;
+    return y + PosY * TILE_SIZE;
 }
 
 void Well :: Unite(Tetromino *t)

@@ -19,6 +19,8 @@ bool Battle :: get_active(){
 
 void Battle :: set_active(){
      active = true;
+     player1->set_active();
+     player2->set_active();
 }
 
 void Battle :: handle_event(SDL_Renderer *renderer, SDL_Event &e){
@@ -30,7 +32,7 @@ void Battle :: handle_event(SDL_Renderer *renderer, SDL_Event &e){
 }
 
 void Battle :: display(SDL_Renderer *renderer){
-     player1->display(renderer);
      player2->display(renderer);
+     player1->display(renderer);
 }
 

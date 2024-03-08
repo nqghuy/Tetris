@@ -10,8 +10,9 @@ Game::Game(SDL_Renderer *renderer, GameMode _gameMode)
 
       {
         gameMode = _gameMode;
+        moveTime = SDL_GetTicks();
         if (_gameMode == Player1){
-            well = Well(renderer, (SCREEN_WIDTH - TILE_SIZE * WIDE_CELLS) / 2 - TILE_SIZE * WIDE_CELLS, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2, 0);
+            well = Well(renderer, (SCREEN_WIDTH - TILE_SIZE * WIDE_CELLS) / 2 - TILE_SIZE * WIDE_CELLS , (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2, 0);
         }
         else if (_gameMode == Player2){
             well = Well(renderer, (SCREEN_WIDTH - TILE_SIZE * WIDE_CELLS) / 2 + TILE_SIZE * WIDE_CELLS, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2, 0);
@@ -41,7 +42,7 @@ void Game :: handleEvents(SDL_Renderer *renderer, SDL_Event &e)
             int _topScore = max(well.get_current_score(), well.get_top_score());
 
             //reset well
-            well = Well(renderer, (SCREEN_WIDTH - TILE_SIZE * WIDE_CELLS) / 2, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2, _topScore);
+            well = Well(renderer, well.get_x(), well.get_y(), _topScore);
 
             //reset tetromino
             tetromino = Tetromino(tetromino.get_random_type(), WIDE_CELLS / 2 - 1, 0);
@@ -93,7 +94,6 @@ void Game :: display(SDL_Renderer *renderer)
     int currentTime;
 
     //after 1s, the tetromino will fall
-    static int moveTime = SDL_GetTicks();
     currentTime = SDL_GetTicks();
 
     //free fall
@@ -103,7 +103,7 @@ void Game :: display(SDL_Renderer *renderer)
     }
 
     //draw well and tetromino
-    well.draw(renderer);
+    well.draw(renderer, gameMode);
 
     if (!well.get_lose()){
         tetromino.draw(renderer, well);
@@ -111,9 +111,6 @@ void Game :: display(SDL_Renderer *renderer)
     else{
         well.draw_lose_background(renderer);
     }
-
-    //display on the screen
-    SDL_RenderPresent(renderer);
 }
 
 bool Game :: is_paused()

@@ -17,7 +17,7 @@ const int HIDDEN_ROWS = 2;
 
 //screen dimensions
 const int SCREEN_HEIGHT = 900;
-const int SCREEN_WIDTH = 1420;
+const int SCREEN_WIDTH = 1520;
 
 //the number of tile in a tile shape matrix
 const int TETRAD_SIZE = 4;
