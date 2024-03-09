@@ -5,7 +5,7 @@ using namespace std;
 
 Game::Game(SDL_Renderer *renderer, GameMode _gameMode)
     :
-      tetromino(Tetro_Type(rand() % 7), WIDE_CELLS / 2, 0), quit(true),
+      tetromino(Tetro_Type(rand() % 7), WIDE_CELLS / 2 - 1, 0), quit(true),
       well(renderer, (SCREEN_WIDTH - TILE_SIZE * WIDE_CELLS) / 2, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2, 0)
 
       {
@@ -108,7 +108,7 @@ void Game :: display(SDL_Renderer *renderer)
     if (!well.get_lose()){
         tetromino.draw(renderer, well);
     }
-    else{
+    else if (this->gameMode == SinglePlay){
         well.draw_lose_background(renderer);
     }
 }

@@ -24,8 +24,8 @@ void Battle :: set_active(){
 }
 
 void Battle :: handle_event(SDL_Renderer *renderer, SDL_Event &e){
-     player1->handleEvents(renderer, e);
      player2->handleEvents(renderer, e);
+     player1->handleEvents(renderer, e);
      if (!player1->running() && !player2->running()){
           active = false;
      }

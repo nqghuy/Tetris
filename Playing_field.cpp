@@ -73,10 +73,6 @@ void Well :: draw (SDL_Renderer *renderer, GameMode gameMode)
         }
     }
     score.draw(renderer, *this, ScoreFont);
-
-    if(this->lose == true){
-        this->draw_lose_background(renderer);
-    }
 }
 
 int Well :: get_x()
