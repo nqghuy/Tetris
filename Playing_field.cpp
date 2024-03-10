@@ -19,8 +19,6 @@ Well :: Well (SDL_Renderer *renderer, int _x, int _y, int _topScore)
     lose = false;
 };
 
-int Well :: buttonDistance = 100;
-
 Well :: ~Well()
 {
     memset(matrix, 0, sizeof(matrix));

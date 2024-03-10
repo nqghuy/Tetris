@@ -60,9 +60,6 @@ public:
     bool press_play_again(SDL_Event &e);
 
     bool return_home(SDL_Event &e);
-
-    static int buttonDistance;
-
 private:
     //current and top score
     Score score;

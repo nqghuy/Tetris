@@ -19,6 +19,12 @@ public:
     //load pictures, music, ...
     bool load_media();
 
+    bool load_texture();
+
+    bool load_music();
+
+    bool load_font();
+
     //if game is running
     bool running();
 

@@ -19,6 +19,8 @@ const int HIDDEN_ROWS = 2;
 const int SCREEN_HEIGHT = 900;
 const int SCREEN_WIDTH = 1520;
 
+const int buttonDistance = 100;
+
 //the number of tile in a tile shape matrix
 const int TETRAD_SIZE = 4;
 
@@ -44,6 +46,10 @@ extern LTexture gLoseBackground;
 extern LTexture gReplayButton;
 
 extern LTexture gHomeButton;
+
+extern LTexture gPlayer1Wins;
+
+extern LTexture gPlayer2Wins;
 
 enum GameMode{
      SinglePlay,

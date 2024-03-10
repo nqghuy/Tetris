@@ -46,6 +46,10 @@ public:
 
     void set_active();
 
+    void set_time();
+
+    int get_current_score();
+
 private:
     GameMode gameMode;
 

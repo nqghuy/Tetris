@@ -18,6 +18,10 @@ LTexture gReplayButton;
 
 LTexture gHomeButton;
 
+LTexture gPlayer1Wins;
+
+LTexture gPlayer2Wins;
+
 Tetris :: Tetris()
 {
     window = NULL;
@@ -97,12 +101,10 @@ bool Tetris :: init(const char *title, int x, int y, int w, int h)
     return success;
 }
 
-bool Tetris :: load_media()
-{
+bool Tetris :: load_texture(){
     bool success = true;
-
-    //load background
-    if (!background.loadFromFile(renderer, "Assets/Pictures/background4.png")){
+     //load background
+    if (!background.loadFromFile(renderer, "Assets/Pictures/background1.png")){
         cout << "failed to load background";
         success = false;
     }
@@ -120,6 +122,34 @@ bool Tetris :: load_media()
         cout << "failed to load home button\n";
     }
 
+    //load frame
+    if(!gWellFrame.loadFromFile(renderer, "Assets/Pictures/frame.png"))
+    {
+        cout << "failed to load media\n";
+        success = false;
+    }
+    if (!gScoreFrame.loadFromFile(renderer, "Assets/Pictures/score_frame.png")){
+        cout << "failed to load score frame\n";
+        success = false;
+    }
+    if(!menu->load_media(renderer)){
+        cout << "failed to load menu media\n";
+        success = false;
+    }
+    if (!gPlayer1Wins.loadFromFile(renderer, "Assets/Pictures/player1wins.png")){
+        cout << "failed to load player1wins texture\n";
+        success = false;
+    }
+    if (!gPlayer2Wins.loadFromFile(renderer, "Assets/Pictures/player2wins.png")){
+        cout << "failed to load player2wins texture\n";
+        success = false;
+    }
+    return success;
+}
+
+bool Tetris :: load_music(){
+    bool success = true;
+
     //load music and sound effects
     gPlayingMusic = Mix_LoadMUS("Assets/Music/Music.mp3");
     if (gPlayingMusic == NULL){
@@ -136,27 +166,38 @@ bool Tetris :: load_media()
         cout << "failed to load oh_oh sound effects";
         success = false;
     }
+    return success;
+}
 
+bool Tetris :: load_font(){
+    bool success = true;
     //load font
     ScoreFont = TTF_OpenFont("Assets/Font/montserrat/MontserratAlternates-Black.otf", 28);
     if (ScoreFont == NULL){
         cout << "failed to load font\n";
         success = false;
     }
+    return success;
+}
 
-    //load frame
-    if(!gWellFrame.loadFromFile(renderer, "Assets/Pictures/frame.png"))
-    {
-        cout << "failed to load media\n";
+bool Tetris :: load_media()
+{
+    bool success = true;
+    if(!load_texture()){
+        cout << "failed to load texture\n";
         success = false;
     }
-    if (!gScoreFrame.loadFromFile(renderer, "Assets/Pictures/score_frame.png")){
-        cout << "failed to load score frame\n";
+    
+    if(!load_music()){
+        cout << "failed to load music\n";
         success = false;
     }
-    if(!menu->load_media(renderer)){
-        cout << "failed to load menu media\n";
+    
+    if(!load_font()){
+        cout << "failed to load font\n";
+        success = false;
     }
+    
     return success;
 }
 

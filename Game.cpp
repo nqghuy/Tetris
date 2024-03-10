@@ -79,6 +79,10 @@ void Game :: play_music()
     }
 }
 
+int Game :: get_current_score(){
+    return well.get_current_score();
+}
+
 void Game :: close_game()
 {
     SDL_Quit();
@@ -122,5 +126,9 @@ void Game :: set_active()
 {
     quit = false;
     
+}
+
+void Game :: set_time(){
+    moveTime = SDL_GetTicks();
 }
 
