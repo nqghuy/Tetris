@@ -24,6 +24,10 @@ const int buttonDistance = 100;
 //the number of tile in a tile shape matrix
 const int TETRAD_SIZE = 4;
 
+const int SCREEN_FPS = 60;
+
+const int SCREEN_TICKS_PER_FRAME = 1000 / 60;
+
 //music plays throughout the game
 extern Mix_Music *gPlayingMusic;
 
@@ -50,6 +54,8 @@ extern LTexture gHomeButton;
 extern LTexture gPlayer1Wins;
 
 extern LTexture gPlayer2Wins;
+
+extern LTexture gDraw;
 
 enum GameMode{
      SinglePlay,

@@ -22,6 +22,8 @@ LTexture gPlayer1Wins;
 
 LTexture gPlayer2Wins;
 
+LTexture gDraw;
+
 Tetris :: Tetris()
 {
     window = NULL;
@@ -120,6 +122,12 @@ bool Tetris :: load_texture(){
     }
     if(!gHomeButton.loadFromFile(renderer, "Assets/Pictures/home.png")){
         cout << "failed to load home button\n";
+        success = false;
+    }
+    if(!gDraw.loadFromFile(renderer, "Assets/Pictures/draw.png"))
+    {
+        cout << "failed to load draw texture\n";
+        success = false;
     }
 
     //load frame
@@ -136,11 +144,11 @@ bool Tetris :: load_texture(){
         cout << "failed to load menu media\n";
         success = false;
     }
-    if (!gPlayer1Wins.loadFromFile(renderer, "Assets/Pictures/player1wins.png")){
+    if (!gPlayer1Wins.loadFromFile(renderer, "Assets/Pictures/player1_win.png")){
         cout << "failed to load player1wins texture\n";
         success = false;
     }
-    if (!gPlayer2Wins.loadFromFile(renderer, "Assets/Pictures/player2wins.png")){
+    if (!gPlayer2Wins.loadFromFile(renderer, "Assets/Pictures/player2_win.png")){
         cout << "failed to load player2wins texture\n";
         success = false;
     }
@@ -275,6 +283,9 @@ void Tetris :: display()
 
     //else show game
     else if(game->running()) {
+        if(!game->is_paused()){
+            game->update();
+        }
         game->display(renderer);
     }
 

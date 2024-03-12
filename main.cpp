@@ -6,12 +6,13 @@
 #include "Data.h"
 #include "Game.h"
 #include "Tetris.h"
+// #include "timer.h"
 using namespace std;
 
 int main(int argc, char *argv[])
 {
     //use to random type of tetromino
-    srand(time(0));
+    srand(time(NULL));
 
     //new tetris game
     Tetris *tetris = new Tetris;
@@ -32,8 +33,8 @@ int main(int argc, char *argv[])
         tetris->display();
     }
 
-
     //deallocate game
+    tetris->close_game();
     tetris = NULL;
     return 0;
 }

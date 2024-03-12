@@ -54,7 +54,7 @@ void Score :: draw(SDL_Renderer *renderer, Well &well, TTF_Font *scoreFont)
 
 
     //set position for current score texture
-    y += scoreFrame.getHeight();
+    y += scoreFrame.getHeight()- TILE_SIZE;
 
     //draw current score frame
     scoreFrame.render(renderer, x, y);

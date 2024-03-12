@@ -1,5 +1,8 @@
 #pragma once
 #include "Game.h"
+#include <thread>
+
+
 class Battle{
 public:
      Battle(SDL_Renderer *renderer);

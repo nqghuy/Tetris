@@ -186,6 +186,8 @@ public:
     //draw tetromino in the screen
     void draw(SDL_Renderer *renderer, Well &well);
 
+    void draw(SDL_Renderer *renderer, int x, int y);
+
     //rotate the tetromino when up key is pressed, if collision, no rotate
     void Rotate(Well &well);
 
@@ -217,13 +219,17 @@ public:
     bool check_bottom_collision(Well &well);
 
     //move down every 1s
-    bool free_fall(Well &well);
+    void free_fall(Well &well);
 
     //get active
     bool get_active();
 
+    void drop(Well &well);
+
     //decrease the percentage of two similar tetrads
-    Tetro_Type get_random_type();
+    Tetro_Type get_random_type(Tetromino &prev);
+
+    Tetro_Type get_tetro_type();
 private:
     //false if cannot move down
     bool active;
@@ -246,7 +252,6 @@ private:
     //the shape matrix (true if is is a block
     bool TetrominoShape[TETRAD_SIZE][TETRAD_SIZE];
 
-    void drop(Well &well);
 };
 
 #endif // Tetromino_h

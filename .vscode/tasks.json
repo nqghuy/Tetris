@@ -1,0 +1,16 @@
+{
+     "version": "2.0.0",
+     "tasks": [
+         {
+             "label": "Build C++ project",
+             "type": "shell",
+             "command": "g++",
+             "args": ["-std=c++11", "-Wall", "${file}", "-o", "${fileDirname}/${fileBasenameNoExtension}.exe"],
+             "group": {
+                 "kind": "build",
+                 "isDefault": true
+             }
+         }
+     ]
+ }
+ 

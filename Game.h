@@ -44,11 +44,17 @@ public:
     //if game is losed and not played
     bool is_paused();
 
+    //game is ready to play
     void set_active();
 
+    //set move time equal to current time
     void set_time();
 
+    //get current score
     int get_current_score();
+
+    //to update if no event polled
+    void update();
 
 private:
     GameMode gameMode;
@@ -58,6 +64,9 @@ private:
 
     //tetromino will be controlled
     Tetromino tetromino;
+
+    //next tetromino
+    Tetromino nextTetromino;
 
     //return true if quit the game
     bool quit;

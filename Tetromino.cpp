@@ -22,28 +22,30 @@ Tetromino ::~Tetromino(){}
 
 void Tetromino :: draw(SDL_Renderer *renderer, Well &well)
 {
-    bool check = false;
+    // bool check = false;
 
-    //if tetromino is in hidden rows, do not draw
-    for (int i = 0; i < TETRAD_SIZE; i++){
-        if(!check){
-            for (int j = 0; j < TETRAD_SIZE; j++){
-                if(TetrominoShape[i][j]){
-                    if (this->y_coordinate + i < HIDDEN_ROWS){
-                        return;
-                    }
-                    else {
-                        check = true;
-                        break;
-                    }
-                }
-            }
-        }
-
-    }
+    // //if tetromino is in hidden rows, do not draw
+    // for (int i = 0; i < TETRAD_SIZE; i++){
+    //     if(!check){
+    //         for (int j = 0; j < TETRAD_SIZE; j++){
+    //             if(TetrominoShape[i][j]){
+    //                 if (this->y_coordinate + i < HIDDEN_ROWS){
+    //                     return;
+    //                 }
+    //                 else {
+    //                     check = true;
+    //                     break;
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
     for (int i = 0; i < TETRAD_SIZE; i++){
         for (int j = 0; j < TETRAD_SIZE; j++){
             if (TetrominoShape[i][j]){
+                if (this->y_coordinate + i < HIDDEN_ROWS){
+                    continue;
+                }
                 //color of this tetromino
                 SDL_SetRenderDrawColor(renderer, TetrominoColor.r, TetrominoColor. g, TetrominoColor.b, 255);
 
@@ -99,7 +101,6 @@ void Tetromino :: Move(Well &well)
     //set new coordinate
     x_coordinate += VelX;
     y_coordinate += VelY;
-
 
     //if go to last row
     bool finished = false;
@@ -236,7 +237,11 @@ void Tetromino :: handle_event1(SDL_Event &e, Well &well){
 }
 
 void Tetromino :: handle_events(SDL_Event &e, Well &well, GameMode gameMode){
-    if (gameMode == SinglePlay || gameMode == Player1){
+    if (gameMode == SinglePlay)
+    {
+        handle_event2(e, well);
+    }
+    else if (gameMode == Player1){
         handle_event1(e, well);
     }
     else{
@@ -342,7 +347,7 @@ SDL_Color Tetromino :: get_color()
     return TetrominoColor;
 }
 
-bool Tetromino :: free_fall(Well &well)
+void Tetromino :: free_fall(Well &well)
 {
     //fall
     this->y_coordinate++;
@@ -352,14 +357,9 @@ bool Tetromino :: free_fall(Well &well)
 
     //well unite tetromino and set active
     if(this->check_bottom_collision(well)){
-        y_coordinate--;
-        well.Unite(this);
+        y_coordinate--;    
         active = false;
-    }
-
-    //if bottom collision
-    else if (this->check_bottom_collision(well) || this->check_left_collision(well)){
-        y_coordinate--;
+        well.Unite(this);
     }
 }
 
@@ -369,10 +369,10 @@ bool Tetromino :: get_active()
 }
 
 
-Tetro_Type Tetromino :: get_random_type()
+Tetro_Type Tetromino :: get_random_type(Tetromino &prev)
 {
     Tetro_Type newType = Tetro_Type(rand() % 7);
-    if (newType == this->TetrominoType){
+    if (newType == prev.TetrominoType){
         newType = Tetro_Type(rand() % 7);
     }
     return newType;
@@ -389,3 +389,27 @@ void Tetromino :: drop(Well &well){
     // active = false;
 }
 
+Tetro_Type Tetromino :: get_tetro_type(){
+    return TetrominoType;
+}
+
+void Tetromino :: draw (SDL_Renderer* renderer, int x, int y){
+    for (int i = 0; i < TETRAD_SIZE; i++){
+        for (int j = 0; j < TETRAD_SIZE; j++){
+            if (TetrominoShape[i][j]){
+                //color of this tetromino
+                SDL_SetRenderDrawColor(renderer, TetrominoColor.r, TetrominoColor. g, TetrominoColor.b, 255);
+
+                //rect of each tile
+                SDL_Rect rect = {x + j * TILE_SIZE, y + i * TILE_SIZE, TILE_SIZE, TILE_SIZE};
+
+                //fill rect
+                SDL_RenderFillRect(renderer, &rect);
+
+                //draw border with black
+                SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+                SDL_RenderDrawRect(renderer, &rect);
+            }
+        }
+    }
+}
