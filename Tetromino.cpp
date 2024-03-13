@@ -423,6 +423,7 @@ void Tetromino :: drop(Well &well){
     while(!this->check_bottom_collision(well)){
         y_coordinate++;
     }
+    Mix_PlayChannel(-1, gDropSoundEffect, 0);
     VelX = 0;
     VelY = 0;
 }

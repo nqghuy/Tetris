@@ -3,21 +3,22 @@
 #include <algorithm>
 using namespace std;
 
-Game::Game(SDL_Renderer *renderer, GameMode _gameMode)
+Game::Game(SDL_Renderer *renderer, GameMode _gameMode, Level _level)
     :   //initialize ...
       tetromino(Tetro_Type(rand() % 7), WIDE_CELLS / 2 - 1, 0), quit(true),
-      well(renderer, (SCREEN_WIDTH - TILE_SIZE * WIDE_CELLS) / 2, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2, 0),
+      well(renderer, (SCREEN_WIDTH - TILE_SIZE * WIDE_CELLS) / 2, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2, 0, _level),
       nextTetromino(Tetro_Type(rand() % 7), WIDE_CELLS / 2 - 1, 0), pause(false)
       {
         gameMode = _gameMode;
+        level = _level;
         moveTime = SDL_GetTicks();
 
         //set well corresponding to game mode
         if (_gameMode == Player1){
-            well = Well(renderer, SCREEN_WIDTH / 11 , (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2, 0);
+            well = Well(renderer, SCREEN_WIDTH / 11 , (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2, 0, _level);
         }
         else if (_gameMode == Player2){
-            well = Well(renderer, SCREEN_WIDTH / 11  * 6, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2, 0);
+            well = Well(renderer, SCREEN_WIDTH / 11  * 6, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2, 0, _level);
         }
         //random next tetro type
         nextTetromino = Tetromino(nextTetromino.get_random_type(tetromino), WIDE_CELLS / 2 - 1, 0);
@@ -48,7 +49,7 @@ void Game :: handleEvents(SDL_Renderer *renderer, SDL_Event &e)
             int _topScore = max(well.get_current_score(), well.get_top_score());
 
             //reset well
-            well = Well(renderer, well.get_x(), well.get_y(), _topScore);
+            well = Well(renderer, well.get_x(), well.get_y(), _topScore, this->level);
 
             //reset tetromino
             tetromino = Tetromino(nextTetromino.get_tetro_type(), WIDE_CELLS / 2 - 1, 0);
@@ -70,7 +71,7 @@ void Game :: update(){
 
     //free fall
     if (currentTime > moveTime){
-        moveTime += 200;
+        moveTime += 1000 - level * 100;
         tetromino.free_fall(well);
     }
 
@@ -134,5 +135,9 @@ void Game :: set_active()
 
 void Game :: set_time(){
     moveTime = SDL_GetTicks();
+}
+
+void Game :: set_level(Level _level){
+    level = _level;
 }
 

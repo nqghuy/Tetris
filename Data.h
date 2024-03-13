@@ -33,8 +33,14 @@ extern Mix_Chunk *gNiceSoundEffect;
 //music plays when lose
 extern Mix_Chunk *gLoseSoundEffect;
 
+//sound effect when drop a tetromino
+extern Mix_Chunk *gDropSoundEffect;
+
 //score font
 extern TTF_Font *ScoreFont;
+
+//font in setting
+extern TTF_Font *SettingFont;
 
 //brick well frame
 extern LTexture gWellFrame;
@@ -64,5 +70,9 @@ enum GameMode{
      SinglePlay,
      Player1,
      Player2
+};
+
+enum Level{
+     easy = 1, medium, hard, asian, blackPeople
 };
 

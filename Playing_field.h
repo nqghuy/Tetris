@@ -9,7 +9,7 @@ class Well
 {
 public:
     //constructor
-    Well(SDL_Renderer *renderer, int _x, int _y, int _topScore);
+    Well(SDL_Renderer *renderer, int _x, int _y, int _topScore, Level _level);
 
     //destructor
     ~Well();
@@ -61,6 +61,8 @@ public:
 
     bool return_home(SDL_Event &e);
 private:
+    Level level;
+
     //current and top score
     Score score;
 

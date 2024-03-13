@@ -18,7 +18,7 @@ class Game
 {
 public:
     //constructor
-    Game(SDL_Renderer *renderer, GameMode _gameMode = SinglePlay);
+    Game(SDL_Renderer *renderer, GameMode _gameMode = SinglePlay, Level _level = easy);
 
     //destructor
     ~Game();
@@ -53,7 +53,11 @@ public:
     //to update if no event polled
     void update();
 
+  
+
 private:
+    Level level;
+
     GameMode gameMode;
 
     //field to play
@@ -73,5 +77,7 @@ private:
 
     //use to make tetromino free fall
     int moveTime;
+
+    void set_level(Level _level);
 } ;
 #endif

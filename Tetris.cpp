@@ -7,7 +7,11 @@ Mix_Chunk *gNiceSoundEffect;
 
 Mix_Chunk *gLoseSoundEffect;
 
+Mix_Chunk *gDropSoundEffect;
+
 TTF_Font *ScoreFont;
+
+TTF_Font *SettingFont;
 
 LTexture gScoreFrame;
 
@@ -25,7 +29,7 @@ LTexture gPlayer2Wins;
 
 LTexture gDraw;
 
-Tetris :: Tetris()
+Tetris :: Tetris(Level _level)
 {
     window = NULL;
     renderer = NULL;
@@ -33,6 +37,7 @@ Tetris :: Tetris()
     game = new Game(renderer, SinglePlay);
     menu = new Menu;
     battle = new Battle(renderer);
+    level = _level;
     quit = false;
 }
 
@@ -130,8 +135,6 @@ bool Tetris :: load_texture(){
         success = false;
     }
 
-    
-
     //load frame
     if(!gWellFrame.loadFromFile(renderer, "Assets/Pictures/frame.png"))
     {
@@ -186,6 +189,11 @@ bool Tetris :: load_music(){
         cout << "failed to load oh_oh sound effects";
         success = false;
     }
+    gDropSoundEffect = Mix_LoadWAV("Assets/Music/drop.mp3");
+    if (gDropSoundEffect == NULL){
+        cout << "failed to laod drop sound effect\n";
+        success = false;
+    }
     return success;
 }
 
@@ -198,12 +206,24 @@ bool Tetris :: load_font(){
         cout << "failed to load font\n";
         success = false;
     }
+
+    SettingFont = TTF_OpenFont("Assets/Font/Cormorant_Garamond/CormorantGaramond-Bold.ttf", 28);
+    if (SettingFont == NULL){
+        cout << "failed to load setting font\n" << TTF_GetError();
+        success = false;
+    }
     return success;
 }
 
 bool Tetris :: load_media()
 {
     bool success = true;
+
+    if(!load_font()){
+        cout << "failed to load font\n";
+        success = false;
+    }
+
     if(!load_texture()){
         cout << "failed to load texture\n";
         success = false;
@@ -213,12 +233,7 @@ bool Tetris :: load_media()
         cout << "failed to load music\n";
         success = false;
     }
-    
-    if(!load_font()){
-        cout << "failed to load font\n";
-        success = false;
-    }
-    
+
     return success;
 }
 
@@ -248,15 +263,7 @@ void Tetris :: handle_events()
 
         //handle menu
         if (menu->get_active()){
-            //player want to play
-            if(menu->click_play(e)){
-                game->set_active();
-            }
-
-            //ready to a hot battle
-            else if(menu->click_battle(e)){
-                battle->set_active();
-            }
+            this->menu_handle_event(e);
         }
 
         //if single play is running
@@ -347,4 +354,18 @@ void Tetris :: close_game(){
 	SDL_Quit();
 }
 
+void Tetris :: menu_handle_event(SDL_Event &e){
+    if(!menu->check_in_setting()){
+        if(menu->click_play(e)){
+            game->set_active();
+        }
+        //ready to a hot battle
+        else if(menu->click_battle(e)){
+            battle->set_active();
+        }
 
+        else if(menu->click_setting(e)){
+        menu->set_in_setting();
+        }
+    }
+}

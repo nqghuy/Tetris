@@ -8,7 +8,7 @@ class Tetris
 {
 public:
     //constructor
-    Tetris();
+    Tetris(Level _level = easy);
 
     //destructor
     ~Tetris();
@@ -28,6 +28,8 @@ public:
     //if game is running
     bool running();
 
+    void menu_handle_event(SDL_Event &e);
+
     //handle event
     void handle_events();
 
@@ -41,6 +43,8 @@ public:
     void close_game();
     
 private:
+    Level level;
+
     //the window for the game
     SDL_Window *window;
 

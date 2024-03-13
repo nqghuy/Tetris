@@ -1,11 +1,14 @@
 #include "Playing_field.h"
 #include <bits/stdc++.h>
 
-Well :: Well (SDL_Renderer *renderer, int _x, int _y, int _topScore)
+Well :: Well (SDL_Renderer *renderer, int _x, int _y, int _topScore, Level _level)
 :   score(renderer, _topScore)
 {
     x = _x;
     y = _y;
+
+    level = _level; 
+
     //marked no tetromino unites with well
     memset(matrix, false, sizeof(matrix));
 
@@ -135,7 +138,7 @@ void Well :: Unite(Tetromino *t)
     }
 
     //set score
-    score.set_score(40 * (line));
+    score.set_score(20 * (line) * (line + 1) * level);
 
     //play sound if....
     if(sound) Mix_PlayChannel(-1, gNiceSoundEffect, 0);
