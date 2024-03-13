@@ -35,9 +35,6 @@ public:
     //play music during the game
     void play_music();
 
-    //close the game
-    void close_game();
-
     //draw game
     void display(SDL_Renderer *renderer);
 
@@ -74,6 +71,7 @@ private:
     //lose game state and not play
     bool pause;
 
+    //use to make tetromino free fall
     int moveTime;
 } ;
 #endif

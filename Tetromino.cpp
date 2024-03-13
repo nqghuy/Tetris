@@ -1,6 +1,7 @@
 #include "Tetromino.h"
 #include "Playing_field.h"
 using namespace std;
+
 Tetromino :: Tetromino(Tetro_Type _TetrominoType, int x, int y)
 {
     active = true;
@@ -11,9 +12,18 @@ Tetromino :: Tetromino(Tetro_Type _TetrominoType, int x, int y)
             TetrominoShape[i][j] = tetromino_shape[TetrominoType * 4 ][i][j];
         }
     }
+    //set false to able to rotate and drop
+    rotate = false;
+    dropped = false;
+
+    //the first shape
     angle = 0;
+
+    //set coordinate
     x_coordinate = x;
     y_coordinate = y;
+
+    //default velocity
     VelX = 0;
     VelY = 0;
 }
@@ -22,30 +32,16 @@ Tetromino ::~Tetromino(){}
 
 void Tetromino :: draw(SDL_Renderer *renderer, Well &well)
 {
-    // bool check = false;
-
-    // //if tetromino is in hidden rows, do not draw
-    // for (int i = 0; i < TETRAD_SIZE; i++){
-    //     if(!check){
-    //         for (int j = 0; j < TETRAD_SIZE; j++){
-    //             if(TetrominoShape[i][j]){
-    //                 if (this->y_coordinate + i < HIDDEN_ROWS){
-    //                     return;
-    //                 }
-    //                 else {
-    //                     check = true;
-    //                     break;
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
     for (int i = 0; i < TETRAD_SIZE; i++){
         for (int j = 0; j < TETRAD_SIZE; j++){
+            //if this coordinate is a block
             if (TetrominoShape[i][j]){
+
+                //if this block do not present in well
                 if (this->y_coordinate + i < HIDDEN_ROWS){
                     continue;
                 }
+
                 //color of this tetromino
                 SDL_SetRenderDrawColor(renderer, TetrominoColor.r, TetrominoColor. g, TetrominoColor.b, 255);
 
@@ -128,120 +124,161 @@ void Tetromino :: Move(Well &well)
         well.Unite(this);
         active = false;
     }
-
 }
 
+//handle event for player 2
 void Tetromino :: handle_event2(SDL_Event &e, Well &well){
-    //when player is pressing a key
-    if(e.type == SDL_KEYDOWN && e.key.repeat == 0){
-        switch (e.key.keysym.sym)
-        {
-        //key up: rotate
-        case SDLK_UP:
+    //current key state, true if this key is pressed
+    const Uint8* currentKeyStates = SDL_GetKeyboardState( NULL );
+
+    //key right is pressed
+    if( currentKeyStates[ SDL_SCANCODE_RIGHT ] )
+    {
+        if(VelX == 0) {
+            this->VelX = 1;
+            return;
+        }
+    }//if key right is released
+    else if (VelX != 0){
+        VelX = 0;
+        return;
+    }
+
+    //if key up is pressed
+    if( currentKeyStates[ SDL_SCANCODE_UP ] )
+    {
+        //avoid repeated key
+        if (!rotate){
             this->Rotate(well);
-            break;
+            rotate = true;
+            return;
+        }
+        return;
+    }
 
-        //key down: increase y velocity
-        case SDLK_DOWN:
-            this->VelY++;
-            break;
+    //if key up is released
+    else if(rotate){
+        rotate = false;
+        return;
+    }
 
-        //key right: increase x velocity
-        case SDLK_RIGHT:
-            this->VelX++;
-            break;
-
-        //key left: decrease x veloity
-        case SDLK_LEFT:
-            this->VelX--;
-            break;
-        
-        case SDLK_RETURN:
-            this->drop(well);
-            break;
+    //if key left is pressed
+    if( currentKeyStates[ SDL_SCANCODE_LEFT ] )
+    {
+        if(VelX == 0) {//if not repeated key
+            this->VelX = -1;
+            return;
         }
     }
-    //when player release a key
-    else if (e.type == SDL_KEYUP && e.key.repeat == 0){
-        switch (e.key.keysym.sym){
-            //opposite to pressing a key
-            case (SDLK_DOWN):
-                if(VelY != 0){
-                    VelY--;
-                }
-                break;
-            case SDLK_RIGHT :
-                if (VelX != 0){
-                    VelX--;
-                }
-                break;
-            case SDLK_LEFT:
-                if (VelX != 0){
-                    VelX++;
-                }
-                break;
+
+    //if key left is released
+    else if (VelX != 0){
+        VelX = 0;
+        return;
+    }       
+
+    //if key down is pressed
+    if( currentKeyStates[ SDL_SCANCODE_DOWN ] )
+    {
+        if (VelY == 0){//avoid repeated key
+            this->VelY = 1;
+            return;
+        }
+    }
+
+    //if key down is released
+    else if(VelY != 0){
+        VelY = 0;
+        return;
+    }
+
+    //if enter is pressed
+    if(e.type == SDL_KEYDOWN && e.key.repeat == 0){
+        if (e.key.keysym.sym == SDLK_RETURN){
+            //drop
+            this->drop(well);
         }
     }
 }
 
+//handle event for player1
 void Tetromino :: handle_event1(SDL_Event &e, Well &well){
-    //when player is pressing a key
-    if(e.type == SDL_KEYDOWN && e.key.repeat == 0){
-        switch (e.key.keysym.sym)
-        {
-        //key up: rotate
-        case SDLK_w:
-            this->Rotate(well);
-            break;
+    //current key state
+    const Uint8* currentKeyStates = SDL_GetKeyboardState( NULL );
 
-        //key down: increase y velocity
-        case SDLK_s:
-            this->VelY++;
-            break;
-
-        //key right: increase x velocity
-        case SDLK_d:
-            this->VelX++;
-            break;
-
-        //key left: decrease x veloity
-        case SDLK_a:
-            this->VelX--;
-            break;
-        case SDLK_SPACE:
-            this->drop(well);
-            break;
+    //key d is pressed
+    if( currentKeyStates[ SDL_SCANCODE_D ] )
+    {   
+        //avoid repeated ky
+        if(VelX == 0) {
+            this->VelX = 1;
+            return;
         }
     }
-    //when player release a key
-    else if (e.type == SDL_KEYUP && e.key.repeat == 0){
-        switch (e.key.keysym.sym){
-            //opposite to pressing a key
-            case (SDLK_s):
-                if(VelY != 0){
-                    VelY--;
-                }
-                break;
-            case SDLK_d:
-                if (VelX != 0){
-                    VelX--;
-                }
-                break;
-            case SDLK_a:
-                if (VelX != 0){
-                    VelX++;
-                }
-                break;
+    //key d is released
+    else if (VelX != 0){
+        VelX = 0;
+        return;
+    }
+
+    //w is pressed
+    if( currentKeyStates[ SDL_SCANCODE_W ] )
+    {   
+        //avoid repeated key
+        if (!rotate){
+            this->Rotate(well);
+            rotate = true;
+            return;
+        }
+        return;
+    }
+    
+    //w is released
+    else if(rotate){
+        rotate = false;
+        return;
+    }
+
+    //a is pressed
+    if( currentKeyStates[ SDL_SCANCODE_A ] )
+    {
+        //avoid repeated key
+        if(VelX == 0) {
+            this->VelX = -1;
+            return;
+        }
+    }
+    //a is released
+    else if (VelX != 0){
+        VelX = 0;
+        return;
+    }       
+
+    //s is pressed
+    if( currentKeyStates[ SDL_SCANCODE_S ] )
+    {   
+        if (VelY == 0){//avoid repeated key
+            this->VelY = 1;
+            return;
+        }
+    }
+    //released
+    else if(VelY != 0){
+        VelY = 0;
+        return;
+    }
+
+    //drop if press space
+    if(e.type == SDL_KEYDOWN && e.key.repeat == 0){
+        if (e.key.keysym.sym == SDLK_SPACE){
+            this->drop(well);
         }
     }
 }
 
 void Tetromino :: handle_events(SDL_Event &e, Well &well, GameMode gameMode){
-    if (gameMode == SinglePlay)
+    if (gameMode == SinglePlay || gameMode == Player1)
     {
-        handle_event2(e, well);
-    }
-    else if (gameMode == Player1){
         handle_event1(e, well);
     }
     else{
@@ -371,8 +408,12 @@ bool Tetromino :: get_active()
 
 Tetro_Type Tetromino :: get_random_type(Tetromino &prev)
 {
+    //random tetro type
     Tetro_Type newType = Tetro_Type(rand() % 7);
+
+    //if prev and new tetro type are identicl
     if (newType == prev.TetrominoType){
+        //random new tetro type to reduce the two identical tetrotype probality
         newType = Tetro_Type(rand() % 7);
     }
     return newType;
@@ -384,9 +425,6 @@ void Tetromino :: drop(Well &well){
     }
     VelX = 0;
     VelY = 0;
-    // y_coordinate--;
-    // well.Unite(this);
-    // active = false;
 }
 
 Tetro_Type Tetromino :: get_tetro_type(){

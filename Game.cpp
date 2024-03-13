@@ -4,19 +4,22 @@
 using namespace std;
 
 Game::Game(SDL_Renderer *renderer, GameMode _gameMode)
-    :
+    :   //initialize ...
       tetromino(Tetro_Type(rand() % 7), WIDE_CELLS / 2 - 1, 0), quit(true),
       well(renderer, (SCREEN_WIDTH - TILE_SIZE * WIDE_CELLS) / 2, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2, 0),
-      nextTetromino(Tetro_Type(rand() % 7), WIDE_CELLS / 2 - 1, 0)
+      nextTetromino(Tetro_Type(rand() % 7), WIDE_CELLS / 2 - 1, 0), pause(false)
       {
         gameMode = _gameMode;
         moveTime = SDL_GetTicks();
+
+        //set well corresponding to game mode
         if (_gameMode == Player1){
             well = Well(renderer, SCREEN_WIDTH / 11 , (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2, 0);
         }
         else if (_gameMode == Player2){
             well = Well(renderer, SCREEN_WIDTH / 11  * 6, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2, 0);
         }
+        //random next tetro type
         nextTetromino = Tetromino(nextTetromino.get_random_type(tetromino), WIDE_CELLS / 2 - 1, 0);
 }
 
@@ -39,6 +42,8 @@ void Game :: handleEvents(SDL_Renderer *renderer, SDL_Event &e)
     }
     else{//if lose, press enter to reset game, get top score
         if (well.press_play_again(e)){
+            moveTime = SDL_GetTicks();
+
             //new top score
             int _topScore = max(well.get_current_score(), well.get_top_score());
 
@@ -49,6 +54,7 @@ void Game :: handleEvents(SDL_Renderer *renderer, SDL_Event &e)
             tetromino = Tetromino(nextTetromino.get_tetro_type(), WIDE_CELLS / 2 - 1, 0);
             nextTetromino = Tetromino(nextTetromino.get_random_type(tetromino), WIDE_CELLS / 2 - 1, 0);
         }
+        //if click return home
         else if(well.return_home(e)){
             quit = true;
         }
@@ -64,7 +70,7 @@ void Game :: update(){
 
     //free fall
     if (currentTime > moveTime){
-        moveTime += 1000;
+        moveTime += 200;
         tetromino.free_fall(well);
     }
 
@@ -85,7 +91,8 @@ void Game :: update(){
 }
 
 void Game :: play_music()
-{
+{   
+    //play music when starting playing game
     if(Mix_PlayingMusic() == 0){
         Mix_PlayMusic(gPlayingMusic, -1);
     }
@@ -95,12 +102,6 @@ int Game :: get_current_score(){
     return well.get_current_score();
 }
 
-void Game :: close_game()
-{
-    SDL_Quit();
-    TTF_Quit();
-    IMG_Quit();
-}
 
 void Game :: display(SDL_Renderer *renderer)
 {

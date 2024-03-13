@@ -1,5 +1,6 @@
 #include "Tetris.h"
 
+//detail in data.h
 Mix_Music *gPlayingMusic;
 
 Mix_Chunk *gNiceSoundEffect;
@@ -111,24 +112,25 @@ bool Tetris :: load_texture(){
         success = false;
     }
     
+    //lose picture
     if(!gLoseBackground.loadFromFile(renderer, "Assets/Pictures/lose.jpg")){
         cout << "failed to load lose texture\n";
         success = false;
     }
 
+    //replay button
     if(!gReplayButton.loadFromFile(renderer, "Assets/Pictures/replayButton.jpg")){
         cout << "failed to load button texture\n";
         success = false;
     }
+
+    //home button
     if(!gHomeButton.loadFromFile(renderer, "Assets/Pictures/home.png")){
         cout << "failed to load home button\n";
         success = false;
     }
-    if(!gDraw.loadFromFile(renderer, "Assets/Pictures/draw.png"))
-    {
-        cout << "failed to load draw texture\n";
-        success = false;
-    }
+
+    
 
     //load frame
     if(!gWellFrame.loadFromFile(renderer, "Assets/Pictures/frame.png"))
@@ -140,10 +142,8 @@ bool Tetris :: load_texture(){
         cout << "failed to load score frame\n";
         success = false;
     }
-    if(!menu->load_media(renderer)){
-        cout << "failed to load menu media\n";
-        success = false;
-    }
+
+    //load battle texture
     if (!gPlayer1Wins.loadFromFile(renderer, "Assets/Pictures/player1_win.png")){
         cout << "failed to load player1wins texture\n";
         success = false;
@@ -152,6 +152,18 @@ bool Tetris :: load_texture(){
         cout << "failed to load player2wins texture\n";
         success = false;
     }
+    if(!gDraw.loadFromFile(renderer, "Assets/Pictures/draw.png"))
+    {
+        cout << "failed to load draw texture\n";
+        success = false;
+    }
+
+    //load menu media
+    if(!menu->load_media(renderer)){
+        cout << "failed to load menu media\n";
+        success = false;
+    }
+    
     return success;
 }
 
@@ -179,6 +191,7 @@ bool Tetris :: load_music(){
 
 bool Tetris :: load_font(){
     bool success = true;
+
     //load font
     ScoreFont = TTF_OpenFont("Assets/Font/montserrat/MontserratAlternates-Black.otf", 28);
     if (ScoreFont == NULL){
@@ -226,45 +239,50 @@ void Tetris :: handle_events()
     //event to be handled
     SDL_Event e;
 
-    bool playing = game->running() ;
-
-    while (SDL_PollEvent(&e))
+    if (SDL_PollEvent(&e) != 0)
     {
+        //if player quit the game
         if (e.type == SDL_QUIT){
             quit = true;
         }
+
+        //handle menu
         if (menu->get_active()){
+            //player want to play
             if(menu->click_play(e)){
                 game->set_active();
             }
+
+            //ready to a hot battle
             else if(menu->click_battle(e)){
                 battle->set_active();
             }
         }
+
+        //if single play is running
         else if (game->running()){
             game->handleEvents(renderer, e);
+
+            //if game is not running
             if(!game->running()){
+
+                //menu is active
                 menu->set_active();
                 game = new Game (renderer);
             }
         }
+
+        //battle is running
         else {
             battle->handle_event(renderer, e);
+
+            //battle is running => menu
             if (!battle->get_active()){
                 menu->set_active();
                 battle = new Battle(renderer);
             }
         }
     }
-    
-    // if (!menu->get_active() && !playing){
-    //     game = new Game(renderer);
-    //     game->set_active();
-    // }
-
-    // if(!game->running() && !battle->get_active()){
-    //     menu->set_active();
-    // }
 }
 
 void Tetris :: display()
@@ -289,6 +307,7 @@ void Tetris :: display()
         game->display(renderer);
     }
 
+    //display battle
     else battle->display(renderer);
 
     //present into screen
@@ -296,18 +315,32 @@ void Tetris :: display()
 }
 
 void Tetris :: close_game(){
+    //free music
     gPlayingMusic = NULL;
     gNiceSoundEffect = NULL;
     gLoseSoundEffect = NULL;
-    ScoreFont = NULL;
     Mix_FreeMusic(gPlayingMusic);
     Mix_FreeChunk(gNiceSoundEffect);
     Mix_FreeChunk(gLoseSoundEffect);
+
+    //free font
+    ScoreFont = NULL;
+    TTF_CloseFont(ScoreFont);
+
+    //free texture
     gWellFrame.free();
     gScoreFrame.free();
+    gLoseBackground.free();
+    gReplayButton.free();
+    gPlayer1Wins.free();
+    gPlayer2Wins.free();
+    gDraw.free();
 
+    //destroy renderer and window
     SDL_DestroyRenderer( renderer );
 	SDL_DestroyWindow( window );
+
+    //quit sdl
 	TTF_Quit();
 	IMG_Quit();
 	Mix_Quit();

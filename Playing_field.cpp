@@ -4,7 +4,6 @@
 Well :: Well (SDL_Renderer *renderer, int _x, int _y, int _topScore)
 :   score(renderer, _topScore)
 {
-
     x = _x;
     y = _y;
     //marked no tetromino unites with well
@@ -53,7 +52,7 @@ void Well :: draw (SDL_Renderer *renderer, GameMode gameMode)
                 SDL_Color curColor = cell_colors[i][j];
 
                 //set color
-                SDL_SetRenderDrawColor(renderer, curColor.r, curColor. g, curColor.b, 255);
+                SDL_SetRenderDrawColor(renderer, curColor.r, curColor.g, curColor.b, 255);
 
                 //the rect of each tile
                 SDL_Rect tileRect = {x + i * TILE_SIZE, y + j * TILE_SIZE, TILE_SIZE, TILE_SIZE};
@@ -125,7 +124,7 @@ void Well :: Unite(Tetromino *t)
     //line count to get score
     int line = 0;
 
-
+    //check each row
     for (int j = HEIGHT_CELLS - 1; j >= 0; j--){
         if (filled_line(j)){
             deleted_line(j);
@@ -149,6 +148,7 @@ bool Well :: isBlock(int x, int y)
 
 bool Well :: filled_line(int line)
 {
+    //check if line is fulled
     for (int i = 0; i < WIDE_CELLS; i++)
     {
         if (!matrix[i][line])
@@ -161,6 +161,7 @@ bool Well :: filled_line(int line)
 
 void Well :: deleted_line(int line)
 {
+    //delete the full line
     for (int j = line; j >= 1; j--)
     {
         for (int i = 0; i < WIDE_CELLS; i++){
@@ -191,19 +192,26 @@ int Well :: get_current_score()
 }
 
 void Well :: draw_lose_background(SDL_Renderer *renderer){
+    //draw lose texture in the center of the screen
     gLoseBackground.render(renderer, (SCREEN_WIDTH - gLoseBackground.getWidth()) / 2, (SCREEN_HEIGHT - gLoseBackground.getHeight()) / 2);
+
+    //replaye button in the center of the screen
     gReplayButton.render(renderer, (SCREEN_WIDTH - gReplayButton.getWidth()) / 2, (SCREEN_HEIGHT - gReplayButton.getHeight()) / 2 + buttonDistance);
 
+    //home button in the left of the screen
     gHomeButton.render(renderer, (SCREEN_WIDTH - gReplayButton.getWidth()) / 2 - buttonDistance, (SCREEN_HEIGHT - gReplayButton.getHeight()) / 2 + buttonDistance);
 }
 
 bool Well :: press_play_again(SDL_Event &e){
+    //get mouse position
     int x, y;
     SDL_GetMouseState(&x, &y);
     
+    //the x,y replay button rext
     int replayButton_x = (SCREEN_WIDTH - gReplayButton.getWidth()) / 2;
     int replayButton_y = (SCREEN_HEIGHT - gReplayButton.getHeight()) / 2 + buttonDistance;
 
+    //if player press mouse in replay button
     if (e.type == SDL_MOUSEBUTTONDOWN && x >= replayButton_x && x <= replayButton_x + gReplayButton.getWidth() && y >= replayButton_y && y <= replayButton_y + gReplayButton.getHeight()){
         return true;
     }
@@ -211,12 +219,15 @@ bool Well :: press_play_again(SDL_Event &e){
 }
 
 bool Well :: return_home(SDL_Event &e){
+    //get mouse position
     int x, y;
     SDL_GetMouseState(&x, &y);
     
+    //home button x, y rect
     int homeButton_x = (SCREEN_WIDTH - gReplayButton.getWidth()) / 2 - buttonDistance;
     int homeButton_y = (SCREEN_HEIGHT - gHomeButton.getHeight()) / 2 + buttonDistance;
 
+    //press home button
     if (e.type == SDL_MOUSEBUTTONDOWN && x >= homeButton_x && x <= homeButton_x + gHomeButton.getWidth() && y >= homeButton_y && y <= homeButton_y + gHomeButton.getHeight()){
         return true;
     }

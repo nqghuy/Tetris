@@ -174,6 +174,7 @@ static bool tetromino_shape[TOTAL_OF_BLOCKS * 4][TETRAD_SIZE][TETRAD_SIZE] =
     {0, 0, 0, 0}},
 };
 
+
 class Tetromino
 {
 public:
@@ -183,9 +184,10 @@ public:
     //destructor
     ~Tetromino();
 
-    //draw tetromino in the screen
+    //draw tetromino in the well
     void draw(SDL_Renderer *renderer, Well &well);
 
+    //draw tetromino according to position in screen
     void draw(SDL_Renderer *renderer, int x, int y);
 
     //rotate the tetromino when up key is pressed, if collision, no rotate
@@ -194,8 +196,10 @@ public:
     //move down, left and right and check collision
     void Move(Well &well);
 
+    //handle event for player1 and single play
     void handle_event1(SDL_Event &e, Well &well);
 
+    //handle event for player2
     void handle_event2(SDL_Event &e, Well &well);
 
     //handle event e
@@ -224,11 +228,13 @@ public:
     //get active
     bool get_active();
 
+    //drop immediately
     void drop(Well &well);
 
     //decrease the percentage of two similar tetrads
     Tetro_Type get_random_type(Tetromino &prev);
 
+    //get tetro type
     Tetro_Type get_tetro_type();
 private:
     //false if cannot move down
@@ -251,6 +257,10 @@ private:
 
     //the shape matrix (true if is is a block
     bool TetrominoShape[TETRAD_SIZE][TETRAD_SIZE];
+
+    //true if repeated key is pressed
+    bool dropped;
+    bool rotate;
 
 };
 

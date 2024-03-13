@@ -24,10 +24,6 @@ const int buttonDistance = 100;
 //the number of tile in a tile shape matrix
 const int TETRAD_SIZE = 4;
 
-const int SCREEN_FPS = 60;
-
-const int SCREEN_TICKS_PER_FRAME = 1000 / 60;
-
 //music plays throughout the game
 extern Mix_Music *gPlayingMusic;
 
@@ -43,18 +39,25 @@ extern TTF_Font *ScoreFont;
 //brick well frame
 extern LTexture gWellFrame;
 
+//brick score frame
 extern LTexture gScoreFrame;
 
+//picture when lose
 extern LTexture gLoseBackground;
 
+//replay button
 extern LTexture gReplayButton;
 
+//home button
 extern LTexture gHomeButton;
 
+//appear when player 1 win
 extern LTexture gPlayer1Wins;
 
+//appear when player 2 win
 extern LTexture gPlayer2Wins;
 
+//appear when draw
 extern LTexture gDraw;
 
 enum GameMode{
