@@ -70,3 +70,7 @@ void Battle :: display(SDL_Renderer *renderer){
      }
 }
 
+void Battle :: set_level(int _level){
+     player1->set_level(_level);
+     player2->set_level(_level);
+}

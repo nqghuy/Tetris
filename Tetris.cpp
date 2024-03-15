@@ -29,7 +29,7 @@ LTexture gPlayer2Wins;
 
 LTexture gDraw;
 
-Tetris :: Tetris(Level _level)
+Tetris :: Tetris(int _level)
 {
     window = NULL;
     renderer = NULL;
@@ -303,7 +303,7 @@ void Tetris :: display()
 
     //if not play, show menu
     if (menu->get_active()){
-        menu->display(renderer);
+        menu->display(renderer, level);
     }
 
     //else show game
@@ -358,14 +358,28 @@ void Tetris :: menu_handle_event(SDL_Event &e){
     if(!menu->check_in_setting()){
         if(menu->click_play(e)){
             game->set_active();
+            game->set_level(this->level);
+            
         }
         //ready to a hot battle
         else if(menu->click_battle(e)){
             battle->set_active();
+            battle->set_level(this->level);
         }
 
         else if(menu->click_setting(e)){
-        menu->set_in_setting();
+            menu->set_in_setting();
+        }
+    }
+    else{
+        if (menu->click_up_level_button(e)){
+            if (level < MAX_LEVEL) level++;
+        }
+        else if (menu->click_down_level_button(e)){
+            if(level > 1)   level--;
+        }
+        else if(menu->click_back_button(e)){
+            menu->set_not_in_setting();
         }
     }
 }

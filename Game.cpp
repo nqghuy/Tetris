@@ -3,7 +3,7 @@
 #include <algorithm>
 using namespace std;
 
-Game::Game(SDL_Renderer *renderer, GameMode _gameMode, Level _level)
+Game::Game(SDL_Renderer *renderer, GameMode _gameMode, int _level)
     :   //initialize ...
       tetromino(Tetro_Type(rand() % 7), WIDE_CELLS / 2 - 1, 0), quit(true),
       well(renderer, (SCREEN_WIDTH - TILE_SIZE * WIDE_CELLS) / 2, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2, 0, _level),
@@ -71,7 +71,7 @@ void Game :: update(){
 
     //free fall
     if (currentTime > moveTime){
-        moveTime += 1000 - level * 100;
+        moveTime += 1000 - level * 150;
         tetromino.free_fall(well);
     }
 
@@ -137,7 +137,7 @@ void Game :: set_time(){
     moveTime = SDL_GetTicks();
 }
 
-void Game :: set_level(Level _level){
+void Game :: set_level(int _level){
     level = _level;
 }
 

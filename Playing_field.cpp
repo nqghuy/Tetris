@@ -1,7 +1,7 @@
 #include "Playing_field.h"
 #include <bits/stdc++.h>
 
-Well :: Well (SDL_Renderer *renderer, int _x, int _y, int _topScore, Level _level)
+Well :: Well (SDL_Renderer *renderer, int _x, int _y, int _topScore, int _level)
 :   score(renderer, _topScore)
 {
     x = _x;

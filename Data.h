@@ -21,6 +21,8 @@ const int SCREEN_WIDTH = 1520;
 
 const int buttonDistance = 100;
 
+const int MAX_LEVEL = 6;
+
 //the number of tile in a tile shape matrix
 const int TETRAD_SIZE = 4;
 
@@ -72,7 +74,5 @@ enum GameMode{
      Player2
 };
 
-enum Level{
-     easy = 1, medium, hard, asian, blackPeople
-};
+const string LevelText[MAX_LEVEL] = {"EASY", "MEDIUM", "HARD", "ULTRA HARD", "ASIAN", "BLACK PEOPLE"};
 

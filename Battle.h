@@ -22,6 +22,8 @@ public:
 
      //draw on the screen
      void display(SDL_Renderer *renderer);
+
+     void set_level(int _level);
 private:
      //player
      Game* player1;

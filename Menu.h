@@ -16,7 +16,7 @@ public:
     bool load_media(SDL_Renderer *renderer);
 
     //display into screen
-    void display(SDL_Renderer *renderer);
+    void display(SDL_Renderer *renderer, int level);
 
     //handle event
     bool click_play(SDL_Event &e);
@@ -25,6 +25,12 @@ public:
     
     bool click_setting(SDL_Event &e);
 
+    bool click_up_level_button(SDL_Event &e);
+
+    bool click_down_level_button(SDL_Event &e);
+
+    bool click_back_button(SDL_Event &e);
+
     //if we are in menu
     bool get_active();
 
@@ -32,6 +38,8 @@ public:
     void set_active();
 
     void set_in_setting();
+
+    void set_not_in_setting();
 
     bool check_in_setting();
 private:
@@ -53,6 +61,8 @@ private:
     LTexture LevelButton;
 
     LTexture difficulty;
+
+    LTexture backButton;
 
     //setting button texture
     LTexture SettingButton;

@@ -53,11 +53,17 @@ bool Menu :: load_media(SDL_Renderer *renderer)
         cout << "failed to load difficulty text texture\n";
         success = false;
     }
+    if(!backButton.loadFromFile(renderer, "Assets/Pictures/Back Button.png")){
+        cout << "failed to load back button\n";
+        success = false;
+    }
     return success;
 }
 
-void Menu :: display(SDL_Renderer *renderer)
+void Menu :: display(SDL_Renderer *renderer, int level)
 {   
+    difficulty.loadFromRenderedText(renderer, SettingFont, LevelText[level - 1], {100, 100, 0});
+
     //the position and dimension of menu
     SDL_Rect menuRect = {(SCREEN_WIDTH - MenuBackground.getWidth()) / 2, (SCREEN_HEIGHT - MenuBackground.getHeight()) / 2, MenuBackground.getWidth(), MenuBackground.getHeight()};
 
@@ -85,13 +91,20 @@ void Menu :: display(SDL_Renderer *renderer)
         SettingButton.render(renderer, settingButton_x, settingButton_y);
     }
     else{
+        //draw level button
         LevelButton.render(renderer, menuRect.x + (menuRect.w - LevelButton.getWidth()) / 2, menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2);
 
+        //draw content level
         difficulty.render(renderer, menuRect.x + (menuRect.w - difficulty.getWidth()) / 2, menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2 + LevelButton.getHeight());
 
-        LeftButton.render(renderer, menuRect.x + (menuRect.w - LevelButton.getWidth()) / 2 , menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2 + LevelButton.getHeight());
+        //draw left button(decrease level)
+        LeftButton.render(renderer, menuRect.x + (menuRect.w - LevelButton.getWidth()) / 2 - LeftButton.getWidth() , menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2 + LevelButton.getHeight());
 
-        RightButton.render(renderer, menuRect.x + (menuRect.w - LevelButton.getWidth()) / 2 + LevelButton.getWidth() - RightButton.getWidth() , menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2 + LevelButton.getHeight());
+        //draw right button(increase level)
+        RightButton.render(renderer, menuRect.x + (menuRect.w - LevelButton.getWidth()) / 2 + LevelButton.getWidth(), menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2 + LevelButton.getHeight());
+
+        //draw back button
+        backButton.render(renderer, menuRect.x, menuRect.y);
     }
     
 }
@@ -166,7 +179,65 @@ bool Menu :: click_setting(SDL_Event &e){
     return false;
 }
 
+bool Menu :: click_up_level_button(SDL_Event &e){
+    //get x, y menu rect
+    SDL_Rect menuRect = {(SCREEN_WIDTH - MenuBackground.getWidth()) / 2, (SCREEN_HEIGHT - MenuBackground.getHeight()) / 2, MenuBackground.getWidth(), MenuBackground.getHeight()};
 
+    //get x, y PlayButton rext
+    int rightButtonX = menuRect.x + (menuRect.w - LevelButton.getWidth()) / 2 + LevelButton.getWidth() ;
+    int rightButtonY = menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2 + LevelButton.getHeight();
+    //the position of mouse
+    int x, y;
+
+    //get mouse position
+    SDL_GetMouseState(&x, &y);
+
+    //if player choses playing
+    if (x >= rightButtonX && x <= rightButtonX + RightButton.getWidth() && y >= rightButtonY && y <= rightButtonY + RightButton.getHeight() && e.type == SDL_MOUSEBUTTONDOWN){
+        return true;
+    }
+    return false;
+}
+
+bool Menu :: click_down_level_button(SDL_Event &e){
+    //get x, y menu rect
+    SDL_Rect menuRect = {(SCREEN_WIDTH - MenuBackground.getWidth()) / 2, (SCREEN_HEIGHT - MenuBackground.getHeight()) / 2, MenuBackground.getWidth(), MenuBackground.getHeight()};
+
+    //get x, y PlayButton rext
+    int leftButtonX = menuRect.x + (menuRect.w - LevelButton.getWidth()) / 2 - LeftButton.getWidth();
+    int leftButtonY = menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2 + LevelButton.getHeight();
+    //the position of mouse
+    int x, y;
+
+    //get mouse position
+    SDL_GetMouseState(&x, &y);
+
+    //if player choses playing
+    if (x >= leftButtonX && x <= leftButtonX + LeftButton.getWidth() && y >= leftButtonY && y <= leftButtonY + LeftButton.getHeight() && e.type == SDL_MOUSEBUTTONDOWN){
+        return true;
+    }
+    return false;
+}
+
+bool Menu :: click_back_button (SDL_Event &e){
+    //get x, y menu rect
+    SDL_Rect menuRect = {(SCREEN_WIDTH - MenuBackground.getWidth()) / 2, (SCREEN_HEIGHT - MenuBackground.getHeight()) / 2, MenuBackground.getWidth(), MenuBackground.getHeight()};
+
+    //get x, y back Button rext
+    int backButtonX = menuRect.x;
+    int backButtonY = menuRect.y;
+    //the position of mouse
+    int x, y;
+
+    //get mouse position
+    SDL_GetMouseState(&x, &y);
+
+    //if player choses playing
+    if (x >= backButtonX && x <= backButtonX + backButton.getWidth() && y >= backButtonY && y <= backButtonY + backButton.getHeight() && e.type == SDL_MOUSEBUTTONDOWN){
+        return true;
+    }
+    return false;
+}
 
 bool Menu :: get_active()
 {
@@ -184,4 +255,8 @@ void Menu :: set_in_setting(){
 
 bool Menu :: check_in_setting(){
     return inSetting;
+}
+
+void Menu::set_not_in_setting(){
+    inSetting = false;
 }

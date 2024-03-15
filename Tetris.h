@@ -8,7 +8,7 @@ class Tetris
 {
 public:
     //constructor
-    Tetris(Level _level = easy);
+    Tetris(int _level = 1);
 
     //destructor
     ~Tetris();
@@ -43,7 +43,7 @@ public:
     void close_game();
     
 private:
-    Level level;
+    int level;
 
     //the window for the game
     SDL_Window *window;

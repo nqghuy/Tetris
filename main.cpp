@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     srand(time(NULL));
 
     //new tetris game
-    Tetris *tetris = new Tetris;
+    Tetris *tetris = new Tetris(1);
 
     //check if initialize false
     if (!tetris->init("Tetris", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT)){
