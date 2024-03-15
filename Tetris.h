@@ -43,6 +43,10 @@ public:
     void close_game();
     
 private:
+    //present ghost tetromino or not
+    bool ghostTetromino;
+
+    //level in game(can be changed)
     int level;
 
     //the window for the game

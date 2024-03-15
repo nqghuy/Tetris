@@ -37,7 +37,7 @@ bool Menu :: load_media(SDL_Renderer *renderer)
         cout << "failed to load setting button\n";
         success = false;
     }
-    if(!LeftButton.loadFromFile(renderer, "Assets/Pictures/left_button.jpg")){
+    if(!LeftButton.loadFromFile(renderer, "Assets/Pictures/left_button.png")){
         cout << "failed to load left button\n";
         success = false;
     }
@@ -45,11 +45,11 @@ bool Menu :: load_media(SDL_Renderer *renderer)
         cout << "failed to load right button\n";
         success = false;
     }
-    if(!LevelButton.loadFromFile(renderer, "Assets/Pictures/Level_button.png")){
+    if(!LevelButton.loadFromRenderedText(renderer, SettingFont, "LEVEL", {100, 100, 100, 0})){
         cout << "failed to load level button\n";
         success = false;
     }
-    if(!difficulty.loadFromRenderedText(renderer, SettingFont, "EASY", {100, 100, 100, 0})){
+    if(!difficulty.loadFromRenderedText(renderer, SettingFont, "EASY", LevelColor[0])){
         cout << "failed to load difficulty text texture\n";
         success = false;
     }
@@ -57,12 +57,26 @@ bool Menu :: load_media(SDL_Renderer *renderer)
         cout << "failed to load back button\n";
         success = false;
     }
+    if (!ghostTetrominoText.loadFromRenderedText(renderer, SettingFont, "GHOST PIECE", {0, 191, 255})){
+        cout << "failed to load ghost tetromino text\n";
+        success = false;
+    }
+    if(!OnText.loadFromRenderedText(renderer, SettingFont, "ON", {0, 191, 255})){
+        cout << "failed to load on text";
+        success = false;
+    }
+
+    if(!OffText.loadFromRenderedText(renderer, SettingFont, "OFF", {255, 0, 0})){
+        cout << "failed to load Off text";
+        success = false;
+    }
+
     return success;
 }
 
-void Menu :: display(SDL_Renderer *renderer, int level)
+void Menu :: display(SDL_Renderer *renderer, int level, bool ghostTetromino)
 {   
-    difficulty.loadFromRenderedText(renderer, SettingFont, LevelText[level - 1], {100, 100, 0});
+    difficulty.loadFromRenderedText(renderer, SettingFont, LevelText[level - 1], LevelColor[level - 1]);
 
     //the position and dimension of menu
     SDL_Rect menuRect = {(SCREEN_WIDTH - MenuBackground.getWidth()) / 2, (SCREEN_HEIGHT - MenuBackground.getHeight()) / 2, MenuBackground.getWidth(), MenuBackground.getHeight()};
@@ -92,16 +106,35 @@ void Menu :: display(SDL_Renderer *renderer, int level)
     }
     else{
         //draw level button
-        LevelButton.render(renderer, menuRect.x + (menuRect.w - LevelButton.getWidth()) / 2, menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2);
+        int margin = 50;
+        LevelButton.render(renderer, menuRect.x + margin, menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2);
 
         //draw content level
-        difficulty.render(renderer, menuRect.x + (menuRect.w - difficulty.getWidth()) / 2, menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2 + LevelButton.getHeight());
+        difficulty.render(renderer, menuRect.x + menuRect.w / 2  + (menuRect.w / 2 - difficulty.getWidth()) / 2 , menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2);
 
         //draw left button(decrease level)
-        LeftButton.render(renderer, menuRect.x + (menuRect.w - LevelButton.getWidth()) / 2 - LeftButton.getWidth() , menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2 + LevelButton.getHeight());
+        LeftButton.render(renderer, menuRect.x + menuRect.w / 2 - LeftButton.getWidth() , menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2);
 
         //draw right button(increase level)
-        RightButton.render(renderer, menuRect.x + (menuRect.w - LevelButton.getWidth()) / 2 + LevelButton.getWidth(), menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2 + LevelButton.getHeight());
+        RightButton.render(renderer, menuRect.x + menuRect.w - RightButton.getWidth(), menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2);
+
+        //draw ghost tetromino choice text
+        ghostTetrominoText.render(renderer, menuRect.x + margin, menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2 + LevelButton.getHeight());
+
+        //draw on or off text
+        if(ghostTetromino){
+            OnText.render(renderer, menuRect.x + menuRect.w / 2 + (menuRect.w / 2 - OnText.getWidth()) / 2 , menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2 + OnText.getHeight());
+        }
+        else
+        {
+            OffText.render(renderer, menuRect.x + menuRect.w / 2  + (menuRect.w / 2 - OffText.getWidth()) / 2 , menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2 + OffText.getHeight());
+        }
+
+        //draw left button(change ghost piece)
+        LeftButton.render(renderer, menuRect.x + menuRect.w / 2 - LeftButton.getWidth(), menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2 + LevelButton.getHeight());
+
+        //draw right button(change ghost piece)
+        RightButton.render(renderer, menuRect.x + menuRect.w - RightButton.getWidth(), menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2 + LevelButton.getHeight());
 
         //draw back button
         backButton.render(renderer, menuRect.x, menuRect.y);
@@ -138,7 +171,7 @@ bool Menu :: click_battle(SDL_Event &e){
     int menuX = (SCREEN_WIDTH - MenuBackground.getWidth()) / 2;
     int menuY = (SCREEN_HEIGHT - MenuBackground.getHeight()) / 2;
 
-    //get x, y PlayButton rext
+    //get x, y battle rext
     int battleButtonX = menuX + (MenuBackground.getWidth() - PlayButton.getWidth()) / 2;
     int battleButtonY = menuY + (MenuBackground.getHeight() - PlayButton.getHeight()) / 2 + PlayButton.getHeight() *  3 / 2;
 
@@ -148,7 +181,7 @@ bool Menu :: click_battle(SDL_Event &e){
     //get mouse position
     SDL_GetMouseState(&x, &y);
 
-    //if player choses playing
+    //if player choses battle
     if (x >= battleButtonX && x <= battleButtonX + BattleButton.getWidth() && y >= battleButtonY && y <= battleButtonY + BattleButton.getHeight() && e.type == SDL_MOUSEBUTTONDOWN){
         active = false;
         return true;
@@ -161,7 +194,7 @@ bool Menu :: click_setting(SDL_Event &e){
     int menuX = (SCREEN_WIDTH - MenuBackground.getWidth()) / 2;
     int menuY = (SCREEN_HEIGHT - MenuBackground.getHeight()) / 2;
 
-    //get x, y PlayButton rext
+    //get x, y setting rext
     int settingButtonX = menuX + (MenuBackground.getWidth() - PlayButton.getWidth()) / 2;
     int settingButtonY = menuY + (MenuBackground.getHeight() - PlayButton.getHeight()) / 2 + PlayButton.getHeight() *  3;
 
@@ -171,7 +204,7 @@ bool Menu :: click_setting(SDL_Event &e){
     //get mouse position
     SDL_GetMouseState(&x, &y);
 
-    //if player choses playing
+    //if player choses setting
     if (x >= settingButtonX && x <= settingButtonX + SettingButton.getWidth() && y >= settingButtonY && y <= settingButtonY + SettingButton.getHeight() && e.type == SDL_MOUSEBUTTONDOWN){
         inSetting = true;
         return true;
@@ -183,16 +216,17 @@ bool Menu :: click_up_level_button(SDL_Event &e){
     //get x, y menu rect
     SDL_Rect menuRect = {(SCREEN_WIDTH - MenuBackground.getWidth()) / 2, (SCREEN_HEIGHT - MenuBackground.getHeight()) / 2, MenuBackground.getWidth(), MenuBackground.getHeight()};
 
-    //get x, y PlayButton rext
-    int rightButtonX = menuRect.x + (menuRect.w - LevelButton.getWidth()) / 2 + LevelButton.getWidth() ;
-    int rightButtonY = menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2 + LevelButton.getHeight();
+    //get x, y right Button rext
+    int rightButtonX = menuRect.x + menuRect.w - RightButton.getWidth();
+    int rightButtonY = menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2;
+
     //the position of mouse
     int x, y;
 
     //get mouse position
     SDL_GetMouseState(&x, &y);
 
-    //if player choses playing
+    //if player choses level up
     if (x >= rightButtonX && x <= rightButtonX + RightButton.getWidth() && y >= rightButtonY && y <= rightButtonY + RightButton.getHeight() && e.type == SDL_MOUSEBUTTONDOWN){
         return true;
     }
@@ -203,16 +237,17 @@ bool Menu :: click_down_level_button(SDL_Event &e){
     //get x, y menu rect
     SDL_Rect menuRect = {(SCREEN_WIDTH - MenuBackground.getWidth()) / 2, (SCREEN_HEIGHT - MenuBackground.getHeight()) / 2, MenuBackground.getWidth(), MenuBackground.getHeight()};
 
-    //get x, y PlayButton rext
-    int leftButtonX = menuRect.x + (menuRect.w - LevelButton.getWidth()) / 2 - LeftButton.getWidth();
-    int leftButtonY = menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2 + LevelButton.getHeight();
+    //get x, y leftButton rext
+    int leftButtonX = menuRect.x + menuRect.w / 2 - LeftButton.getWidth() ;
+    int leftButtonY = menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2;
+
     //the position of mouse
     int x, y;
 
     //get mouse position
     SDL_GetMouseState(&x, &y);
 
-    //if player choses playing
+    //if player choses level down
     if (x >= leftButtonX && x <= leftButtonX + LeftButton.getWidth() && y >= leftButtonY && y <= leftButtonY + LeftButton.getHeight() && e.type == SDL_MOUSEBUTTONDOWN){
         return true;
     }
@@ -232,8 +267,35 @@ bool Menu :: click_back_button (SDL_Event &e){
     //get mouse position
     SDL_GetMouseState(&x, &y);
 
-    //if player choses playing
+    //if player choses back button
     if (x >= backButtonX && x <= backButtonX + backButton.getWidth() && y >= backButtonY && y <= backButtonY + backButton.getHeight() && e.type == SDL_MOUSEBUTTONDOWN){
+        return true;
+    }
+    return false;
+}
+
+bool Menu :: click_set_ghost_piece(SDL_Event &e){
+    //get x, y menu rect
+    SDL_Rect menuRect = {(SCREEN_WIDTH - MenuBackground.getWidth()) / 2, (SCREEN_HEIGHT - MenuBackground.getHeight()) / 2, MenuBackground.getWidth(), MenuBackground.getHeight()};
+
+    //left button
+    int leftButtonX = menuRect.x + menuRect.w / 2 - LeftButton.getWidth(); 
+    int leftButtonY = menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2 + LevelButton.getHeight();
+
+    //right button
+    int rightButtonX = menuRect.x + menuRect.w - RightButton.getWidth();
+    int rightButtonY = menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2 + LevelButton.getHeight();
+    //the position of mouse
+    int x, y;
+
+    //get mouse position
+    SDL_GetMouseState(&x, &y);
+
+    //if player choses changeing ghost tetromino
+    if (x >= leftButtonX && x <= leftButtonX + LeftButton.getWidth() && y >= leftButtonY && y <= leftButtonY + LeftButton.getHeight() && e.type == SDL_MOUSEBUTTONDOWN){
+        return true;
+    }
+    else if (x >= rightButtonX && x <= rightButtonX + RightButton.getWidth() && y >= rightButtonY && y <= rightButtonY + RightButton.getHeight() && e.type == SDL_MOUSEBUTTONDOWN){
         return true;
     }
     return false;

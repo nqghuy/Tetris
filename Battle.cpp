@@ -19,12 +19,12 @@ bool Battle :: get_active(){
      return active;
 }
 
-void Battle :: set_active(){
+void Battle :: set_active(int _level, bool _ghostTetromino){
      active = true;
 
      //reset move time
-     player1->set_active();
-     player2->set_active();
+     player1->set_active(_level, _ghostTetromino);
+     player2->set_active(_level, _ghostTetromino);
 }
 
 void Battle :: handle_event(SDL_Renderer *renderer, SDL_Event &e){
@@ -70,7 +70,4 @@ void Battle :: display(SDL_Renderer *renderer){
      }
 }
 
-void Battle :: set_level(int _level){
-     player1->set_level(_level);
-     player2->set_level(_level);
-}
+

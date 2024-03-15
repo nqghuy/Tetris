@@ -55,10 +55,13 @@ public:
     //get current score
     int get_current_score();
 
+    //lose texture for single play
     void draw_lose_background(SDL_Renderer *renderer);
 
+    //if player chose play or battle again
     bool press_play_again(SDL_Event &e);
 
+    //come back to menu
     bool return_home(SDL_Event &e);
 private:
     int level;

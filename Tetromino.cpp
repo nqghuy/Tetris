@@ -59,6 +59,41 @@ void Tetromino :: draw(SDL_Renderer *renderer, Well &well)
     }
 }
 
+void Tetromino :: draw_ghost_tetromino(SDL_Renderer *renderer, Well &well){
+    //the copy of this tetromino
+    Tetromino ghost = *this;
+
+    //find the position
+    while (!ghost.check_bottom_collision(well)){
+        ghost.y_coordinate ++;
+    }
+    ghost.y_coordinate--;
+
+    for (int i = 0; i < TETRAD_SIZE; i++){
+        for (int j = 0; j < TETRAD_SIZE; j++){
+            //if this coordinate is a block
+            if (ghost.TetrominoShape[i][j]){
+
+                //if this block do not present in well
+                if (ghost.y_coordinate + i < HIDDEN_ROWS){
+                    continue;
+                }
+
+                //rect of each tile
+                SDL_Rect rect = {well.get_pos_x(ghost.x_coordinate) + j * TILE_SIZE, well.get_pos_y(ghost.y_coordinate) + i * TILE_SIZE, TILE_SIZE, TILE_SIZE};
+
+                //color of this tetromino
+                SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+                SDL_RenderFillRect(renderer, &rect);
+
+                //draw border with black
+                SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+                SDL_RenderDrawRect(renderer, &rect);
+            }
+        }
+    }
+}
+
 //rotate the tetromino by using next shape
 void Tetromino :: Rotate(Well &well)
 {
@@ -128,8 +163,32 @@ void Tetromino :: Move(Well &well)
 
 //handle event for player 2
 void Tetromino :: handle_event2(SDL_Event &e, Well &well){
+
+    //if enter is pressed
+    if(e.type == SDL_KEYDOWN && e.key.repeat == 0){
+        if (e.key.keysym.sym == SDLK_RETURN){
+            //drop
+            this->drop(well);
+        }
+    }
+
     //current key state, true if this key is pressed
     const Uint8* currentKeyStates = SDL_GetKeyboardState( NULL );
+
+    //if key down is pressed
+    if( currentKeyStates[ SDL_SCANCODE_DOWN ] )
+    {
+        if (VelY == 0){//avoid repeated key
+            this->VelY = 1;
+           //return;
+        }
+    }
+
+    //if key down is released
+    else if(VelY != 0){
+        VelY = 0;
+        //return;
+    }
 
     //key right is pressed
     if( currentKeyStates[ SDL_SCANCODE_RIGHT ] )
@@ -177,34 +236,38 @@ void Tetromino :: handle_event2(SDL_Event &e, Well &well){
         return;
     }       
 
-    //if key down is pressed
-    if( currentKeyStates[ SDL_SCANCODE_DOWN ] )
-    {
-        if (VelY == 0){//avoid repeated key
-            this->VelY = 1;
-            return;
-        }
-    }
+    
 
-    //if key down is released
-    else if(VelY != 0){
-        VelY = 0;
-        return;
-    }
-
-    //if enter is pressed
-    if(e.type == SDL_KEYDOWN && e.key.repeat == 0){
-        if (e.key.keysym.sym == SDLK_RETURN){
-            //drop
-            this->drop(well);
-        }
-    }
+    
 }
 
 //handle event for player1
 void Tetromino :: handle_event1(SDL_Event &e, Well &well){
+    //drop if press space
+    if(e.type == SDL_KEYDOWN && e.key.repeat == 0){
+        if (e.key.keysym.sym == SDLK_SPACE){
+            this->drop(well);
+        }
+    }
+
+
+
     //current key state
     const Uint8* currentKeyStates = SDL_GetKeyboardState( NULL );
+
+    //s is pressed
+    if( currentKeyStates[ SDL_SCANCODE_S ] )
+    {   
+        if (VelY == 0){//avoid repeated key
+            this->VelY = 1;
+            //return;
+        }
+    }
+    //released
+    else if(VelY != 0){
+        VelY = 0;
+        //return;
+    }
 
     //key d is pressed
     if( currentKeyStates[ SDL_SCANCODE_D ] )
@@ -254,26 +317,9 @@ void Tetromino :: handle_event1(SDL_Event &e, Well &well){
         return;
     }       
 
-    //s is pressed
-    if( currentKeyStates[ SDL_SCANCODE_S ] )
-    {   
-        if (VelY == 0){//avoid repeated key
-            this->VelY = 1;
-            return;
-        }
-    }
-    //released
-    else if(VelY != 0){
-        VelY = 0;
-        return;
-    }
+    
 
-    //drop if press space
-    if(e.type == SDL_KEYDOWN && e.key.repeat == 0){
-        if (e.key.keysym.sym == SDLK_SPACE){
-            this->drop(well);
-        }
-    }
+    
 }
 
 void Tetromino :: handle_events(SDL_Event &e, Well &well, GameMode gameMode){

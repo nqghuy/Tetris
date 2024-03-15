@@ -3,7 +3,7 @@
 #include <algorithm>
 using namespace std;
 
-Game::Game(SDL_Renderer *renderer, GameMode _gameMode, int _level)
+Game::Game(SDL_Renderer *renderer, GameMode _gameMode, int _level, bool _ghostTetromino)
     :   //initialize ...
       tetromino(Tetro_Type(rand() % 7), WIDE_CELLS / 2 - 1, 0), quit(true),
       well(renderer, (SCREEN_WIDTH - TILE_SIZE * WIDE_CELLS) / 2, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2, 0, _level),
@@ -11,6 +11,7 @@ Game::Game(SDL_Renderer *renderer, GameMode _gameMode, int _level)
       {
         gameMode = _gameMode;
         level = _level;
+        ghostTetromino = _ghostTetromino;
         moveTime = SDL_GetTicks();
 
         //set well corresponding to game mode
@@ -66,6 +67,11 @@ void Game :: update(){
     //current time
     int currentTime;
 
+    //up level if get enough score
+    if (level < MAX_LEVEL && this->get_current_score() > level * 500){
+        level = level++;
+    }
+
     //after 1s, the tetromino will fall
     currentTime = SDL_GetTicks();
 
@@ -114,8 +120,14 @@ void Game :: display(SDL_Renderer *renderer)
     well.draw(renderer, gameMode);
 
     if (!well.get_lose()){
+        //draw ghost tetromino if ghost piece on
+        if(ghostTetromino) tetromino.draw_ghost_tetromino(renderer, well);
+
+        //draw tetromino
         tetromino.draw(renderer, well);
     }
+    //render lose back ground if mode is single play
+    //in battle, we have to wait two player finish their game
     else if (this->gameMode == SinglePlay){
         well.draw_lose_background(renderer);
     }
@@ -126,9 +138,16 @@ bool Game :: is_paused()
     return (well.get_lose());
 }
 
-void Game :: set_active()
-{
+void Game :: set_active(int _level, bool _ghostTetromino)
+{   
+    //reset move time
     moveTime = SDL_GetTicks();
+
+    //set level and ghost tetromino
+    level = _level;
+    ghostTetromino = _ghostTetromino;
+
+    //ready to play
     quit = false;
     
 }
@@ -136,8 +155,3 @@ void Game :: set_active()
 void Game :: set_time(){
     moveTime = SDL_GetTicks();
 }
-
-void Game :: set_level(int _level){
-    level = _level;
-}
-

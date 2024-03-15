@@ -18,7 +18,7 @@ class Game
 {
 public:
     //constructor
-    Game(SDL_Renderer *renderer, GameMode _gameMode = SinglePlay, int _level = 1);
+    Game(SDL_Renderer *renderer, GameMode _gameMode = SinglePlay, int _level = 1, bool _ghostTetromino = true);
 
     //destructor
     ~Game();
@@ -42,7 +42,7 @@ public:
     bool is_paused();
 
     //game is ready to play
-    void set_active();
+    void set_active(int _level, bool ghostTetromino);
 
     //set move time equal to current time
     void set_time();
@@ -53,11 +53,13 @@ public:
     //to update if no event polled
     void update();
 
-    void set_level(int _level);
-
 private:
+    //true if present ghost tetromino
+    bool ghostTetromino;
+
     int level;
 
+    //single play or battle(player 1 or 2)
     GameMode gameMode;
 
     //field to play
@@ -77,6 +79,5 @@ private:
 
     //use to make tetromino free fall
     int moveTime;
-
 } ;
 #endif

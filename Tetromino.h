@@ -186,6 +186,9 @@ public:
 
     //draw tetromino in the well
     void draw(SDL_Renderer *renderer, Well &well);
+    
+    //draw ghost tetromino in well
+    void draw_ghost_tetromino (SDL_Renderer *renderer, Well &well);
 
     //draw tetromino according to position in screen
     void draw(SDL_Renderer *renderer, int x, int y);

@@ -39,6 +39,7 @@ Tetris :: Tetris(int _level)
     battle = new Battle(renderer);
     level = _level;
     quit = false;
+    ghostTetromino = true;
 }
 
 Tetris :: ~Tetris()
@@ -303,7 +304,7 @@ void Tetris :: display()
 
     //if not play, show menu
     if (menu->get_active()){
-        menu->display(renderer, level);
+        menu->display(renderer, level, ghostTetromino);
     }
 
     //else show game
@@ -355,23 +356,25 @@ void Tetris :: close_game(){
 }
 
 void Tetris :: menu_handle_event(SDL_Event &e){
+    //if not in setting
     if(!menu->check_in_setting()){
+        //single play
         if(menu->click_play(e)){
-            game->set_active();
-            game->set_level(this->level);
+            game->set_active(level, ghostTetromino);
             
         }
         //ready to a hot battle
         else if(menu->click_battle(e)){
-            battle->set_active();
-            battle->set_level(this->level);
+            battle->set_active(level, ghostTetromino);
         }
-
+        
+        //click setting
         else if(menu->click_setting(e)){
             menu->set_in_setting();
         }
     }
     else{
+        //setting level, ghost piece,...
         if (menu->click_up_level_button(e)){
             if (level < MAX_LEVEL) level++;
         }
@@ -380,6 +383,9 @@ void Tetris :: menu_handle_event(SDL_Event &e){
         }
         else if(menu->click_back_button(e)){
             menu->set_not_in_setting();
+        }
+        else if (menu->click_set_ghost_piece(e)){
+            ghostTetromino =  !ghostTetromino;
         }
     }
 }

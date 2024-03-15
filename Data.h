@@ -19,8 +19,10 @@ const int HIDDEN_ROWS = 2;
 const int SCREEN_HEIGHT = 900;
 const int SCREEN_WIDTH = 1520;
 
+//the distance between 2 button
 const int buttonDistance = 100;
 
+//max_level
 const int MAX_LEVEL = 6;
 
 //the number of tile in a tile shape matrix
@@ -74,5 +76,8 @@ enum GameMode{
      Player2
 };
 
+//ascending level text 
 const string LevelText[MAX_LEVEL] = {"EASY", "MEDIUM", "HARD", "ULTRA HARD", "ASIAN", "BLACK PEOPLE"};
 
+//ascending level color
+const SDL_Color LevelColor[MAX_LEVEL] = {{255, 255, 255}, {150,100, 200}, {100, 135, 237}, {177, 135, 85}, {255, 0, 0}, {0, 0, 0}};
