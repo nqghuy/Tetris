@@ -2,7 +2,7 @@
 #include "Playing_field.h"
 using namespace std;
 
-Tetromino :: Tetromino(Tetro_Type _TetrominoType, int x, int y)
+Tetromino :: Tetromino (Tetro_Type _TetrominoType, int x, int y)
 {
     active = true;
     TetrominoType = _TetrominoType;
@@ -169,6 +169,7 @@ void Tetromino :: handle_event2(SDL_Event &e, Well &well){
         if (e.key.keysym.sym == SDLK_RETURN){
             //drop
             this->drop(well);
+            return;
         }
     }
 
@@ -247,6 +248,7 @@ void Tetromino :: handle_event1(SDL_Event &e, Well &well){
     if(e.type == SDL_KEYDOWN && e.key.repeat == 0){
         if (e.key.keysym.sym == SDLK_SPACE){
             this->drop(well);
+            return;
         }
     }
 

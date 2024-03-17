@@ -31,7 +31,7 @@ public:
     bool loadFromRenderedText(SDL_Renderer *renderer, TTF_Font *font, string textTexture, SDL_Color);
 
     //render texture at given point
-    void render(SDL_Renderer *renderer, int, int, SDL_Rect* = NULL, double angle = 0, SDL_Point* center = NULL, SDL_RendererFlip = SDL_FLIP_NONE);
+    void render(SDL_Renderer *renderer, int, int, SDL_Rect* = NULL, SDL_Rect* rectQuad = NULL, double angle = 0, SDL_Point* center = NULL, SDL_RendererFlip = SDL_FLIP_NONE);
 
     //free memory
     void free();

@@ -5,8 +5,8 @@ using namespace std;
 
 Game::Game(SDL_Renderer *renderer, GameMode _gameMode, int _level, bool _ghostTetromino)
     :   //initialize ...
-      tetromino(Tetro_Type(rand() % 7), WIDE_CELLS / 2 - 1, 0), quit(true),
       well(renderer, (SCREEN_WIDTH - TILE_SIZE * WIDE_CELLS) / 2, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2, 0, _level),
+    tetromino(Tetro_Type(rand() % 7), WIDE_CELLS / 2 - 1, 0), quit(true),
       nextTetromino(Tetro_Type(rand() % 7), WIDE_CELLS / 2 - 1, 0), pause(false)
       {
         gameMode = _gameMode;
@@ -131,6 +131,7 @@ void Game :: display(SDL_Renderer *renderer)
     else if (this->gameMode == SinglePlay){
         well.draw_lose_background(renderer);
     }
+
 }
 
 bool Game :: is_paused()

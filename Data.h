@@ -25,6 +25,8 @@ const int buttonDistance = 100;
 //max_level
 const int MAX_LEVEL = 6;
 
+const double PI = 3.14159265;
+
 //the number of tile in a tile shape matrix
 const int TETRAD_SIZE = 4;
 
@@ -69,6 +71,14 @@ extern LTexture gPlayer2Wins;
 
 //appear when draw
 extern LTexture gDraw;
+
+//animation texture
+extern LTexture gLeafTexture;
+
+extern LTexture gSnowTexture;
+
+
+
 
 enum GameMode{
      SinglePlay,

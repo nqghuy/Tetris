@@ -75,13 +75,16 @@ bool LTexture :: loadFromRenderedText(SDL_Renderer *renderer, TTF_Font *font, st
 
 }
 
-void LTexture :: render (SDL_Renderer *renderer, int x, int y, SDL_Rect *clip, double angle, SDL_Point *center, SDL_RendererFlip flip)
+void LTexture :: render (SDL_Renderer *renderer, int x, int y, SDL_Rect *clip, SDL_Rect *_rectQuad, double angle, SDL_Point *center, SDL_RendererFlip flip)
 {
     SDL_Rect rectQuad = {x, y, mWidth, mHeight}; //destination space
     if (clip != NULL)
     {
         rectQuad.w = clip->w;
         rectQuad.h = clip->h;
+    }
+    if (_rectQuad != NULL){
+        rectQuad = *_rectQuad;
     }
     SDL_RenderCopyEx(renderer, mTexture, clip, &rectQuad, angle, center, flip);
 }

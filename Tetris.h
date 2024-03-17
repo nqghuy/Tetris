@@ -66,6 +66,8 @@ private:
     //menu before playing
     Menu *menu;
 
+    Animation animation[20];
+
     //true if quit
     bool quit;
 };

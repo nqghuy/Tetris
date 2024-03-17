@@ -29,7 +29,12 @@ LTexture gPlayer2Wins;
 
 LTexture gDraw;
 
+LTexture gLeafTexture;
+
+LTexture gSnowTexture;
+
 Tetris :: Tetris(int _level)
+:   animation()
 {
     window = NULL;
     renderer = NULL;
@@ -113,7 +118,7 @@ bool Tetris :: init(const char *title, int x, int y, int w, int h)
 bool Tetris :: load_texture(){
     bool success = true;
      //load background
-    if (!background.loadFromFile(renderer, "Assets/Pictures/background1.png")){
+    if (!background.loadFromFile(renderer, "Assets/Pictures/Autumn.png")){
         cout << "failed to load background";
         success = false;
     }
@@ -159,6 +164,14 @@ bool Tetris :: load_texture(){
     if(!gDraw.loadFromFile(renderer, "Assets/Pictures/draw.png"))
     {
         cout << "failed to load draw texture\n";
+        success = false;
+    }
+    if(!gSnowTexture.loadFromFile(renderer, "Assets/Pictures/snow.png")){
+        cout << "failed to load snow texture\n";
+        success = false;
+    }
+    if (!gLeafTexture.loadFromFile(renderer, "Assets/Pictures/leaf.png")){
+        cout << "failed to load leaf texture\n";
         success = false;
     }
 
@@ -302,6 +315,10 @@ void Tetris :: display()
     //show background
     background.render(renderer, 0, 0);
 
+    for (int i = 0; i < 20; i++){
+        animation[i].render(renderer);
+    }
+
     //if not play, show menu
     if (menu->get_active()){
         menu->display(renderer, level, ghostTetromino);
@@ -317,7 +334,7 @@ void Tetris :: display()
 
     //display battle
     else battle->display(renderer);
-
+    // gRedTexture.render(renderer, SCREEN_WIDTH / 2 + 50, SCREEN_HEIGHT / 2 + 50);
     //present into screen
     SDL_RenderPresent(renderer);
 }

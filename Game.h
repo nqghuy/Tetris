@@ -11,6 +11,8 @@
 #include "Texture.h"
 #include "include/SDL2/SDL_mixer.h"
 #include "Menu.h"
+#include "Animation.h"
+
 using namespace std;
 
 //used to operate the game

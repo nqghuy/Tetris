@@ -268,6 +268,3 @@ private:
 };
 
 #endif // Tetromino_h
-
-
-
