@@ -2,30 +2,44 @@
 #include "Texture.h"
 class Animation{
 public:
+     //constructor
      Animation ();
-     Animation(int _x, int _y);
-     // ~Animation();
-     //bool get_active();
+
+     //destructor
+     ~Animation();
+
+     //draw animation
      void render(SDL_Renderer *renderer);
 private:
+     //main texture
      LTexture *mTexture;
-     int x, y;
-     int vX, vY;
 
+     //the current position
+     int x, y;
+
+     //
+     int windV, gravity;
+
+     //current dimentsion(used to rotate animation around z axis)
      int width;
      int height;
 
+     //rotate around y axis
      double angle;
+
+     //calculate the frame object rend
      int mFrame;
-     int windV;
+
+     //the smaller(far) object is, the less opacity
      int opacity;
 
+     //used to shrink animation
      int shrinkX;
      int shrinkY;
 
+     //rotate around z axis
      int rotateX;
-     int rotateY;
-     int original_rotateX;
-     int original_rotateY;
 
+     //object is shrinking or not
+     bool isShrink;
 };

@@ -6,7 +6,7 @@ LTexture :: LTexture()
     mHeight = 0;
 }
 
-bool LTexture :: loadFromFile(SDL_Renderer *renderer, string file)
+bool LTexture :: loadFromFile(SDL_Renderer *renderer, string file, SDL_Color Color)
 {
     free();
 
@@ -21,7 +21,7 @@ bool LTexture :: loadFromFile(SDL_Renderer *renderer, string file)
     else
     {
         //set color key image (background)
-        SDL_SetColorKey(LoadedSurface, SDL_TRUE, SDL_MapRGB(LoadedSurface->format, 255, 255, 255));
+        SDL_SetColorKey(LoadedSurface, SDL_TRUE, SDL_MapRGB(LoadedSurface->format, Color.r, Color.g, Color.b));
 
         //create texture from surface
         newTexture = SDL_CreateTextureFromSurface(renderer, LoadedSurface);

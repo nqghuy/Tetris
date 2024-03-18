@@ -118,7 +118,7 @@ bool Tetris :: init(const char *title, int x, int y, int w, int h)
 bool Tetris :: load_texture(){
     bool success = true;
      //load background
-    if (!background.loadFromFile(renderer, "Assets/Pictures/Autumn.png")){
+    if (!background.loadFromFile(renderer, "Assets/Pictures/Autumn.png", {150, 255, 255})){
         cout << "failed to load background";
         success = false;
     }
@@ -315,7 +315,7 @@ void Tetris :: display()
     //show background
     background.render(renderer, 0, 0);
 
-    for (int i = 0; i < 20; i++){
+    for (int i = 0; i < MAX_ANIMATION; i++){
         animation[i].render(renderer);
     }
 

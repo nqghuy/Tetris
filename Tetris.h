@@ -66,7 +66,7 @@ private:
     //menu before playing
     Menu *menu;
 
-    Animation animation[20];
+    Animation animation[MAX_ANIMATION];
 
     //true if quit
     bool quit;

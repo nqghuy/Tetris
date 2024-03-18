@@ -17,7 +17,7 @@ bool Menu :: load_media(SDL_Renderer *renderer)
     bool success = true;
 
     //load menu background
-    if (!MenuBackground.loadFromFile(renderer, "Assets/Pictures/menu.png")){
+    if (!MenuBackground.loadFromFile(renderer, "Assets/Pictures/menu.png", {195, 195, 195})){
         cout << "failed to load menu background\n";
         success = false;
     }

@@ -25,7 +25,7 @@ public:
     ~LTexture() {};
 
     //load image from file
-    bool loadFromFile(SDL_Renderer *renderer, string file);
+    bool loadFromFile(SDL_Renderer *renderer, string file, SDL_Color Color = {255, 255, 255});
 
     //create image from font string
     bool loadFromRenderedText(SDL_Renderer *renderer, TTF_Font *font, string textTexture, SDL_Color);

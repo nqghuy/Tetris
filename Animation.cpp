@@ -1,93 +1,102 @@
 #include "Animation.h"
 #include "Data.h"
 
-Animation :: Animation(){
-     x = rand() % SCREEN_WIDTH;
-     y = 0;
-     vX = 0;
-     vY = rand() % 5;
-     mTexture = &gLeafTexture;
+const int snowWidth = 150;
+const int snowHeight = 120;
+const int leafDimension = 100;
 
-     angle = rand() % 180;
-     mFrame = 0;
+Animation :: Animation(){
+     //set position
+     x = rand() % SCREEN_WIDTH;
+     y = -leafDimension;
+
+     //random wind and gravity
      windV = rand() % 3;
-     int tmp = rand() % 2;
+     gravity = rand() % 5 + 1;
+
+     //random wind is positive or negative
+     int tmp = rand() % 2 + 1;
      if (tmp % 2){
           windV = - windV;
      }
+
+
+     //set default texture
+     mTexture = &gLeafTexture;
+
+     //the first angle
+     angle = rand() % 180;
+
+     //the initial frame is zero
+     mFrame = 0;
+     
+     //the shrink ratio
      shrinkX = rand() % 5 + 1;
      shrinkY = shrinkX;
-     opacity = min(255 / (shrinkX) + rand() % 20, 255);
-     rotateX = rand() % 3 + 1;
-     // rotateY = rand() % 3 + 1;
-     original_rotateX = rotateX;
-     // original_rotateY = rotateY;
 
-     width = 101 / shrinkX;
+     //opacity according to shrink
+     opacity = min(255 / (shrinkX) + 30, 255);
+
+     //random rotate speed
+     rotateX = rand() % 2 + 1;
+
+     //cheat set width, height 
+     width = leafDimension  / shrinkX;
+     height = leafDimension / shrinkY;
+
+     //the object is in max size so shrink it
+     isShrink = true;
 }
 
-Animation :: Animation(int _x, int _y){
-     x = _x;
-     y = _y;
-     mTexture = &gLeafTexture;
-     mFrame = 0;
+Animation :: ~Animation(){
+     mTexture = NULL;
 }
-
-// bool Animation :: get_active(){
-//      return mFrame < 20;
-// }
 
 void Animation :: render(SDL_Renderer *renderer){
-     gLeafTexture.setAlphaMode(opacity);
+     //set opacity before rend
+     mTexture->setAlphaMode(opacity);
 
-     // if (width < 0 || height < 0 || width < gLeafTexture.getWidth() || height < gLeafTexture.getHeight()){
-     //      rotate = -rotate;
-     // }
-     //gLeafTexture.getWidth() =101
-     //gLeafTexture.getHeight() = 105;
-
-     height = gLeafTexture.getHeight() / shrinkY;
-
-     while(width <= 0){
-          width += abs(rotateX);
-          rotateX = -abs(rotateX);
-     }
-      while(width >= 101/shrinkX){
-          width -= abs(rotateX);
-          rotateX = abs(rotateX);
-     }
+     //destination rect
      SDL_Rect desRect = {x, y, width, height};
 
-     gLeafTexture.render(renderer, x, y, NULL, &desRect, angle);
+     //draw
+     mTexture->render(renderer, x, y, NULL, &desRect, angle);
 
+     //change mTexture
      mFrame++;
+
+     //update position
      if ((mFrame % 4) == 0){
-          y += vY;
+          y += gravity;
           angle += 1;
-          x += windV;
-          width  -= rotateX;
+          
+          //if object is shrinking
+          if (isShrink){
+               //update x position and width
+               x += windV;
+               width-= rotateX;
+
+               //if object in smallest size
+               if (width <= 0) {
+                    isShrink = false;
+               }
+          }
+
+          //if object is in large
+          else{
+               //new formulation
+               x += windV - rotateX;
+
+               //update width
+               width += rotateX;
+
+               //if object is in max size
+               if (width >= gLeafTexture.getWidth() / shrinkX){
+                    isShrink = true;
+               }
+          } 
      }
      if (y > SCREEN_HEIGHT || x > SCREEN_WIDTH || x + gLeafTexture.getWidth() < 0 || y + gLeafTexture.getHeight() < 0){
-          x = rand() % SCREEN_WIDTH;
-          y = 0;
-          vX = 0;
-          vY = rand() % 5;
-          mTexture = &gLeafTexture;
-
-          angle = rand() % 180;
-          mFrame = 0;
-          windV = rand() % 3;
-          int tmp = rand() % 2;
-          if (tmp % 2){
-               windV = - windV;
-          }
-          shrinkX = rand() % 5 + 1;
-          shrinkY = shrinkX;
-          opacity = min(255 / (shrinkX) + rand() % 20, 255);
-          rotateX = rand() % 3 + 1;
-          rotateY = rand() % 3 + 1;
-          original_rotateX = rotateX;
-          original_rotateY = rotateY;
-
+          *this = Animation();
      }
 }

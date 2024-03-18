@@ -27,6 +27,8 @@ const int MAX_LEVEL = 6;
 
 const double PI = 3.14159265;
 
+const int MAX_ANIMATION = 50;
+
 //the number of tile in a tile shape matrix
 const int TETRAD_SIZE = 4;
 
