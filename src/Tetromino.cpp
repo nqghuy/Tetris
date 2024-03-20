@@ -176,6 +176,24 @@ void Tetromino :: handle_event2(SDL_Event &e, Well &well){
     //current key state, true if this key is pressed
     const Uint8* currentKeyStates = SDL_GetKeyboardState( NULL );
 
+    //if key up is pressed
+    if( currentKeyStates[ SDL_SCANCODE_UP ] )
+    {
+        //avoid repeated key
+        if (!rotate){
+            this->Rotate(well);
+            rotate = true;
+            //return;
+        }
+        return;
+    }
+
+    //if key up is released
+    else if(rotate){
+        rotate = false;
+        return;
+    }
+
     //if key down is pressed
     if( currentKeyStates[ SDL_SCANCODE_DOWN ] )
     {
@@ -204,23 +222,7 @@ void Tetromino :: handle_event2(SDL_Event &e, Well &well){
         return;
     }
 
-    //if key up is pressed
-    if( currentKeyStates[ SDL_SCANCODE_UP ] )
-    {
-        //avoid repeated key
-        if (!rotate){
-            this->Rotate(well);
-            rotate = true;
-            return;
-        }
-        return;
-    }
-
-    //if key up is released
-    else if(rotate){
-        rotate = false;
-        return;
-    }
+    
 
     //if key left is pressed
     if( currentKeyStates[ SDL_SCANCODE_LEFT ] )
@@ -257,6 +259,25 @@ void Tetromino :: handle_event1(SDL_Event &e, Well &well){
     //current key state
     const Uint8* currentKeyStates = SDL_GetKeyboardState( NULL );
 
+    //w is pressed
+    if( currentKeyStates[ SDL_SCANCODE_W ] )
+    {   
+        //avoid repeated key
+        if (!rotate){
+            this->Rotate(well);
+            rotate = true;
+            //return;
+        }
+        //this->Rotate(well);
+        //return;
+    }
+    
+    //w is released
+    else if(rotate){
+        rotate = false;
+        //return;
+    }
+
     //s is pressed
     if( currentKeyStates[ SDL_SCANCODE_S ] )
     {   
@@ -286,23 +307,7 @@ void Tetromino :: handle_event1(SDL_Event &e, Well &well){
         return;
     }
 
-    //w is pressed
-    if( currentKeyStates[ SDL_SCANCODE_H ] )
-    {   
-        //avoid repeated key
-        if (!rotate){
-            this->Rotate(well);
-            rotate = true;
-            return;
-        }
-        return;
-    }
     
-    //w is released
-    else if(rotate){
-        rotate = false;
-        return;
-    }
 
     //a is pressed
     if( currentKeyStates[ SDL_SCANCODE_A ] )

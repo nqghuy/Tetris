@@ -28,6 +28,9 @@ public:
     int get_pos_y(int PosY);
 
     //get the dimension of the well
+    int get_right_border();
+    int get_bottom_border();
+
     int get_width();
     int get_height();
 

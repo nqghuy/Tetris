@@ -14,9 +14,11 @@ int main(int argc, char *argv[])
     //use to random type of tetromino
     srand(time(NULL));
 
+    int SDL_Enable_Key_Repeat(500);    
+
     //new tetris game
     Tetris *tetris = new Tetris(1);
-
+    
     //check if initialize false
     if (!tetris->init("Tetris", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT)){
         cout << "failed to init sdl" << endl;

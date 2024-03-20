@@ -13,6 +13,8 @@ TTF_Font *ScoreFont;
 
 TTF_Font *SettingFont;
 
+TTF_Font *CountDownFont;
+
 LTexture gScoreFrame;
 
 LTexture gWellFrame;
@@ -32,6 +34,12 @@ LTexture gDraw;
 LTexture gLeafTexture;
 
 LTexture gSnowTexture;
+
+LTexture gThreeTexture;
+
+LTexture gTwoTexture;
+
+LTexture gOneTexture;
 
 Tetris :: Tetris(int _level)
 :   animation()
@@ -118,7 +126,7 @@ bool Tetris :: init(const char *title, int x, int y, int w, int h)
 bool Tetris :: load_texture(){
     bool success = true;
      //load background
-    if (!background.loadFromFile(renderer, "Assets/Pictures/Autumn.png", {150, 255, 255})){
+    if (!background.loadFromFile(renderer, "Assets/Pictures/Winter.jpg", {150, 255, 255})){
         cout << "failed to load background";
         success = false;
     }
@@ -174,6 +182,18 @@ bool Tetris :: load_texture(){
         cout << "failed to load leaf texture\n";
         success = false;
     }
+    if(!gThreeTexture.loadFromRenderedText(renderer, CountDownFont, "3", {255, 0, 0})){
+        cout << "failed to laod 3 texture";
+        success = false;
+    }
+    if(!gTwoTexture.loadFromRenderedText(renderer, CountDownFont, "2", {0, 255, 0})){
+        cout << "failed to laod 2 texture";
+        success = false;
+    }
+    if(!gOneTexture.loadFromRenderedText(renderer, CountDownFont, "1", {255, 255, 255})){
+        cout << "failed to laod 1 texture";
+        success = false;
+    }
 
     //load menu media
     if(!menu->load_media(renderer)){
@@ -225,6 +245,13 @@ bool Tetris :: load_font(){
     if (SettingFont == NULL){
         cout << "failed to load setting font\n" << TTF_GetError();
         success = false;
+    }
+
+    CountDownFont = TTF_OpenFont("Assets/Font/123_GO.ttf", 50);{
+        if (CountDownFont == NULL){
+            cout << "failed to load count down font\n" << TTF_GetError();
+            success = false;
+        }
     }
     return success;
 }
@@ -377,7 +404,7 @@ void Tetris :: menu_handle_event(SDL_Event &e){
     if(!menu->check_in_setting()){
         //single play
         if(menu->click_play(e)){
-            game->set_active(level, ghostTetromino);
+            game->set_preparation(level, ghostTetromino);
             
         }
         //ready to a hot battle

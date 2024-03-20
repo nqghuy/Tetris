@@ -42,7 +42,7 @@ void Score :: draw(SDL_Renderer *renderer, Well &well, TTF_Font *scoreFont)
     scoreFrame = gScoreFrame;
 
     //minimal the code
-    int x = well.get_width();
+    int x = well.get_right_border();
     int y = well.get_y() + TILE_SIZE;
 
     //draw frame

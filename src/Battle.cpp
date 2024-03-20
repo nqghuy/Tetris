@@ -23,8 +23,8 @@ void Battle :: set_active(int _level, bool _ghostTetromino){
      active = true;
 
      //reset move time
-     player1->set_active(_level, _ghostTetromino);
-     player2->set_active(_level, _ghostTetromino);
+     player1->set_preparation(_level, _ghostTetromino);
+     player2->set_preparation(_level, _ghostTetromino);
 }
 
 void Battle :: handle_event(SDL_Renderer *renderer, SDL_Event &e){

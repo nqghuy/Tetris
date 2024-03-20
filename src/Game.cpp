@@ -23,6 +23,9 @@ Game::Game(SDL_Renderer *renderer, GameMode _gameMode, int _level, bool _ghostTe
         }
         //random next tetro type
         nextTetromino = Tetromino(nextTetromino.get_random_type(tetromino), WIDE_CELLS / 2 - 1, 0);
+
+        preparation = true;
+        timer = SDL_GetTicks64();
 }
 
 Game :: ~Game(){}
@@ -34,6 +37,7 @@ bool Game :: running()
 
 void Game :: handleEvents(SDL_Renderer *renderer, SDL_Event &e)
 {
+    if(preparation) return;
 
     //handle tetromino
     if (!is_paused()){
@@ -45,6 +49,9 @@ void Game :: handleEvents(SDL_Renderer *renderer, SDL_Event &e)
     else{//if lose, press enter to reset game, get top score
         if (well.press_play_again(e)){
             moveTime = SDL_GetTicks();
+
+            preparation = true;
+            timer = SDL_GetTicks();
 
             //new top score
             int _topScore = max(well.get_current_score(), well.get_top_score());
@@ -64,6 +71,8 @@ void Game :: handleEvents(SDL_Renderer *renderer, SDL_Event &e)
 }
 
 void Game :: update(){
+    if (preparation) return;
+
     //current time
     int currentTime;
 
@@ -113,13 +122,31 @@ int Game :: get_current_score(){
 void Game :: display(SDL_Renderer *renderer)
 {
     //draw next tetromino
-    gScoreFrame.render(renderer, well.get_width(), well.get_y() + TILE_SIZE + gScoreFrame.getHeight()* 2- TILE_SIZE * 2);
-    nextTetromino.draw(renderer, well.get_width() + TILE_SIZE  * 2, well.get_y() + TILE_SIZE + gScoreFrame.getHeight()* 2);
+    gScoreFrame.render(renderer, well.get_right_border(), well.get_y() + TILE_SIZE + gScoreFrame.getHeight()* 2- TILE_SIZE * 2);
+    nextTetromino.draw(renderer, well.get_right_border() + TILE_SIZE  * 2, well.get_y() + TILE_SIZE + gScoreFrame.getHeight()* 2);
 
     //draw well and tetromino
     well.draw(renderer, gameMode);
 
-    if (!well.get_lose()){
+    if (preparation && (SDL_GetTicks() - timer > 3000)){
+        preparation = false;
+        moveTime = SDL_GetTicks();
+    }
+
+    if (preparation){
+        int countDownTime = 3000 - (SDL_GetTicks() - timer);
+        if (countDownTime >= 2000){
+            gThreeTexture.render(renderer, well.get_x() + (well.get_width() - gThreeTexture.getWidth()) / 2 , well.get_y() + (well.get_height() - gThreeTexture.getHeight()) / 2 );
+        }
+        else if (countDownTime >= 1000){
+            gTwoTexture.render(renderer, well.get_x() + (well.get_width() - gThreeTexture.getWidth()) / 2 , well.get_y() + (well.get_height() - gTwoTexture.getHeight()) / 2 );
+        }
+        else{
+            gOneTexture.render(renderer, well.get_x() + (well.get_width() - gThreeTexture.getWidth()) / 2 , well.get_y() + (well.get_height() - gOneTexture.getHeight()) / 2 );
+        }
+    }
+
+    else if (!well.get_lose()){
         //draw ghost tetromino if ghost piece on
         if(ghostTetromino) tetromino.draw_ghost_tetromino(renderer, well);
 
@@ -139,6 +166,17 @@ bool Game :: is_paused()
     return (well.get_lose());
 }
 
+void Game :: set_preparation(int _level, bool _ghostTetromino){
+    timer = SDL_GetTicks();
+    preparation = true;
+
+    level = _level;
+    ghostTetromino = _ghostTetromino;
+
+    //ready to play
+    quit = false;
+}
+
 void Game :: set_active(int _level, bool _ghostTetromino)
 {   
     //reset move time
@@ -149,8 +187,7 @@ void Game :: set_active(int _level, bool _ghostTetromino)
     ghostTetromino = _ghostTetromino;
 
     //ready to play
-    quit = false;
-    
+    //quit = false;
 }
 
 void Game :: set_time(){

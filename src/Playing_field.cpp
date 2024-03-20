@@ -85,14 +85,22 @@ int Well :: get_y()
     return y;
 }
 
+int Well :: get_right_border(){
+    return this->get_x() + width;
+}
+
+int Well :: get_bottom_border(){
+    return this->get_y() + height;
+}
+
 int Well :: get_width()
 {
-    return this->get_x() + width;
+    return width;
 }
 
 int Well :: get_height()
 {
-    return this->get_y() + height;
+    return height;
 }
 
 int Well :: get_pos_x(int PosX)

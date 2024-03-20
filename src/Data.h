@@ -50,6 +50,8 @@ extern TTF_Font *ScoreFont;
 //font in setting
 extern TTF_Font *SettingFont;
 
+extern TTF_Font *CountDownFont;
+
 //brick well frame
 extern LTexture gWellFrame;
 
@@ -79,7 +81,12 @@ extern LTexture gLeafTexture;
 
 extern LTexture gSnowTexture;
 
+//countdown texture
+extern LTexture gThreeTexture;
 
+extern LTexture gTwoTexture;
+
+extern LTexture gOneTexture;
 
 
 enum GameMode{

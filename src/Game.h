@@ -55,6 +55,8 @@ public:
     //to update if no event polled
     void update();
 
+    void set_preparation(int _level, bool _ghostTetromino);
+
 private:
     //true if present ghost tetromino
     bool ghostTetromino;
@@ -81,5 +83,9 @@ private:
 
     //use to make tetromino free fall
     int moveTime;
-} ;
+
+    int timer;
+
+    bool preparation;
+};
 #endif
