@@ -41,7 +41,20 @@ LTexture gTwoTexture;
 
 LTexture gOneTexture;
 
-Tetris :: Tetris(int _level)
+LTexture MenuBackground;
+
+LTexture gWinterBoard;
+
+LTexture gAutumnBoard;
+
+LTexture resumeButton;
+
+//background game
+LTexture gWinterBackground;
+
+LTexture gAutumnBackground;
+
+Tetris :: Tetris(int _level, Theme _theme)
 :   animation()
 {
     window = NULL;
@@ -53,6 +66,11 @@ Tetris :: Tetris(int _level)
     level = _level;
     quit = false;
     ghostTetromino = true;
+    setting = new Setting;
+    theme = _theme;
+    for (int i = 0; i < MAX_ANIMATION; i++){
+        animation[i].set_theme(_theme);
+    }
 }
 
 Tetris :: ~Tetris()
@@ -61,7 +79,7 @@ Tetris :: ~Tetris()
     renderer = NULL;
     game = NULL;
     menu = NULL;
-    background.free();
+    setting = NULL;
 }
 
 bool Tetris :: init(const char *title, int x, int y, int w, int h)
@@ -126,11 +144,16 @@ bool Tetris :: init(const char *title, int x, int y, int w, int h)
 bool Tetris :: load_texture(){
     bool success = true;
      //load background
-    if (!background.loadFromFile(renderer, "Assets/Pictures/Winter.jpg", {150, 255, 255})){
+    if (!gWinterBackground.loadFromFile(renderer, "Assets/Pictures/Winter.jpg", {150, 255, 255})){
         cout << "failed to load background";
         success = false;
     }
-    
+
+    if(!gAutumnBackground.loadFromFile(renderer, "Assets/Pictures/Autumn.png")){
+        cout << "failed to load autumn background\n";
+        success = false;
+    }
+
     //lose picture
     if(!gLoseBackground.loadFromFile(renderer, "Assets/Pictures/lose.jpg")){
         cout << "failed to load lose texture\n";
@@ -142,10 +165,13 @@ bool Tetris :: load_texture(){
         cout << "failed to load button texture\n";
         success = false;
     }
-
     //home button
     if(!gHomeButton.loadFromFile(renderer, "Assets/Pictures/home.png")){
         cout << "failed to load home button\n";
+        success = false;
+    }
+    if(!resumeButton.loadFromFile(renderer, "Assets/Pictures/resume.png")){
+        cout << "failed to load resume button\n";
         success = false;
     }
 
@@ -159,21 +185,6 @@ bool Tetris :: load_texture(){
         cout << "failed to load score frame\n";
         success = false;
     }
-
-    //load battle texture
-    if (!gPlayer1Wins.loadFromFile(renderer, "Assets/Pictures/player1_win.png")){
-        cout << "failed to load player1wins texture\n";
-        success = false;
-    }
-    if (!gPlayer2Wins.loadFromFile(renderer, "Assets/Pictures/player2_win.png")){
-        cout << "failed to load player2wins texture\n";
-        success = false;
-    }
-    if(!gDraw.loadFromFile(renderer, "Assets/Pictures/draw.png"))
-    {
-        cout << "failed to load draw texture\n";
-        success = false;
-    }
     if(!gSnowTexture.loadFromFile(renderer, "Assets/Pictures/snow.png")){
         cout << "failed to load snow texture\n";
         success = false;
@@ -183,21 +194,45 @@ bool Tetris :: load_texture(){
         success = false;
     }
     if(!gThreeTexture.loadFromRenderedText(renderer, CountDownFont, "3", {255, 0, 0})){
-        cout << "failed to laod 3 texture";
+        cout << "failed to load 3 texture";
         success = false;
     }
     if(!gTwoTexture.loadFromRenderedText(renderer, CountDownFont, "2", {0, 255, 0})){
-        cout << "failed to laod 2 texture";
+        cout << "failed to load 2 texture";
         success = false;
     }
     if(!gOneTexture.loadFromRenderedText(renderer, CountDownFont, "1", {255, 255, 255})){
-        cout << "failed to laod 1 texture";
+        cout << "failed to load 1 texture";
         success = false;
     }
 
+    if(!gAutumnBoard.loadFromFile(renderer, "Assets/Pictures/autumn_board.jpg")){
+        cout << "failed to load autumn board\n";
+        success = false;
+    }
+
+    if(!gWinterBoard.loadFromFile(renderer, "Assets/Pictures/winter_board.jpg", {195, 195, 195})){
+        cout << "failed to load winter board\n";
+        success = false;
+    }
+
+    //load menu background
+    if (!MenuBackground.loadFromFile(renderer, "Assets/Pictures/menu.png", {195, 195, 195})){
+        cout << "failed to load menu background\n";
+        success = false;
+    }
+
+    
+    if(!battle->load_media(renderer)){
+        cout << "failed to load battle texture\n";
+    }
     //load menu media
     if(!menu->load_media(renderer)){
         cout << "failed to load menu media\n";
+        success = false;
+    }
+    if(!setting->load_media(renderer)){
+        cout << "failed to load setting media\n";
         success = false;
     }
     
@@ -306,6 +341,10 @@ void Tetris :: handle_events()
         if (menu->get_active()){
             this->menu_handle_event(e);
         }
+        
+        else if(setting->get_active()){
+            this->setting_handle_event(e);
+        }
 
         //if single play is running
         else if (game->running()){
@@ -340,7 +379,10 @@ void Tetris :: display()
     SDL_RenderClear(renderer);
 
     //show background
-    background.render(renderer, 0, 0);
+    if(theme == Autumn){
+        gAutumnBackground.render(renderer, 0, 0);
+    }
+    else gWinterBackground.render(renderer, 0, 0);
 
     for (int i = 0; i < MAX_ANIMATION; i++){
         animation[i].render(renderer);
@@ -351,16 +393,20 @@ void Tetris :: display()
         menu->display(renderer, level, ghostTetromino);
     }
 
+    else if(setting->get_active()){
+        setting->display(renderer, level, ghostTetromino, theme);
+    }
+
     //else show game
     else if(game->running()) {
-        if(!game->is_paused()){
+        if(!game->get_lose()){
             game->update();
         }
-        game->display(renderer);
+        game->display(renderer, theme);
     }
 
     //display battle
-    else battle->display(renderer);
+    else battle->display(renderer, theme);
     // gRedTexture.render(renderer, SCREEN_WIDTH / 2 + 50, SCREEN_HEIGHT / 2 + 50);
     //present into screen
     SDL_RenderPresent(renderer);
@@ -399,37 +445,43 @@ void Tetris :: close_game(){
 	SDL_Quit();
 }
 
-void Tetris :: menu_handle_event(SDL_Event &e){
-    //if not in setting
-    if(!menu->check_in_setting()){
-        //single play
-        if(menu->click_play(e)){
-            game->set_preparation(level, ghostTetromino);
-            
+void Tetris :: setting_handle_event(SDL_Event &e){
+    //setting level, ghost piece,...
+    if (setting->click_up_level_button(e)){
+        if (level < MAX_LEVEL) level++;
+    }
+    else if (setting->click_down_level_button(e)){
+        if(level > 1)   level--;
+    }
+    else if(setting->click_back_button(e)){
+        menu->set_active();
+    }
+    else if (setting->click_set_ghost_piece(e)){
+        ghostTetromino =  !ghostTetromino;
+    }
+    else if(setting->click_change_theme(e)){
+        if(theme == Winter){
+            theme = Autumn;
         }
-        //ready to a hot battle
-        else if(menu->click_battle(e)){
-            battle->set_active(level, ghostTetromino);
-        }
-        
-        //click setting
-        else if(menu->click_setting(e)){
-            menu->set_in_setting();
+        else theme = Winter;
+        for (int i = 0; i < MAX_ANIMATION; i++){
+            animation[i].set_theme(theme);
         }
     }
-    else{
-        //setting level, ghost piece,...
-        if (menu->click_up_level_button(e)){
-            if (level < MAX_LEVEL) level++;
-        }
-        else if (menu->click_down_level_button(e)){
-            if(level > 1)   level--;
-        }
-        else if(menu->click_back_button(e)){
-            menu->set_not_in_setting();
-        }
-        else if (menu->click_set_ghost_piece(e)){
-            ghostTetromino =  !ghostTetromino;
-        }
+}
+
+void Tetris :: menu_handle_event(SDL_Event &e){
+    //single play
+    if(menu->click_play(e)){
+        game->set_active(level, ghostTetromino);
+    }
+    //ready to a hot battle
+    else if(menu->click_battle(e)){
+        battle->set_active(level, ghostTetromino);
+    }
+    //click setting
+    else if(menu->click_setting(e)){
+        setting->set_active();
+        menu->set_not_active();
     }
 }

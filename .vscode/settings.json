@@ -4,6 +4,10 @@
           "iostream": "cpp",
           "thread": "cpp",
           "new": "cpp",
-          "cstdlib": "cpp"
+          "cstdlib": "cpp",
+          "bitset": "cpp",
+          "memory": "cpp",
+          "random": "cpp",
+          "future": "cpp"
      }
 }

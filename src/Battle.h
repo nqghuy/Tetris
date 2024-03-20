@@ -11,6 +11,8 @@ public:
      //destructor
      ~Battle();
 
+     bool load_media(SDL_Renderer *renderer);
+
      //get active
      bool get_active();
 
@@ -21,7 +23,7 @@ public:
      void handle_event(SDL_Renderer *renderer, SDL_Event &e);
 
      //draw on the screen
-     void display(SDL_Renderer *renderer);
+     void display(SDL_Renderer *renderer, Theme theme);
      
 private:
      //player

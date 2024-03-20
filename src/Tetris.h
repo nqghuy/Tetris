@@ -3,12 +3,12 @@
 #include "Game.h"
 #include "Menu.h"
 #include "Battle.h"
-
+#include "Setting.h"
 class Tetris
 {
 public:
     //constructor
-    Tetris(int _level = 1);
+    Tetris(int _level = 1, Theme _theme = Winter);
 
     //destructor
     ~Tetris();
@@ -30,6 +30,8 @@ public:
 
     void menu_handle_event(SDL_Event &e);
 
+    void setting_handle_event(SDL_Event &e);
+
     //handle event
     void handle_events();
 
@@ -43,6 +45,8 @@ public:
     void close_game();
     
 private:
+    Theme theme;
+
     //present ghost tetromino or not
     bool ghostTetromino;
 
@@ -55,9 +59,6 @@ private:
     //the renderer for the window
     SDL_Renderer *renderer;
 
-    //background game
-    LTexture background;
-
     //game to play
     Game *game;
 
@@ -65,6 +66,8 @@ private:
 
     //menu before playing
     Menu *menu;
+
+    Setting *setting;
 
     Animation animation[MAX_ANIMATION];
 

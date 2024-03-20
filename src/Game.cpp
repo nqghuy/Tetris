@@ -7,7 +7,7 @@ Game::Game(SDL_Renderer *renderer, GameMode _gameMode, int _level, bool _ghostTe
     :   //initialize ...
       well(renderer, (SCREEN_WIDTH - TILE_SIZE * WIDE_CELLS) / 2, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2, 0, _level),
     tetromino(Tetro_Type(rand() % 7), WIDE_CELLS / 2 - 1, 0), quit(true),
-      nextTetromino(Tetro_Type(rand() % 7), WIDE_CELLS / 2 - 1, 0), pause(false)
+      nextTetromino(Tetro_Type(rand() % 7), WIDE_CELLS / 2 - 1, 0), lose(false)
       {
         gameMode = _gameMode;
         level = _level;
@@ -26,6 +26,8 @@ Game::Game(SDL_Renderer *renderer, GameMode _gameMode, int _level, bool _ghostTe
 
         preparation = true;
         timer = SDL_GetTicks64();
+
+        paused = false;
 }
 
 Game :: ~Game(){}
@@ -35,17 +37,47 @@ bool Game :: running()
     return (!quit);
 }
 
+void Game :: handlePausedEvent(SDL_Event &e){
+    //mouse position
+    int x, y;
+    SDL_GetMouseState(&x, &y);
+
+    int resumeButtonX = (SCREEN_WIDTH  - resumeButton.getWidth()) / 2 + resumeButton.getWidth();
+    int resumeButtonY = (SCREEN_HEIGHT - resumeButton.getHeight()) / 2;
+    
+    int gHomeButtonX = (SCREEN_WIDTH - gHomeButton.getWidth()) / 2 - gHomeButton.getWidth();
+    int gHomeButtonY = (SCREEN_HEIGHT - gHomeButton.getHeight()) / 2;
+
+    if (e.type == SDL_MOUSEBUTTONDOWN && x >= resumeButtonX && x <= resumeButtonX + resumeButton.getWidth() && y >= resumeButtonY && y <= resumeButtonY + resumeButton.getHeight()){
+        moveTime = SDL_GetTicks();
+        paused = false;
+    }
+
+    else if (e.type == SDL_MOUSEBUTTONDOWN && x >= gHomeButtonX && x <= gHomeButtonX + gHomeButton.getWidth() && y >= gHomeButtonY && y <= gHomeButtonY + gHomeButton.getHeight()){
+        quit = true;
+    }
+}
+
 void Game :: handleEvents(SDL_Renderer *renderer, SDL_Event &e)
 {
     if(preparation) return;
 
+    if(e.key.keysym.sym == SDLK_p){
+        paused = true;
+    }
+
+    if (paused){
+        handlePausedEvent(e);
+        return;
+    }
     //handle tetromino
-    if (!is_paused()){
+    if (!get_lose()){
         if(tetromino.get_active()){
             tetromino.handle_events(e, well, gameMode);
             tetromino.Move(well);
         }
     }
+
     else{//if lose, press enter to reset game, get top score
         if (well.press_play_again(e)){
             moveTime = SDL_GetTicks();
@@ -87,7 +119,7 @@ void Game :: update(){
     //free fall
     if (currentTime > moveTime){
         moveTime += 1000 - level * 150;
-        tetromino.free_fall(well);
+        if(!paused)tetromino.free_fall(well);
     }
 
     if (!tetromino.get_active()){
@@ -118,8 +150,20 @@ int Game :: get_current_score(){
     return well.get_current_score();
 }
 
+void Game :: display_paused_board(SDL_Renderer *renderer, Theme theme){
+    if (theme == Winter){
+        gWinterBoard.render(renderer, (SCREEN_WIDTH - gWinterBoard.getWidth()) / 2, (SCREEN_HEIGHT - gWinterBoard.getHeight()) / 2);
+    }
+    else{
+        gAutumnBoard.render(renderer, (SCREEN_WIDTH - gWinterBoard.getWidth()) / 2, (SCREEN_HEIGHT - gWinterBoard.getHeight()) / 2);
+    }
 
-void Game :: display(SDL_Renderer *renderer)
+    resumeButton.render(renderer, (SCREEN_WIDTH  - resumeButton.getWidth()) / 2 + resumeButton.getWidth(), (SCREEN_HEIGHT - resumeButton.getHeight()) / 2);
+
+    gHomeButton.render(renderer, (SCREEN_WIDTH - gHomeButton.getWidth()) / 2 - gHomeButton.getWidth(), (SCREEN_HEIGHT - gHomeButton.getHeight()) / 2);
+}
+
+void Game :: display(SDL_Renderer *renderer, Theme theme)
 {
     //draw next tetromino
     gScoreFrame.render(renderer, well.get_right_border(), well.get_y() + TILE_SIZE + gScoreFrame.getHeight()* 2- TILE_SIZE * 2);
@@ -146,6 +190,10 @@ void Game :: display(SDL_Renderer *renderer)
         }
     }
 
+    else if(paused){
+        display_paused_board(renderer, theme);
+    }
+
     else if (!well.get_lose()){
         //draw ghost tetromino if ghost piece on
         if(ghostTetromino) tetromino.draw_ghost_tetromino(renderer, well);
@@ -161,12 +209,13 @@ void Game :: display(SDL_Renderer *renderer)
 
 }
 
-bool Game :: is_paused()
+bool Game :: get_lose()
 {
     return (well.get_lose());
 }
 
-void Game :: set_preparation(int _level, bool _ghostTetromino){
+void Game :: set_active(int _level, bool _ghostTetromino)
+{   
     timer = SDL_GetTicks();
     preparation = true;
 
@@ -175,19 +224,6 @@ void Game :: set_preparation(int _level, bool _ghostTetromino){
 
     //ready to play
     quit = false;
-}
-
-void Game :: set_active(int _level, bool _ghostTetromino)
-{   
-    //reset move time
-    moveTime = SDL_GetTicks();
-
-    //set level and ghost tetromino
-    level = _level;
-    ghostTetromino = _ghostTetromino;
-
-    //ready to play
-    //quit = false;
 }
 
 void Game :: set_time(){

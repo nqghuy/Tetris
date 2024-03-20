@@ -88,11 +88,28 @@ extern LTexture gTwoTexture;
 
 extern LTexture gOneTexture;
 
+//menu texture
+extern LTexture MenuBackground;
 
+extern LTexture gWinterBoard;
+
+extern LTexture gAutumnBoard;
+
+extern LTexture resumeButton;
+
+//background game
+extern LTexture gWinterBackground;
+
+extern LTexture gAutumnBackground;
 enum GameMode{
      SinglePlay,
      Player1,
      Player2
+};
+
+enum Theme{
+     Winter,
+     Autumn
 };
 
 //ascending level text 

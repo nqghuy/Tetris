@@ -25,23 +25,24 @@ public:
     //destructor
     ~Game();
 
-    //initialize SDL and create the window
-    bool init(const char *title, int x, int y, int w, int h);
-
     //check if the game is running
     bool running();
 
     //handle events from queue
     void handleEvents(SDL_Renderer *renderer, SDL_Event &e);
 
+    void handlePausedEvent(SDL_Event &e);
+
     //play music during the game
     void play_music();
 
+    void display_paused_board(SDL_Renderer *renderer, Theme theme);
+
     //draw game
-    void display(SDL_Renderer *renderer);
+    void display(SDL_Renderer *renderer, Theme theme);
 
     //if game is losed and not played
-    bool is_paused();
+    bool get_lose();
 
     //game is ready to play
     void set_active(int _level, bool ghostTetromino);
@@ -55,7 +56,6 @@ public:
     //to update if no event polled
     void update();
 
-    void set_preparation(int _level, bool _ghostTetromino);
 
 private:
     //true if present ghost tetromino
@@ -79,13 +79,17 @@ private:
     bool quit;
 
     //lose game state and not play
-    bool pause;
+    bool lose;
 
     //use to make tetromino free fall
     int moveTime;
 
+    //count down time
     int timer;
 
+    //true if count down time is not finished
     bool preparation;
+
+    bool paused;
 };
 #endif

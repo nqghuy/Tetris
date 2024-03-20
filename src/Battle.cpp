@@ -15,6 +15,26 @@ Battle :: ~Battle(){
      player2 = NULL;
 }
 
+bool Battle :: load_media(SDL_Renderer *renderer){
+     bool success = true;
+
+     //load battle texture
+     if (!gPlayer1Wins.loadFromFile(renderer, "Assets/Pictures/player1_win.png")){
+          cout << "failed to load player1wins texture\n";
+          success = false;
+     }
+     if (!gPlayer2Wins.loadFromFile(renderer, "Assets/Pictures/player2_win.png")){
+          cout << "failed to load player2wins texture\n";
+          success = false;
+     }
+     if(!gDraw.loadFromFile(renderer, "Assets/Pictures/draw.png"))
+     {
+          cout << "failed to load draw texture\n";
+          success = false;
+     }
+     return success;
+}
+
 bool Battle :: get_active(){
      return active;
 }
@@ -23,8 +43,8 @@ void Battle :: set_active(int _level, bool _ghostTetromino){
      active = true;
 
      //reset move time
-     player1->set_preparation(_level, _ghostTetromino);
-     player2->set_preparation(_level, _ghostTetromino);
+     player1->set_active(_level, _ghostTetromino);
+     player2->set_active(_level, _ghostTetromino);
 }
 
 void Battle :: handle_event(SDL_Renderer *renderer, SDL_Event &e){
@@ -37,17 +57,17 @@ void Battle :: handle_event(SDL_Renderer *renderer, SDL_Event &e){
      }
 }
 
-void Battle :: display(SDL_Renderer *renderer){
+void Battle :: display(SDL_Renderer *renderer, Theme theme){
      //update 
-     if(!player1->is_paused())     player1->update();
-     if(!player2->is_paused())     player2->update();
+     if(!player1->get_lose())     player1->update();
+     if(!player2->get_lose())     player2->update();
 
      //draw each playing field
-     player2->display(renderer);
-     player1->display(renderer);
+     player2->display(renderer, theme);
+     player1->display(renderer, theme);
      
      //if two player lose
-     if (player1->is_paused() && player2->is_paused()){
+     if (player1->get_lose() && player2->get_lose()){
           //if player 1 win
           if (player1->get_current_score() > player2->get_current_score()){
                gPlayer1Wins.render(renderer, (SCREEN_WIDTH - gPlayer1Wins.getWidth()) / 2, (SCREEN_HEIGHT - gPlayer1Wins.getHeight()) / 2);

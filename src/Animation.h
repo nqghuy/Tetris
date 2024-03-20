@@ -1,5 +1,6 @@
 #pragma once
 #include "Texture.h"
+#include "Data.h"
 class Animation{
 public:
      //constructor
@@ -10,7 +11,13 @@ public:
 
      //draw animation
      void render(SDL_Renderer *renderer);
+
+     void set_theme(Theme _theme);
+
+     void reset();
 private:
+     Theme theme;
+
      //main texture
      LTexture *mTexture;
 
