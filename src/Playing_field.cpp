@@ -13,8 +13,8 @@ Well :: Well (SDL_Renderer *renderer, int _x, int _y, int _topScore, int _level)
     memset(matrix, false, sizeof(matrix));
 
     //all initial cell colors is black
-    for (int i = 0; i < 10; i++){
-        for (int j = 0; j < 20; j++){
+    for (int i = 0; i < WIDE_CELLS; i++){
+        for (int j = 0; j < HEIGHT_CELLS; j++){
             cell_colors[i][j] = {0, 0, 0, 255};
         }
     }
@@ -243,4 +243,30 @@ bool Well :: return_home(SDL_Event &e){
         return true;
     }
     return false;
+}
+
+void Well :: save_file(fstream &saveFile){
+    saveFile << x << " " << y << '\n';
+    for (int i = 0; i < HEIGHT_CELLS; i++){
+        for (int j = 0; j < WIDE_CELLS; j++){
+            if (matrix[j][i]){
+                saveFile << 1;
+            }
+            else saveFile << 0;
+            if (j != WIDE_CELLS - 1){
+                saveFile << " ";
+            }
+        }
+        saveFile << '\n';
+    }
+    for (int i = 0; i < HEIGHT_CELLS; i++){
+        for (int j = 0; j < WIDE_CELLS; j++){
+            saveFile << (int)cell_colors[j][i].r << " " <<(int) cell_colors[j][i].g << " " <<  (int)cell_colors[j][i].b;
+            if (j != WIDE_CELLS - 1){
+                saveFile << " ";
+            }
+        }
+        saveFile << '\n';
+    }
+    saveFile << score.get_current_score() << " " << score.get_top_score();
 }

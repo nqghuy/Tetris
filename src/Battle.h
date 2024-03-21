@@ -24,6 +24,8 @@ public:
 
      //draw on the screen
      void display(SDL_Renderer *renderer, Theme theme);
+
+     void free_memory();
      
 private:
      //player

@@ -90,4 +90,10 @@ void Battle :: display(SDL_Renderer *renderer, Theme theme){
      }
 }
 
+void Battle :: free_memory(){
+     gPlayer1Wins.free();
+     gPlayer2Wins.free();
+     gDraw.free();
+}
+
 

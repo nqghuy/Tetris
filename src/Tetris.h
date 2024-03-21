@@ -4,6 +4,7 @@
 #include "Menu.h"
 #include "Battle.h"
 #include "Setting.h"
+#include "Animation.h"
 class Tetris
 {
 public:
@@ -41,8 +42,20 @@ public:
     //play music during game
     void play_music();
 
+    void free_texture();
+
+    void free_music();
+
+    void free_font();
+
+    void free_memory();
+
     //close game and free memory
     void close_game();
+
+    // void load_file();
+
+    void save_file();
     
 private:
     Theme theme;

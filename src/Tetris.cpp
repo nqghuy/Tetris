@@ -1,5 +1,5 @@
 #include "Tetris.h"
-
+#include <fstream>
 //detail in data.h
 Mix_Music *gPlayingMusic;
 
@@ -334,6 +334,7 @@ void Tetris :: handle_events()
     {
         //if player quit the game
         if (e.type == SDL_QUIT){
+            save_file();
             quit = true;
         }
 
@@ -412,27 +413,75 @@ void Tetris :: display()
     SDL_RenderPresent(renderer);
 }
 
-void Tetris :: close_game(){
+void Tetris :: free_texture(){
+    //free score texture
+    gWellFrame.free();
+    gScoreFrame.free();
+
+
+    gLoseBackground.free();
+
+    //free button
+    gReplayButton.free();
+    gHomeButton.free();
+    resumeButton.free();
+
+    //free battle
+    gPlayer1Wins.free();
+    gPlayer2Wins.free();
+    gDraw.free();
+
+    //free background and animation
+    gLeafTexture.free();
+    gSnowTexture.free();
+    MenuBackground.free();
+    gWinterBackground.free();
+    gAutumnBackground.free();
+
+
+    //free preparation
+    gThreeTexture.free();
+    gTwoTexture.free();
+    gOneTexture.free();
+
+    //free board
+    gWinterBoard.free();
+    gAutumnBoard.free();
+
+}
+
+void Tetris :: free_music(){
     //free music
     gPlayingMusic = NULL;
     gNiceSoundEffect = NULL;
     gLoseSoundEffect = NULL;
+    gDropSoundEffect = NULL;
     Mix_FreeMusic(gPlayingMusic);
     Mix_FreeChunk(gNiceSoundEffect);
     Mix_FreeChunk(gLoseSoundEffect);
+    Mix_FreeChunk(gDropSoundEffect);
+}
 
+void Tetris :: free_font(){
     //free font
     ScoreFont = NULL;
+    SettingFont = NULL;
+    CountDownFont = NULL;
     TTF_CloseFont(ScoreFont);
+    TTF_CloseFont(SettingFont);
+    TTF_CloseFont(CountDownFont);
+}
 
-    //free texture
-    gWellFrame.free();
-    gScoreFrame.free();
-    gLoseBackground.free();
-    gReplayButton.free();
-    gPlayer1Wins.free();
-    gPlayer2Wins.free();
-    gDraw.free();
+void Tetris :: free_memory(){
+    free_texture();
+    free_music();
+    free_font();
+}
+
+void Tetris :: close_game(){
+    free_memory();
+    menu->free_memory();
+    battle->free_memory();
 
     //destroy renderer and window
     SDL_DestroyRenderer( renderer );
@@ -484,4 +533,45 @@ void Tetris :: menu_handle_event(SDL_Event &e){
         setting->set_active();
         menu->set_not_active();
     }
+}
+
+// void Tetris :: load_file(){
+//     fstream saveFile("../Save.txt");
+//     string _theme;
+//     saveFile >> _theme;
+//     if (_theme == "Winter"){
+
+//     }
+// }
+
+void Tetris :: save_file(){
+    fstream saveFile("D:/Tetris/Tetris/Save.txt", ios :: trunc | ios :: out);
+    if (saveFile.fail()){
+        cout << "cannot open file\n";
+        return;
+    }
+    if (theme == Winter){
+        saveFile << "Winter\n";
+    }
+    else saveFile << "Autumn\n";
+
+    if (ghostTetromino){
+        saveFile << "True\n";
+    }
+    else saveFile << "False\n";
+
+    saveFile << level << '\n';
+
+    if (menu->get_active() || setting->get_active()){
+        saveFile << "menu\n";
+    }
+    else if (game->running()){
+        saveFile << "game\n";
+        game->save_file(saveFile);
+    }
+    else if (battle->get_active()){
+        saveFile << "battle\n";
+    }
+    saveFile.close();
+
 }

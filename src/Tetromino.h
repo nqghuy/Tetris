@@ -2,6 +2,7 @@
 #define Tetromino_h
 #include "Data.h"
 #include "../include/SDL2/SDL.h"
+#include <fstream>
 
 //avoid circular dependencies
 class Well;
@@ -239,6 +240,10 @@ public:
 
     //get tetro type
     Tetro_Type get_tetro_type();
+
+    void save_file(fstream &saveFile);
+
+    void ghost_save_file(fstream &saveFile);
 private:
     //false if cannot move down
     bool active;

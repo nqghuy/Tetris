@@ -8,6 +8,7 @@
           "bitset": "cpp",
           "memory": "cpp",
           "random": "cpp",
-          "future": "cpp"
+          "future": "cpp",
+          "iosfwd": "cpp"
      }
 }

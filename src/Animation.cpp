@@ -11,8 +11,8 @@ Animation :: Animation(){
      x = rand() % SCREEN_WIDTH;
      
      //random wind and gravity
-     windV = rand() % 3;
-     gravity = rand() % 5 + 1;
+     windV = rand() % 2;
+     gravity = rand() % 4 + 1;
 
      //random wind is positive or negative
      int tmp = rand() % 2 + 1;
@@ -34,7 +34,7 @@ Animation :: Animation(){
      opacity = min(255 / (shrinkX) + 30, 255);
 
      //random rotate speed
-     rotateX = rand() % 2 + 1;
+     rotateX = rand() % 2  +1;
 
      //set default texture
      if (theme == Autumn){
@@ -69,12 +69,12 @@ void Animation :: set_theme(Theme _theme){
 }
 
  void Animation :: reset(){
-     //set position
+      //set position
      x = rand() % SCREEN_WIDTH;
      
      //random wind and gravity
-     windV = rand() % 3;
-     gravity = rand() % 5 + 1;
+     windV = rand() % 2;
+     gravity = rand() % 4 + 1;
 
      //random wind is positive or negative
      int tmp = rand() % 2 + 1;
@@ -132,7 +132,7 @@ void Animation :: render(SDL_Renderer *renderer){
      mFrame++;
 
      //update position
-     if ((mFrame % 4) == 0){
+     if ((mFrame % 3) == 0){
           y += gravity;
           angle += 1;
           
@@ -157,12 +157,12 @@ void Animation :: render(SDL_Renderer *renderer){
                width += rotateX;
 
                //if object is in max size
-               if (width >= gLeafTexture.getWidth() / shrinkX){
+               if (width >= mTexture->getWidth() / shrinkX){
                     isShrink = true;
                }
           } 
      }
-     if (y > SCREEN_HEIGHT || x > SCREEN_WIDTH || x + gLeafTexture.getWidth() < 0 || y + gLeafTexture.getHeight() < 0){
+     if (y > SCREEN_HEIGHT || x > SCREEN_WIDTH || x + mTexture->getWidth() < 0 || y + mTexture->getHeight() < 0){
           reset();
      }
 }

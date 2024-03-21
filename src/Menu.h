@@ -33,6 +33,7 @@ public:
 
     void set_not_active();
 
+    void free_memory();
 private:
 
     //button in menu

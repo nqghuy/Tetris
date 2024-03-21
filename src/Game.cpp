@@ -229,3 +229,9 @@ void Game :: set_active(int _level, bool _ghostTetromino)
 void Game :: set_time(){
     moveTime = SDL_GetTicks();
 }
+
+void Game :: save_file(fstream &saveFile){
+    tetromino.save_file(saveFile);
+    nextTetromino.ghost_save_file(saveFile);
+    well.save_file(saveFile);
+}

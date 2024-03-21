@@ -9,9 +9,6 @@
 #include "Playing_field.h"
 #include "Tetromino.h"
 #include "Texture.h"
-#include "../include/SDL2/SDL_mixer.h"
-#include "Menu.h"
-#include "Animation.h"
 
 using namespace std;
 
@@ -56,11 +53,12 @@ public:
     //to update if no event polled
     void update();
 
-
+    void save_file(fstream &saveFile);
 private:
     //true if present ghost tetromino
     bool ghostTetromino;
 
+    //level
     int level;
 
     //single play or battle(player 1 or 2)

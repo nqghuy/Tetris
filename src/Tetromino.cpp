@@ -505,3 +505,58 @@ void Tetromino :: draw (SDL_Renderer* renderer, int x, int y){
         }
     }
 }
+
+void Tetromino :: ghost_save_file(fstream &saveFile){
+    switch (TetrominoType)
+    {
+    case I_BLOCK:
+        saveFile << "I_BLOCK\n";
+        break;
+    case L_BLOCK:
+        saveFile << "L_BLOCK\n";
+        break;
+    case T_BLOCK:
+        saveFile << "T_BLOCK\n";
+        break;
+    case Z_BLOCK:
+        saveFile << "Z_BLOCK\n";
+        break;
+    case O_BLOCK:
+        saveFile << "O_BLOCK\n";
+        break;
+    case J_BLOCK:
+        saveFile << "J_BLOCK\n";
+        break;
+    case S_BLOCK:
+        saveFile << "S_BLOCK\n";
+        break;
+    }
+}
+
+void Tetromino :: save_file(fstream &saveFile){
+    switch (TetrominoType)
+    {
+    case I_BLOCK:
+        saveFile << "I_BLOCK\n";
+        break;
+    case L_BLOCK:
+        saveFile << "L_BLOCK\n";
+        break;
+    case T_BLOCK:
+        saveFile << "T_BLOCK\n";
+        break;
+    case Z_BLOCK:
+        saveFile << "Z_BLOCK\n";
+        break;
+    case O_BLOCK:
+        saveFile << "O_BLOCK\n";
+        break;
+    case J_BLOCK:
+        saveFile << "J_BLOCK\n";
+        break;
+    case S_BLOCK:
+        saveFile << "S_BLOCK\n";
+        break;
+    }
+    saveFile << angle << " " << x_coordinate << " " << y_coordinate << '\n';
+}

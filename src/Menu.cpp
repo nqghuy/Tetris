@@ -145,3 +145,9 @@ void Menu :: set_active()
 void Menu :: set_not_active(){
     active = false;
 }
+
+void Menu :: free_memory(){
+    PlayButton.free();
+    SettingButton.free();
+    BattleButton.free();
+}

@@ -5,6 +5,7 @@
 #include "Tetromino.h"
 #include "Data.h"
 #include "Score.h"
+#include "fstream"
 class Well
 {
 public:
@@ -66,6 +67,8 @@ public:
 
     //come back to menu
     bool return_home(SDL_Event &e);
+
+    void save_file(fstream &saveFile);
 private:
     int level;
 
