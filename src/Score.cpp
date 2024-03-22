@@ -85,3 +85,7 @@ int Score :: get_current_score()
     return currentScore;
 }
 
+void Score :: set_current_score(int _currentScore){
+    currentScore = _currentScore;
+}
+

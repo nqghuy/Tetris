@@ -4,8 +4,10 @@
 using namespace std;
 
 Game::Game(SDL_Renderer *renderer, GameMode _gameMode, int _level, bool _ghostTetromino)
-    :   //initialize ...
+    :   //initialize well
       well(renderer, (SCREEN_WIDTH - TILE_SIZE * WIDE_CELLS) / 2, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2, 0, _level),
+
+      //initialize tetromino
     tetromino(Tetro_Type(rand() % 7), WIDE_CELLS / 2 - 1, 0), quit(true),
       nextTetromino(Tetro_Type(rand() % 7), WIDE_CELLS / 2 - 1, 0), lose(false)
       {
@@ -24,6 +26,7 @@ Game::Game(SDL_Renderer *renderer, GameMode _gameMode, int _level, bool _ghostTe
         //random next tetro type
         nextTetromino = Tetromino(nextTetromino.get_random_type(tetromino), WIDE_CELLS / 2 - 1, 0);
 
+        //count down before play
         preparation = true;
         timer = SDL_GetTicks64();
 
@@ -42,30 +45,38 @@ void Game :: handlePausedEvent(SDL_Event &e){
     int x, y;
     SDL_GetMouseState(&x, &y);
 
+    //resume button position
     int resumeButtonX = (SCREEN_WIDTH  - resumeButton.getWidth()) / 2 + resumeButton.getWidth();
     int resumeButtonY = (SCREEN_HEIGHT - resumeButton.getHeight()) / 2;
     
+    //home button position
     int gHomeButtonX = (SCREEN_WIDTH - gHomeButton.getWidth()) / 2 - gHomeButton.getWidth();
     int gHomeButtonY = (SCREEN_HEIGHT - gHomeButton.getHeight()) / 2;
 
+    //if click resume
     if (e.type == SDL_MOUSEBUTTONDOWN && x >= resumeButtonX && x <= resumeButtonX + resumeButton.getWidth() && y >= resumeButtonY && y <= resumeButtonY + resumeButton.getHeight()){
         moveTime = SDL_GetTicks();
+        set_active(level, ghostTetromino);
         paused = false;
     }
 
+    //click return home
     else if (e.type == SDL_MOUSEBUTTONDOWN && x >= gHomeButtonX && x <= gHomeButtonX + gHomeButton.getWidth() && y >= gHomeButtonY && y <= gHomeButtonY + gHomeButton.getHeight()){
         quit = true;
     }
 }
 
 void Game :: handleEvents(SDL_Renderer *renderer, SDL_Event &e)
-{
+{   
+    //if game is counting down, return
     if(preparation) return;
 
+    //if player press p, pause game
     if(e.key.keysym.sym == SDLK_p){
         paused = true;
     }
 
+    //handle paused event
     if (paused){
         handlePausedEvent(e);
         return;
@@ -151,6 +162,7 @@ int Game :: get_current_score(){
 }
 
 void Game :: display_paused_board(SDL_Renderer *renderer, Theme theme){
+    //draw board by theme
     if (theme == Winter){
         gWinterBoard.render(renderer, (SCREEN_WIDTH - gWinterBoard.getWidth()) / 2, (SCREEN_HEIGHT - gWinterBoard.getHeight()) / 2);
     }
@@ -158,8 +170,10 @@ void Game :: display_paused_board(SDL_Renderer *renderer, Theme theme){
         gAutumnBoard.render(renderer, (SCREEN_WIDTH - gWinterBoard.getWidth()) / 2, (SCREEN_HEIGHT - gWinterBoard.getHeight()) / 2);
     }
 
+    //draw resume button
     resumeButton.render(renderer, (SCREEN_WIDTH  - resumeButton.getWidth()) / 2 + resumeButton.getWidth(), (SCREEN_HEIGHT - resumeButton.getHeight()) / 2);
 
+    //draw home button
     gHomeButton.render(renderer, (SCREEN_WIDTH - gHomeButton.getWidth()) / 2 - gHomeButton.getWidth(), (SCREEN_HEIGHT - gHomeButton.getHeight()) / 2);
 }
 
@@ -172,25 +186,7 @@ void Game :: display(SDL_Renderer *renderer, Theme theme)
     //draw well and tetromino
     well.draw(renderer, gameMode);
 
-    if (preparation && (SDL_GetTicks() - timer > 3000)){
-        preparation = false;
-        moveTime = SDL_GetTicks();
-    }
-
-    if (preparation){
-        int countDownTime = 3000 - (SDL_GetTicks() - timer);
-        if (countDownTime >= 2000){
-            gThreeTexture.render(renderer, well.get_x() + (well.get_width() - gThreeTexture.getWidth()) / 2 , well.get_y() + (well.get_height() - gThreeTexture.getHeight()) / 2 );
-        }
-        else if (countDownTime >= 1000){
-            gTwoTexture.render(renderer, well.get_x() + (well.get_width() - gThreeTexture.getWidth()) / 2 , well.get_y() + (well.get_height() - gTwoTexture.getHeight()) / 2 );
-        }
-        else{
-            gOneTexture.render(renderer, well.get_x() + (well.get_width() - gThreeTexture.getWidth()) / 2 , well.get_y() + (well.get_height() - gOneTexture.getHeight()) / 2 );
-        }
-    }
-
-    else if(paused){
+    if(paused){
         display_paused_board(renderer, theme);
     }
 
@@ -201,11 +197,36 @@ void Game :: display(SDL_Renderer *renderer, Theme theme)
         //draw tetromino
         tetromino.draw(renderer, well);
     }
+
     //render lose back ground if mode is single play
     //in battle, we have to wait two player finish their game
     else if (this->gameMode == SinglePlay){
         well.draw_lose_background(renderer);
     }
+
+    //count down finish
+    if (preparation && (SDL_GetTicks() - timer > 3000)){
+        preparation = false;
+        moveTime = SDL_GetTicks();
+    }
+
+    if (preparation){
+        int countDownTime = 3000 - (SDL_GetTicks() - timer);
+        if (countDownTime >= 2000){
+            //draw 3
+            gThreeTexture.render(renderer, well.get_x() + (well.get_width() - gThreeTexture.getWidth()) / 2 , well.get_y() + (well.get_height() - gThreeTexture.getHeight()) / 2 );
+        }
+            //2
+        else if (countDownTime >= 1000){
+            gTwoTexture.render(renderer, well.get_x() + (well.get_width() - gThreeTexture.getWidth()) / 2 , well.get_y() + (well.get_height() - gTwoTexture.getHeight()) / 2 );
+        }
+        else{
+            //1
+            gOneTexture.render(renderer, well.get_x() + (well.get_width() - gThreeTexture.getWidth()) / 2 , well.get_y() + (well.get_height() - gOneTexture.getHeight()) / 2 );
+        }
+    }
+
+    
 
 }
 
@@ -230,8 +251,14 @@ void Game :: set_time(){
     moveTime = SDL_GetTicks();
 }
 
+void Game :: load_file(fstream &saveFile){
+    tetromino.load_file(saveFile);
+    nextTetromino.load_file(saveFile);
+    well.load_file(saveFile);
+}
+
 void Game :: save_file(fstream &saveFile){
     tetromino.save_file(saveFile);
-    nextTetromino.ghost_save_file(saveFile);
+    nextTetromino.save_file(saveFile);
     well.save_file(saveFile);
 }

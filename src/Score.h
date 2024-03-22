@@ -17,6 +17,9 @@ public:
     //change top score
     void set_top_score(int newTopScore);
 
+    //set current score to load file
+    void set_current_score(int _currentScore);
+
     //draw score frame and contents
     void draw(SDL_Renderer *renderer, Well &well, TTF_Font *scoreFont);
 

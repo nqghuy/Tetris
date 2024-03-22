@@ -68,8 +68,13 @@ public:
     //come back to menu
     bool return_home(SDL_Event &e);
 
+    //load lastest game
+    void load_file(fstream &saveFile);
+
+    //save game
     void save_file(fstream &saveFile);
 private:
+    //the higher level, the faster tetro falls
     int level;
 
     //current and top score

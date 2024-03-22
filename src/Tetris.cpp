@@ -373,6 +373,12 @@ void Tetris :: handle_events()
     }
 }
 
+void Tetris :: set_animation_theme(){
+    for (int i = 0; i < MAX_ANIMATION; i++){
+        animation[i].set_theme(theme);
+    }
+}
+
 void Tetris :: display()
 {
     //clear screen
@@ -502,12 +508,18 @@ void Tetris :: setting_handle_event(SDL_Event &e){
     else if (setting->click_down_level_button(e)){
         if(level > 1)   level--;
     }
+
+    //return menu
     else if(setting->click_back_button(e)){
         menu->set_active();
     }
+
+    //change ghost piece
     else if (setting->click_set_ghost_piece(e)){
         ghostTetromino =  !ghostTetromino;
     }
+
+    //change theme
     else if(setting->click_change_theme(e)){
         if(theme == Winter){
             theme = Autumn;
@@ -535,16 +547,54 @@ void Tetris :: menu_handle_event(SDL_Event &e){
     }
 }
 
-// void Tetris :: load_file(){
-//     fstream saveFile("../Save.txt");
-//     string _theme;
-//     saveFile >> _theme;
-//     if (_theme == "Winter"){
+void Tetris :: load_file(){
+    fstream saveFile("D:/Tetris/Tetris/Save.txt", ios :: in);
 
-//     }
-// }
+    //load theme
+    string _theme;
+    saveFile >> _theme;
+    if (_theme == "Winter"){
+        theme = Winter;
+    }
+    else {
+        theme = Autumn;
+    }
+    set_animation_theme();
+
+    saveFile.ignore();
+
+    //load ghost tetromino
+    string _ghostTetromino;
+
+    saveFile >> _ghostTetromino;
+    saveFile.ignore();
+
+    if(_ghostTetromino == "True"){
+        ghostTetromino = true;
+    } 
+    else ghostTetromino = false;
+
+    //load level
+    saveFile >> level;
+
+    //sload state(menu, game, battle)
+    string state;
+    saveFile >> state;
+    saveFile.ignore();
+    if (state == "menu"){
+        return;
+    }
+    else if (state == "game"){
+        game->load_file(saveFile);
+    }
+    else if (state == "battle"){
+        battle->load_file(saveFile);
+    }
+    saveFile.close();
+}
 
 void Tetris :: save_file(){
+    //clear file before write
     fstream saveFile("D:/Tetris/Tetris/Save.txt", ios :: trunc | ios :: out);
     if (saveFile.fail()){
         cout << "cannot open file\n";
@@ -553,15 +603,21 @@ void Tetris :: save_file(){
     if (theme == Winter){
         saveFile << "Winter\n";
     }
-    else saveFile << "Autumn\n";
+    else if(theme == Autumn){
+        saveFile << "Autumn\n";
+    }
+    else return;
 
+    //save tetromino
     if (ghostTetromino){
         saveFile << "True\n";
     }
     else saveFile << "False\n";
 
+    //save level
     saveFile << level << '\n';
 
+    //save state
     if (menu->get_active() || setting->get_active()){
         saveFile << "menu\n";
     }
@@ -571,6 +627,7 @@ void Tetris :: save_file(){
     }
     else if (battle->get_active()){
         saveFile << "battle\n";
+        battle->save_file(saveFile);
     }
     saveFile.close();
 

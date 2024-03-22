@@ -245,8 +245,45 @@ bool Well :: return_home(SDL_Event &e){
     return false;
 }
 
+void Well :: load_file(fstream &saveFile){
+    //load postion
+    saveFile >> x >> y;
+
+    //load matrix
+    for (int i = 0; i < HEIGHT_CELLS; i++){
+        for (int j = 0; j < WIDE_CELLS; j++){
+            int unite;
+            saveFile >> unite;
+            if (unite){
+                matrix[j][i] = true;
+            }
+            else matrix[j][i] = false;
+        }
+    }
+
+    //load color matrix
+    for (int i = 0; i < HEIGHT_CELLS; i++){
+        for (int j = 0; j < WIDE_CELLS; j++){
+            int r, g, b;
+            saveFile >> r >> g >> b;
+            cell_colors[j][i].r = r;
+            cell_colors[j][i].g = g;
+            cell_colors[j][i].b = b;
+        }
+    }
+
+    //load score
+    int currentScore, topScore;
+    saveFile >> currentScore >> topScore;
+    score.set_current_score(currentScore);
+    score.set_top_score(topScore);
+}
+
 void Well :: save_file(fstream &saveFile){
+    //save postion
     saveFile << x << " " << y << '\n';
+
+    //save matrix
     for (int i = 0; i < HEIGHT_CELLS; i++){
         for (int j = 0; j < WIDE_CELLS; j++){
             if (matrix[j][i]){
@@ -259,6 +296,8 @@ void Well :: save_file(fstream &saveFile){
         }
         saveFile << '\n';
     }
+
+    //save color
     for (int i = 0; i < HEIGHT_CELLS; i++){
         for (int j = 0; j < WIDE_CELLS; j++){
             saveFile << (int)cell_colors[j][i].r << " " <<(int) cell_colors[j][i].g << " " <<  (int)cell_colors[j][i].b;
@@ -268,5 +307,7 @@ void Well :: save_file(fstream &saveFile){
         }
         saveFile << '\n';
     }
+
+    //save score
     saveFile << score.get_current_score() << " " << score.get_top_score();
 }

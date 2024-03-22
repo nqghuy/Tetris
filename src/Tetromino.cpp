@@ -476,6 +476,7 @@ void Tetromino :: drop(Well &well){
     while(!this->check_bottom_collision(well)){
         y_coordinate++;
     }
+    //drop sound effect on
     Mix_PlayChannel(-1, gDropSoundEffect, 0);
     VelX = 0;
     VelY = 0;
@@ -506,7 +507,8 @@ void Tetromino :: draw (SDL_Renderer* renderer, int x, int y){
     }
 }
 
-void Tetromino :: ghost_save_file(fstream &saveFile){
+void Tetromino :: save_file(fstream &saveFile){
+    //save tetromino
     switch (TetrominoType)
     {
     case I_BLOCK:
@@ -531,32 +533,48 @@ void Tetromino :: ghost_save_file(fstream &saveFile){
         saveFile << "S_BLOCK\n";
         break;
     }
+
+    //save angle, x and y coordinate
+    saveFile << angle << " " << x_coordinate << " " << y_coordinate << '\n';
 }
 
-void Tetromino :: save_file(fstream &saveFile){
-    switch (TetrominoType)
-    {
-    case I_BLOCK:
-        saveFile << "I_BLOCK\n";
-        break;
-    case L_BLOCK:
-        saveFile << "L_BLOCK\n";
-        break;
-    case T_BLOCK:
-        saveFile << "T_BLOCK\n";
-        break;
-    case Z_BLOCK:
-        saveFile << "Z_BLOCK\n";
-        break;
-    case O_BLOCK:
-        saveFile << "O_BLOCK\n";
-        break;
-    case J_BLOCK:
-        saveFile << "J_BLOCK\n";
-        break;
-    case S_BLOCK:
-        saveFile << "S_BLOCK\n";
-        break;
+void Tetromino :: load_file(fstream &saveFile){
+    //load tetromino
+    string _TetrominoType;
+    saveFile >> _TetrominoType;
+    saveFile.ignore();
+    if (_TetrominoType == "I_BLOCK"){
+        TetrominoType = I_BLOCK;
     }
-    saveFile << angle << " " << x_coordinate << " " << y_coordinate << '\n';
+    else if (_TetrominoType == "L_BLOCK"){
+        TetrominoType = L_BLOCK;
+    }
+    else if (_TetrominoType == "T_BLOCK"){
+        TetrominoType = T_BLOCK;
+    }
+    else if (_TetrominoType == "Z_BLOCK"){
+        TetrominoType = Z_BLOCK;
+    }
+    else if (_TetrominoType == "O_BLOCK"){
+        TetrominoType = O_BLOCK;
+    }
+    else if (_TetrominoType == "J_BLOCK"){
+        TetrominoType = J_BLOCK;
+    }
+    else if (_TetrominoType == "S_BLOCK"){
+        TetrominoType = S_BLOCK;
+    }
+
+    //load color
+    TetrominoColor = Tetromino_color[TetrominoType];
+
+    //load angle, x and y coordinate
+    saveFile >> angle >> x_coordinate >> y_coordinate;
+
+    //shape with angle and tetro type
+    for (int i = 0; i < TETRAD_SIZE; i++){
+        for (int j = 0; j < TETRAD_SIZE; j++){
+            TetrominoShape[i][j] = tetromino_shape[TetrominoType * 4 ][i][j];
+        }
+    }
 }

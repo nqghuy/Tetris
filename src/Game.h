@@ -53,7 +53,11 @@ public:
     //to update if no event polled
     void update();
 
+    //save game
     void save_file(fstream &saveFile);
+
+    //load lastest game
+    void load_file(fstream &saveFile);
 private:
     //true if present ghost tetromino
     bool ghostTetromino;
@@ -88,6 +92,7 @@ private:
     //true if count down time is not finished
     bool preparation;
 
+    //if player press p
     bool paused;
 };
 #endif

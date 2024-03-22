@@ -28,6 +28,9 @@ int main(int argc, char *argv[])
         cout << "failed to load media\n";
     }
 
+    //load lastest game
+    tetris->load_file();
+
     //game runs
     while (tetris->running()){
         tetris->handle_events();

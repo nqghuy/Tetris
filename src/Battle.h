@@ -26,6 +26,10 @@ public:
      void display(SDL_Renderer *renderer, Theme theme);
 
      void free_memory();
+
+     //load and save file
+     void save_file(fstream &saveFile);
+     void load_file(fstream &saveFile);
      
 private:
      //player

@@ -20,9 +20,7 @@ public:
 
     //handle event
     bool click_play(SDL_Event &e);
-
     bool click_battle(SDL_Event &e);
-    
     bool click_setting(SDL_Event &e);
 
     //if we are in menu
@@ -31,8 +29,10 @@ public:
     //set active
     void set_active();
 
+    //player are not in menu
     void set_not_active();
 
+    //free memory
     void free_memory();
 private:
 

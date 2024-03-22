@@ -96,4 +96,13 @@ void Battle :: free_memory(){
      gDraw.free();
 }
 
+void Battle :: load_file(fstream &saveFile){
+     player1->load_file(saveFile);
+     player2->load_file(saveFile);
+}
+
+void Battle :: save_file(fstream &saveFile){
+     player1->save_file(saveFile);
+     player2->save_file(saveFile);
+}
 

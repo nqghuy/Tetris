@@ -15,17 +15,15 @@ bool Menu :: load_media(SDL_Renderer *renderer)
 {
     bool success = true;
 
-    //load play button texture
+    //load button texture
     if (!PlayButton.loadFromFile(renderer, "Assets/Pictures/PLAYBUTTON.png")){
         cout << "failed to load play button\n";
         success = false;
     }
-
     if (!BattleButton.loadFromFile(renderer, "Assets/Pictures/BATTLE.png")){
         cout << "failed to load battle button\n";
         success = false;
     }
-
     if(!SettingButton.loadFromFile(renderer, "Assets/Pictures/SETTING.png")){
         cout << "failed to load setting button\n";
         success = false;

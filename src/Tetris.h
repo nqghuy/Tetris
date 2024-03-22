@@ -36,25 +36,25 @@ public:
     //handle event
     void handle_events();
 
+    void set_animation_theme();
+
     //show game on the screen
     void display();
 
     //play music during game
     void play_music();
 
+    //free memory
     void free_texture();
-
     void free_music();
-
     void free_font();
-
     void free_memory();
 
     //close game and free memory
     void close_game();
 
-    // void load_file();
-
+    //load and save file
+    void load_file();
     void save_file();
     
 private:
@@ -80,8 +80,10 @@ private:
     //menu before playing
     Menu *menu;
 
+    //setting ghost, level, theme, ...
     Setting *setting;
 
+    //animation(snow or leaf)
     Animation animation[MAX_ANIMATION];
 
     //true if quit

@@ -241,9 +241,11 @@ public:
     //get tetro type
     Tetro_Type get_tetro_type();
 
-    void save_file(fstream &saveFile);
+    //load latest gaem
+    void load_file(fstream &saveFile);
 
-    void ghost_save_file(fstream &saveFile);
+    //save game
+    void save_file(fstream &saveFile);
 private:
     //false if cannot move down
     bool active;
