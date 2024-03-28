@@ -250,7 +250,7 @@ public:
     //save game
     void save_file(fstream &saveFile);
 
-    pair<int, int> get_expected_value(int x, int _angle, Well& well);
+    int get_expected_value(int x, int _angle, Well& well);
 
     void greedy(Well& well);
 

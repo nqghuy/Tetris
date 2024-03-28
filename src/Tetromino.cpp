@@ -627,10 +627,10 @@ void Tetromino :: load_file(fstream &saveFile){
 }
 
 void Tetromino :: greedy(Well& well){
-    pair<int ,int> maxExpectedValue = {-1, -1};
+    int maxExpectedValue = -1;
     for (int x = -2; x < WIDE_CELLS + 1; x++){
         for (int _angle = 0; _angle < 4; _angle++){
-            pair<int, int> expectedValue = this->get_expected_value(x, _angle, well);
+            int expectedValue = this->get_expected_value(x, _angle, well);
             if (expectedValue > maxExpectedValue){
                 maxExpectedValue = expectedValue;
                 finalX = x;
@@ -645,13 +645,13 @@ void Tetromino :: set_x_coordinate(int x){
     x_coordinate = x;
 }
 
-pair <int, int> Tetromino :: get_expected_value(int x, int _angle, Well &well){
+int Tetromino :: get_expected_value(int x, int _angle, Well &well){
     //the copy of this tetromino
     Tetromino ghost = *this;
     ghost.set_x_coordinate(x);
     for (int i = 0; i < _angle; i++){
         if (!ghost.Rotate(well)){
-            return{-1, -1};
+            return -1;
         }
     }
     while(!ghost.check_bottom_collision(well)){
@@ -673,26 +673,43 @@ pair <int, int> Tetromino :: get_expected_value(int x, int _angle, Well &well){
         }
     }
 
+    int filledRow = 0;
+    for (int i = 0; i < TETRAD_SIZE; i++){
+        for (int j = 0; j < TETRAD_SIZE; j++){
+            bool filled = true;
+            if (ghost.TetrominoShape[i][j]){
+                for (int k = 0; k < WIDE_CELLS; k++){
+                    if (!well.isBlock(k, ghost.y_coordinate + i) && (!ghost.TetrominoShape[i][k - ghost.x_coordinate] || k < ghost.x_coordinate || k > ghost.x_coordinate + TETRAD_SIZE)){
+                        filled = false;
+                    }
+                }
+            }
+            if (filled){
+                filledRow++;
+            }
+        }
+    }
+
     int inaccessibleSpace = 0;
 
     for (int i = 0; i < TETRAD_SIZE; i++){
         for (int j = 0; j < TETRAD_SIZE; j++){
-            if(this->TetrominoShape[i][j] == true){
+            if(ghost.TetrominoShape[i][j] == true){
                 //left border
-                int left = x_coordinate + j;
+                int left = ghost.x_coordinate + j;
 
                 //coordinate along the Well
-                int x = this->x_coordinate + j;
-                int y = this->y_coordinate + i;
-
-                if (y >= 0 && well.isBlock(x, y - 1) && (TetrominoShape[i + 1][j] || i == TETRAD_SIZE
-                + 1)){
+                int x = ghost.x_coordinate + j;
+                int y = ghost.y_coordinate + i;
+                
+                if (y < HEIGHT_CELLS - 1 && !well.isBlock(x, y + 1) && (i != TETRAD_SIZE - 1 || (!ghost.TetrominoShape[i + 1][j])) && (ghost.TetrominoShape[i][j])){
                     inaccessibleSpace++;
                 }
             }
         }
     }
-    return {ghost.y_coordinate -(3 - lowestRow), blockInBottomRow};
+    cout << inaccessibleSpace << '\n';
+    return (ghost.y_coordinate + lowestRow) * 3 + blockInBottomRow - inaccessibleSpace * 5 ;
 
     // return {0, 0};
 }
