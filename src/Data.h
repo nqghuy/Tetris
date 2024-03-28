@@ -19,8 +19,10 @@ const int HIDDEN_ROWS = 2;
 const int SCREEN_HEIGHT = 900;
 const int SCREEN_WIDTH = 1520;
 
-//the distance between 2 button
+//the distance between 2 small buttons
 const int buttonDistance = 100;
+
+const int menuButtonDistance = 125;
 
 //max_level
 const int MAX_LEVEL = 6;
@@ -104,7 +106,8 @@ extern LTexture gAutumnBackground;
 enum GameMode{
      SinglePlay,
      Player1,
-     Player2
+     Player2,
+     Bot
 };
 
 enum Theme{

@@ -63,6 +63,7 @@ Tetris :: Tetris(int _level, Theme _theme)
     game = new Game(renderer, SinglePlay);
     menu = new Menu;
     battle = new Battle(renderer);
+    vsCom = new Battle (renderer, Player1, Bot);
     level = _level;
     quit = false;
     ghostTetromino = true;
@@ -222,7 +223,6 @@ bool Tetris :: load_texture(){
         success = false;
     }
 
-    
     if(!battle->load_media(renderer)){
         cout << "failed to load battle texture\n";
     }
@@ -360,6 +360,15 @@ void Tetris :: handle_events()
             }
         }
 
+        else if(vsCom->get_active()){
+            vsCom->handle_event(renderer, e);
+            //battle is running => menu
+            if (!vsCom->get_active()){
+                menu->set_active();
+                vsCom = new Battle(renderer, Player1, Bot);
+            }
+        }
+
         //battle is running
         else {
             battle->handle_event(renderer, e);
@@ -410,6 +419,10 @@ void Tetris :: display()
             game->update();
         }
         game->display(renderer, theme);
+    }
+
+    else if (vsCom->get_active()){
+        vsCom->display(renderer, theme);
     }
 
     //display battle
@@ -536,9 +549,15 @@ void Tetris :: menu_handle_event(SDL_Event &e){
     if(menu->click_play(e)){
         game->set_active(level, ghostTetromino);
     }
+
     //ready to a hot battle
     else if(menu->click_battle(e)){
         battle->set_active(level, ghostTetromino);
+    }
+
+    //bot is very intelligent
+    else if (menu->click_vsCom(e)){
+        vsCom->set_active(level, ghostTetromino);
     }
     //click setting
     else if(menu->click_setting(e)){

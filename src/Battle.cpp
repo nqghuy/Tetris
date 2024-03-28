@@ -1,9 +1,9 @@
 #include "Battle.h"
 #include <thread>
 using namespace std;
-Battle :: Battle(SDL_Renderer *renderer){
-     player1 = new Game (renderer, Player1);
-     player2 = new Game (renderer, Player2);
+Battle :: Battle(SDL_Renderer *renderer, GameMode gameMode1, GameMode gameMode2){
+     player1 = new Game (renderer, gameMode1);
+     player2 = new Game (renderer, gameMode2);
      active = false;
 }
 
@@ -105,4 +105,3 @@ void Battle :: save_file(fstream &saveFile){
      player1->save_file(saveFile);
      player2->save_file(saveFile);
 }
-

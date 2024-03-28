@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
     //use to random type of tetromino
     srand(time(NULL));
 
-    int SDL_Enable_Key_Repeat(500);    
+    int SDL_Enable_Key_Repeat(0);    
 
     //new tetris game
     Tetris *tetris = new Tetris(1);

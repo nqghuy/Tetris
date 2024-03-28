@@ -3,6 +3,7 @@
 #include "Data.h"
 #include "../include/SDL2/SDL.h"
 #include <fstream>
+#include <utility>
 
 //avoid circular dependencies
 class Well;
@@ -180,7 +181,7 @@ class Tetromino
 {
 public:
     //constructor, x, y is the position
-    Tetromino(Tetro_Type _TetrominoType, int x, int y);
+    Tetromino(Tetro_Type _TetrominoType, int x, int y, Well &well, GameMode _gameMode = SinglePlay);
 
     //destructor
     ~Tetromino();
@@ -195,10 +196,12 @@ public:
     void draw(SDL_Renderer *renderer, int x, int y);
 
     //rotate the tetromino when up key is pressed, if collision, no rotate
-    void Rotate(Well &well);
+    bool Rotate(Well &well);
 
     //move down, left and right and check collision
     void Move(Well &well);
+
+    void bot_move(Well &well);
 
     //handle event for player1 and single play
     void handle_event1(SDL_Event &e, Well &well);
@@ -246,7 +249,16 @@ public:
 
     //save game
     void save_file(fstream &saveFile);
+
+    pair<int, int> get_expected_value(int x, int _angle, Well& well);
+
+    void greedy(Well& well);
+
+    void set_x_coordinate(int x);
+
 private:
+    GameMode gameMode;
+
     //false if cannot move down
     bool active;
 
@@ -272,6 +284,7 @@ private:
     bool dropped;
     bool rotate;
 
+    int finalX, finalAngle;
 };
 
 #endif // Tetromino_h

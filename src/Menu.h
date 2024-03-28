@@ -22,6 +22,7 @@ public:
     bool click_play(SDL_Event &e);
     bool click_battle(SDL_Event &e);
     bool click_setting(SDL_Event &e);
+    bool click_vsCom(SDL_Event &e);
 
     //if we are in menu
     bool get_active();
@@ -40,6 +41,7 @@ private:
     LTexture PlayButton;
     LTexture BattleButton;
     LTexture SettingButton;
+    LTexture VsComButton;
 
     //true if we are in menu
     bool active;

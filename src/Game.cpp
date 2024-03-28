@@ -5,11 +5,12 @@ using namespace std;
 
 Game::Game(SDL_Renderer *renderer, GameMode _gameMode, int _level, bool _ghostTetromino)
     :   //initialize well
-      well(renderer, (SCREEN_WIDTH - TILE_SIZE * WIDE_CELLS) / 2, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2, 0, _level),
+    well(renderer, (SCREEN_WIDTH - TILE_SIZE * WIDE_CELLS) / 2, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2, 0, _level),
 
       //initialize tetromino
-    tetromino(Tetro_Type(rand() % 7), WIDE_CELLS / 2 - 1, 0), quit(true),
-      nextTetromino(Tetro_Type(rand() % 7), WIDE_CELLS / 2 - 1, 0), lose(false)
+    tetromino(Tetro_Type(rand() % 7), WIDE_CELLS / 2 - 1, 0, well, _gameMode), quit(true),
+    nextTetromino(Tetro_Type(rand() % 7), WIDE_CELLS / 2 - 1, 0, well, _gameMode), lose(false)
+
       {
         gameMode = _gameMode;
         level = _level;
@@ -20,11 +21,14 @@ Game::Game(SDL_Renderer *renderer, GameMode _gameMode, int _level, bool _ghostTe
         if (_gameMode == Player1){
             well = Well(renderer, SCREEN_WIDTH / 11 , (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2, 0, _level);
         }
-        else if (_gameMode == Player2){
+        else if (_gameMode == Player2 || _gameMode == Bot){
             well = Well(renderer, SCREEN_WIDTH / 11  * 6, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2, 0, _level);
         }
+        if(_gameMode == Bot){
+            tetromino.greedy(well);
+        }
         //random next tetro type
-        nextTetromino = Tetromino(nextTetromino.get_random_type(tetromino), WIDE_CELLS / 2 - 1, 0);
+        nextTetromino = Tetromino(nextTetromino.get_random_type(tetromino), WIDE_CELLS / 2 - 1, 0, well, _gameMode);
 
         //count down before play
         preparation = true;
@@ -84,8 +88,10 @@ void Game :: handleEvents(SDL_Renderer *renderer, SDL_Event &e)
     //handle tetromino
     if (!get_lose()){
         if(tetromino.get_active()){
-            tetromino.handle_events(e, well, gameMode);
-            tetromino.Move(well);
+            if(gameMode != Bot){
+                tetromino.handle_events(e, well, gameMode);
+                tetromino.Move(well);
+            }
         }
     }
 
@@ -103,8 +109,8 @@ void Game :: handleEvents(SDL_Renderer *renderer, SDL_Event &e)
             well = Well(renderer, well.get_x(), well.get_y(), _topScore, this->level);
 
             //reset tetromino
-            tetromino = Tetromino(nextTetromino.get_tetro_type(), WIDE_CELLS / 2 - 1, 0);
-            nextTetromino = Tetromino(nextTetromino.get_random_type(tetromino), WIDE_CELLS / 2 - 1, 0);
+            tetromino = Tetromino(nextTetromino.get_tetro_type(), WIDE_CELLS / 2 - 1, 0, well, gameMode);
+            nextTetromino = Tetromino(nextTetromino.get_random_type(tetromino), WIDE_CELLS / 2 - 1, 0, well, gameMode);
         }
         //if click return home
         else if(well.return_home(e)){
@@ -124,6 +130,10 @@ void Game :: update(){
         level = level++;
     }
 
+    if (gameMode == Bot){
+        tetromino.bot_move(well);
+    }
+
     //after 1s, the tetromino will fall
     currentTime = SDL_GetTicks();
 
@@ -135,8 +145,9 @@ void Game :: update(){
 
     if (!tetromino.get_active()){
         //new tetrimino
-        tetromino = Tetromino(nextTetromino.get_tetro_type(), WIDE_CELLS / 2 - 1, 0);
-        nextTetromino = Tetromino(nextTetromino.get_random_type(tetromino), WIDE_CELLS / 2 - 1, 0);
+        tetromino = Tetromino(nextTetromino.get_tetro_type(), WIDE_CELLS / 2 - 1, 0, well, gameMode);
+        tetromino.greedy(well);
+        nextTetromino = Tetromino(nextTetromino.get_random_type(tetromino), WIDE_CELLS / 2 - 1, 0, well, gameMode);
 
         //if lose game
         if (tetromino.check_bottom_collision(well)){

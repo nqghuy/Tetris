@@ -12,7 +12,7 @@ Animation :: Animation(){
      
      //random wind and gravity
      windV = rand() % 2;
-     gravity = rand() % 4 + 1;
+     gravity = rand() % 6 + 1;
 
      //random wind is positive or negative
      int tmp = rand() % 2 + 1;
@@ -74,7 +74,7 @@ void Animation :: set_theme(Theme _theme){
      
      //random wind and gravity
      windV = rand() % 2;
-     gravity = rand() % 4 + 1;
+     gravity = rand() % 6 + 1;
 
      //random wind is positive or negative
      int tmp = rand() % 2 + 1;

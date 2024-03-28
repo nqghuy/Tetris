@@ -76,6 +76,7 @@ private:
     Game *game;
 
     Battle *battle;
+    Battle *vsCom;
 
     //menu before playing
     Menu *menu;

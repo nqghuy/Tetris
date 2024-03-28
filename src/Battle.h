@@ -6,7 +6,7 @@
 class Battle{
 public:
      //constructor
-     Battle(SDL_Renderer *renderer);
+     Battle(SDL_Renderer *renderer, GameMode gameMode1 = Player1, GameMode gameMode2 = Player2);
 
      //destructor
      ~Battle();

@@ -2,8 +2,10 @@
 #include "Playing_field.h"
 using namespace std;
 
-Tetromino :: Tetromino (Tetro_Type _TetrominoType, int x, int y)
+Tetromino :: Tetromino (Tetro_Type _TetrominoType, int x, int y, Well &well, GameMode _gameMode)
 {
+    gameMode = gameMode;
+
     active = true;
     TetrominoType = _TetrominoType;
     TetrominoColor = Tetromino_color[TetrominoType];
@@ -26,6 +28,11 @@ Tetromino :: Tetromino (Tetro_Type _TetrominoType, int x, int y)
     //default velocity
     VelX = 0;
     VelY = 0;
+
+    if (gameMode == Bot){
+        this->greedy(well);
+    }
+
 }
 
 Tetromino ::~Tetromino(){}
@@ -68,7 +75,6 @@ void Tetromino :: draw_ghost_tetromino(SDL_Renderer *renderer, Well &well){
         ghost.y_coordinate ++;
     }
     ghost.y_coordinate--;
-
     for (int i = 0; i < TETRAD_SIZE; i++){
         for (int j = 0; j < TETRAD_SIZE; j++){
             //if this coordinate is a block
@@ -95,7 +101,7 @@ void Tetromino :: draw_ghost_tetromino(SDL_Renderer *renderer, Well &well){
 }
 
 //rotate the tetromino by using next shape
-void Tetromino :: Rotate(Well &well)
+bool Tetromino :: Rotate(Well &well)
 {
     //used if not rotate
     bool old_shape[TETRAD_SIZE][TETRAD_SIZE];
@@ -116,15 +122,19 @@ void Tetromino :: Rotate(Well &well)
         }
     }
 
+    bool ok = true;
+
     //if collision, do not rotate
     if (this->check_bottom_collision(well) || this->check_left_collision(well) || this->check_right_collision(well)){
         for (int i = 0; i < TETRAD_SIZE; i++){
             for (int j = 0; j < TETRAD_SIZE; j++){
                 TetrominoShape[i][j] = old_shape[i][j];
                 angle = old_angle;
+                ok = false;
             }
         }
     }
+    return ok;
 }
 
 void Tetromino :: Move(Well &well)
@@ -254,8 +264,6 @@ void Tetromino :: handle_event1(SDL_Event &e, Well &well){
         }
     }
 
-
-
     //current key state
     const Uint8* currentKeyStates = SDL_GetKeyboardState( NULL );
 
@@ -323,10 +331,49 @@ void Tetromino :: handle_event1(SDL_Event &e, Well &well){
         VelX = 0;
         return;
     }       
+}
 
-    
+void Tetromino :: bot_move(Well &well){
+    if (x_coordinate < finalX){
+        VelX = 1;
+    }
+    else if (x_coordinate > finalX){
+        VelX = -1;
+    }
+    else{
+        VelX = 0;
+    }
+    x_coordinate += VelX;
+    if (angle < finalAngle){
+        this->Rotate(well);
+    }
+    // cout << finalX << " " << finalAngle << endl;
+    //if go to last row
+    bool finished = false;
 
-    
+    //check collision
+    while(this->check_left_collision(well) && VelX < 0){
+        this->x_coordinate++;
+        VelX ++;
+    }
+    while(this->check_right_collision(well) && VelX > 0)
+    {
+        this->x_coordinate--;
+        VelX--;
+    }
+
+    //set finised true if go to last row
+    if (this->check_bottom_collision(well))
+    {
+        this->y_coordinate--;
+        finished = true;
+    }
+
+    //Unite tetromino with well and set active
+    if(finished){
+        well.Unite(this);
+        active = false;
+    }
 }
 
 void Tetromino :: handle_events(SDL_Event &e, Well &well, GameMode gameMode){
@@ -577,4 +624,75 @@ void Tetromino :: load_file(fstream &saveFile){
             TetrominoShape[i][j] = tetromino_shape[TetrominoType * 4 ][i][j];
         }
     }
+}
+
+void Tetromino :: greedy(Well& well){
+    pair<int ,int> maxExpectedValue = {-1, -1};
+    for (int x = -2; x < WIDE_CELLS + 1; x++){
+        for (int _angle = 0; _angle < 4; _angle++){
+            pair<int, int> expectedValue = this->get_expected_value(x, _angle, well);
+            if (expectedValue > maxExpectedValue){
+                maxExpectedValue = expectedValue;
+                finalX = x;
+                finalAngle = _angle;
+            }
+            // cout << finalX << " " << finalAngle << '\n';
+        }
+    }
+}
+
+void Tetromino :: set_x_coordinate(int x){
+    x_coordinate = x;
+}
+
+pair <int, int> Tetromino :: get_expected_value(int x, int _angle, Well &well){
+    //the copy of this tetromino
+    Tetromino ghost = *this;
+    ghost.set_x_coordinate(x);
+    for (int i = 0; i < _angle; i++){
+        if (!ghost.Rotate(well)){
+            return{-1, -1};
+        }
+    }
+    while(!ghost.check_bottom_collision(well)){
+        ghost.y_coordinate++;
+    }
+    ghost.y_coordinate--;
+
+    int blockInBottomRow = 0;
+    int lowestRow = 0;
+    for (int i = TETRAD_SIZE - 1; i >= 0; i--){
+        for (int j = 0; j < TETRAD_SIZE; j++){
+            if(ghost.TetrominoShape[i][j]){
+                blockInBottomRow++;
+            }
+        }
+        if(blockInBottomRow){
+            lowestRow = i;
+            break;
+        }
+    }
+
+    int inaccessibleSpace = 0;
+
+    for (int i = 0; i < TETRAD_SIZE; i++){
+        for (int j = 0; j < TETRAD_SIZE; j++){
+            if(this->TetrominoShape[i][j] == true){
+                //left border
+                int left = x_coordinate + j;
+
+                //coordinate along the Well
+                int x = this->x_coordinate + j;
+                int y = this->y_coordinate + i;
+
+                if (y >= 0 && well.isBlock(x, y - 1) && (TetrominoShape[i + 1][j] || i == TETRAD_SIZE
+                + 1)){
+                    inaccessibleSpace++;
+                }
+            }
+        }
+    }
+    return {ghost.y_coordinate -(3 - lowestRow), blockInBottomRow};
+
+    // return {0, 0};
 }
