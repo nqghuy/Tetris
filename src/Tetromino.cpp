@@ -1,5 +1,6 @@
 #include "Tetromino.h"
 #include "Playing_field.h"
+#include <cstring>
 using namespace std;
 
 Tetromino :: Tetromino (Tetro_Type _TetrominoType, int x, int y, Well &well, GameMode _gameMode)
@@ -673,6 +674,52 @@ int Tetromino :: get_expected_value(int x, int _angle, Well &well){
         }
     }
 
+    bool virtualWell [WIDE_CELLS][HEIGHT_CELLS];
+    memset(virtualWell, false, sizeof(virtualWell));
+
+    for (int i = 0; i < WIDE_CELLS; i++){
+        for (int j = 0; j < HEIGHT_CELLS; j++){
+            virtualWell[i][j] = well.isBlock(i, j);
+        }
+    }
+
+    for (int i = 0; i < TETRAD_SIZE; i++){
+        for (int j = 0; j < TETRAD_SIZE; j++){
+            if (ghost.TetrominoShape[i][j])
+            {
+                //the coordinate along the Well
+                int x = ghost.x_coordinate + j;
+                int y = ghost.y_coordinate + i;
+
+                //update cell x, y and color
+                virtualWell[x][y] = true;
+            }
+        }
+    }
+
+    // for (int i = 0; i < HEIGHT_CELLS; i++){
+    //     for (int j = 0; j < WIDE_CELLS; j++){
+    //         cout << virtualWell[j][i] << " ";
+    //     }
+    //     cout << '\n';
+    // }
+    // cout << '\n';
+
+    int inaccessibleSpace = 0;
+    for (int i = 0; i < HEIGHT_CELLS; i++){
+        for (int j = 0; j < WIDE_CELLS; j++){
+            if (virtualWell[j][i] == true && i != HEIGHT_CELLS - 1 && virtualWell[j][i + 1] == false){
+                int k = i + 1;
+                while (k < HEIGHT_CELLS && virtualWell[j][k] == false){
+                    inaccessibleSpace++;
+                    k++;
+                }
+                inaccessibleSpace++;
+            }
+        }
+    }
+
+
     int filledRow = 0;
     for (int i = 0; i < TETRAD_SIZE; i++){
         for (int j = 0; j < TETRAD_SIZE; j++){
@@ -690,24 +737,24 @@ int Tetromino :: get_expected_value(int x, int _angle, Well &well){
         }
     }
 
-    int inaccessibleSpace = 0;
+    // int inaccessibleSpace = 0;
 
-    for (int i = 0; i < TETRAD_SIZE; i++){
-        for (int j = 0; j < TETRAD_SIZE; j++){
-            if(ghost.TetrominoShape[i][j] == true){
-                //left border
-                int left = ghost.x_coordinate + j;
+    // for (int i = 0; i < TETRAD_SIZE; i++){
+    //     for (int j = 0; j < TETRAD_SIZE; j++){
+    //         if(ghost.TetrominoShape[i][j] == true){
+    //             //left border
+    //             int left = ghost.x_coordinate + j;
 
-                //coordinate along the Well
-                int x = ghost.x_coordinate + j;
-                int y = ghost.y_coordinate + i;
+    //             //coordinate along the Well
+    //             int x = ghost.x_coordinate + j;
+    //             int y = ghost.y_coordinate + i;
                 
-                if (y < HEIGHT_CELLS - 1 && !well.isBlock(x, y + 1) && (i != TETRAD_SIZE - 1 || (!ghost.TetrominoShape[i + 1][j])) && (ghost.TetrominoShape[i][j])){
-                    inaccessibleSpace++;
-                }
-            }
-        }
-    }
+    //             if (y < HEIGHT_CELLS - 1 && !well.isBlock(x, y + 1) && (i != TETRAD_SIZE - 1 || (!ghost.TetrominoShape[i + 1][j])) && (ghost.TetrominoShape[i][j])){
+    //                 inaccessibleSpace++;
+    //             }
+    //         }
+    //     }
+    // }
     cout << inaccessibleSpace << '\n';
     return (ghost.y_coordinate + lowestRow) * 3 + blockInBottomRow - inaccessibleSpace * 5 ;
 
