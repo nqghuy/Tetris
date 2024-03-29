@@ -30,6 +30,9 @@ Tetromino :: Tetromino (Tetro_Type _TetrominoType, int x, int y, Well &well, Gam
     VelX = 0;
     VelY = 0;
 
+    finalX = 0;
+    finalAngle = 0;
+
     if (gameMode == Bot){
         this->greedy(well);
     }
@@ -249,10 +252,6 @@ void Tetromino :: handle_event2(SDL_Event &e, Well &well){
         VelX = 0;
         return;
     }       
-
-    
-
-    
 }
 
 //handle event for player1
@@ -344,11 +343,13 @@ void Tetromino :: bot_move(Well &well){
     else{
         VelX = 0;
     }
+    if (y_coordinate < 6){
+        cout << finalX << '\n';
+    }
     x_coordinate += VelX;
     if (angle < finalAngle){
         this->Rotate(well);
     }
-    // cout << finalX << " " << finalAngle << endl;
     //if go to last row
     bool finished = false;
 
@@ -628,8 +629,8 @@ void Tetromino :: load_file(fstream &saveFile){
 }
 
 void Tetromino :: greedy(Well& well){
-    int maxExpectedValue = -1;
-    for (int x = -2; x < WIDE_CELLS + 1; x++){
+    int maxExpectedValue = -1e7;
+    for (int x = -2; x < WIDE_CELLS - 1; x++){
         for (int _angle = 0; _angle < 4; _angle++){
             int expectedValue = this->get_expected_value(x, _angle, well);
             if (expectedValue > maxExpectedValue){
@@ -637,7 +638,6 @@ void Tetromino :: greedy(Well& well){
                 finalX = x;
                 finalAngle = _angle;
             }
-            // cout << finalX << " " << finalAngle << '\n';
         }
     }
 }
@@ -650,10 +650,14 @@ int Tetromino :: get_expected_value(int x, int _angle, Well &well){
     //the copy of this tetromino
     Tetromino ghost = *this;
     ghost.set_x_coordinate(x);
-    for (int i = 0; i < _angle; i++){
-        if (!ghost.Rotate(well)){
-            return -1;
+    ghost.angle = max(_angle - 1, 0);
+    //for (int i = 0; i < _angle; i++){
+        if (_angle != 0 && !ghost.Rotate(well)){
+            return -1e7;
         }
+    // }
+    if(ghost.check_left_collision(well) || ghost.check_right_collision(well)){
+        return -1e7;
     }
     while(!ghost.check_bottom_collision(well)){
         ghost.y_coordinate++;
@@ -697,13 +701,32 @@ int Tetromino :: get_expected_value(int x, int _angle, Well &well){
         }
     }
 
-    // for (int i = 0; i < HEIGHT_CELLS; i++){
-    //     for (int j = 0; j < WIDE_CELLS; j++){
-    //         cout << virtualWell[j][i] << " ";
-    //     }
-    //     cout << '\n';
-    // }
-    // cout << '\n';
+    int highestRow = 0;
+
+    for (int i = 0; i < TETRAD_SIZE; i++){
+        bool blockInRow = false;
+        for (int j = 0; j < TETRAD_SIZE; j++){
+            if (ghost.TetrominoShape[i][j]){
+                blockInRow = true;
+                break;
+            }
+        }
+        if (blockInRow){
+            highestRow++;
+        }
+    }
+
+    int highestRow2 = 0;
+    for (int i = 0; i < HEIGHT_CELLS; i++){
+        for (int j = 0; j < WIDE_CELLS; j++){
+            if (virtualWell[j][i]){
+                highestRow2 = i;
+            }
+        }
+        if (highestRow2){
+            break;
+        }
+    }
 
     int inaccessibleSpace = 0;
     for (int i = 0; i < HEIGHT_CELLS; i++){
@@ -714,49 +737,24 @@ int Tetromino :: get_expected_value(int x, int _angle, Well &well){
                     inaccessibleSpace++;
                     k++;
                 }
-                inaccessibleSpace++;
             }
         }
     }
-
 
     int filledRow = 0;
-    for (int i = 0; i < TETRAD_SIZE; i++){
-        for (int j = 0; j < TETRAD_SIZE; j++){
-            bool filled = true;
-            if (ghost.TetrominoShape[i][j]){
-                for (int k = 0; k < WIDE_CELLS; k++){
-                    if (!well.isBlock(k, ghost.y_coordinate + i) && (!ghost.TetrominoShape[i][k - ghost.x_coordinate] || k < ghost.x_coordinate || k > ghost.x_coordinate + TETRAD_SIZE)){
-                        filled = false;
-                    }
-                }
-            }
-            if (filled){
-                filledRow++;
+    for (int i = 0; i < HEIGHT_CELLS; i++){
+        bool filled = true;
+        for (int j = 0; j < WIDE_CELLS; j++){
+            if (!virtualWell[j][i]){
+                filled = false;
+                break;
             }
         }
+        if(filled){
+            filledRow++;
+        }
     }
-
-    // int inaccessibleSpace = 0;
-
-    // for (int i = 0; i < TETRAD_SIZE; i++){
-    //     for (int j = 0; j < TETRAD_SIZE; j++){
-    //         if(ghost.TetrominoShape[i][j] == true){
-    //             //left border
-    //             int left = ghost.x_coordinate + j;
-
-    //             //coordinate along the Well
-    //             int x = ghost.x_coordinate + j;
-    //             int y = ghost.y_coordinate + i;
-                
-    //             if (y < HEIGHT_CELLS - 1 && !well.isBlock(x, y + 1) && (i != TETRAD_SIZE - 1 || (!ghost.TetrominoShape[i + 1][j])) && (ghost.TetrominoShape[i][j])){
-    //                 inaccessibleSpace++;
-    //             }
-    //         }
-    //     }
-    // }
-    cout << inaccessibleSpace << '\n';
-    return (ghost.y_coordinate + lowestRow) * 3 + blockInBottomRow - inaccessibleSpace * 5 ;
+    return (ghost.y_coordinate + lowestRow) * 3 + blockInBottomRow - inaccessibleSpace * 3 - highestRow + highestRow2 * 1.5 + filledRow * 4 + ghost.y_coordinate;
 
     // return {0, 0};
 }
