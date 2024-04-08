@@ -320,8 +320,16 @@ bool Tetris :: running()
 
 void Tetris :: play_music()
 {
-    if (!menu->get_active()){
-        game->play_music();
+    if (!menu->get_active() && !setting->get_active()){
+        //play music when starting playing game
+        if(Mix_PlayingMusic() == 0){
+            Mix_PlayMusic(gPlayingMusic, -1);
+        }
+    }
+    else{
+        if(Mix_PlayingMusic()){
+            Mix_PlayMusic(gPlayingMusic, -1);
+        }
     }
 }
 

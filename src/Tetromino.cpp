@@ -343,9 +343,6 @@ void Tetromino :: bot_move(Well &well){
     else{
         VelX = 0;
     }
-    if (y_coordinate < 6){
-        cout << finalX << '\n';
-    }
     x_coordinate += VelX;
     if (angle < finalAngle){
         this->Rotate(well);
@@ -629,12 +626,20 @@ void Tetromino :: load_file(fstream &saveFile){
 }
 
 void Tetromino :: greedy(Well& well){
+    //the final expected value
     int maxExpectedValue = -1e7;
+
+    //greedy
     for (int x = -2; x < WIDE_CELLS - 1; x++){
         for (int _angle = 0; _angle < 4; _angle++){
+            //get expected value in each case
             int expectedValue = this->get_expected_value(x, _angle, well);
+
+            //update expected value
             if (expectedValue > maxExpectedValue){
                 maxExpectedValue = expectedValue;
+
+                //update finale position
                 finalX = x;
                 finalAngle = _angle;
             }
@@ -649,21 +654,26 @@ void Tetromino :: set_x_coordinate(int x){
 int Tetromino :: get_expected_value(int x, int _angle, Well &well){
     //the copy of this tetromino
     Tetromino ghost = *this;
+
+    //set the position we are considering
     ghost.set_x_coordinate(x);
     ghost.angle = max(_angle - 1, 0);
-    //for (int i = 0; i < _angle; i++){
-        if (_angle != 0 && !ghost.Rotate(well)){
-            return -1e7;
-        }
-    // }
+
+    //if cannot rotate because of collision
+    if (_angle != 0 && !ghost.Rotate(well)){
+        return -1e7;
+    }
     if(ghost.check_left_collision(well) || ghost.check_right_collision(well)){
         return -1e7;
     }
+
+    //set the deepest height
     while(!ghost.check_bottom_collision(well)){
         ghost.y_coordinate++;
     }
     ghost.y_coordinate--;
 
+    //calculate the blocks in bottom row, lowest row in tetrad size
     int blockInBottomRow = 0;
     int lowestRow = 0;
     for (int i = TETRAD_SIZE - 1; i >= 0; i--){
@@ -678,15 +688,36 @@ int Tetromino :: get_expected_value(int x, int _angle, Well &well){
         }
     }
 
+    // a virtual well 
     bool virtualWell [WIDE_CELLS][HEIGHT_CELLS];
     memset(virtualWell, false, sizeof(virtualWell));
 
+    //set value in virtual well
     for (int i = 0; i < WIDE_CELLS; i++){
         for (int j = 0; j < HEIGHT_CELLS; j++){
             virtualWell[i][j] = well.isBlock(i, j);
         }
     }
 
+    //calculate inaccessible spaces
+    int inaccessibleSpace = 0;
+    for (int i = 0; i < TETRAD_SIZE; i++){
+        for (int j = 0; j < TETRAD_SIZE; j++){
+            if (ghost.TetrominoShape[i][j]){
+                if ((i < TETRAD_SIZE - 1 && !ghost.TetrominoShape[i + 1][j]) || i == TETRAD_SIZE){
+                    int row = ghost.y_coordinate + i + 1;
+                    
+                    //the number of cell that is not true(in virtual well) behind [i][j] is inaccessible
+                    while(row < HEIGHT_CELLS && !virtualWell[ghost.x_coordinate + j][row]){
+                        inaccessibleSpace++;
+                        row++;
+                    }
+                }
+            }
+        }
+    }
+
+    //unite ghost tetromino
     for (int i = 0; i < TETRAD_SIZE; i++){
         for (int j = 0; j < TETRAD_SIZE; j++){
             if (ghost.TetrominoShape[i][j])
@@ -701,6 +732,7 @@ int Tetromino :: get_expected_value(int x, int _angle, Well &well){
         }
     }
 
+    //the highest row which has a block in the ghost tetromino
     int highestRow = 0;
 
     for (int i = 0; i < TETRAD_SIZE; i++){
@@ -716,6 +748,7 @@ int Tetromino :: get_expected_value(int x, int _angle, Well &well){
         }
     }
 
+    //the highest row which has the block in virtual well
     int highestRow2 = 0;
     for (int i = 0; i < HEIGHT_CELLS; i++){
         for (int j = 0; j < WIDE_CELLS; j++){
@@ -728,19 +761,7 @@ int Tetromino :: get_expected_value(int x, int _angle, Well &well){
         }
     }
 
-    int inaccessibleSpace = 0;
-    for (int i = 0; i < HEIGHT_CELLS; i++){
-        for (int j = 0; j < WIDE_CELLS; j++){
-            if (virtualWell[j][i] == true && i != HEIGHT_CELLS - 1 && virtualWell[j][i + 1] == false){
-                int k = i + 1;
-                while (k < HEIGHT_CELLS && virtualWell[j][k] == false){
-                    inaccessibleSpace++;
-                    k++;
-                }
-            }
-        }
-    }
-
+    //the filled row
     int filledRow = 0;
     for (int i = 0; i < HEIGHT_CELLS; i++){
         bool filled = true;
@@ -754,7 +775,7 @@ int Tetromino :: get_expected_value(int x, int _angle, Well &well){
             filledRow++;
         }
     }
-    return (ghost.y_coordinate + lowestRow) * 3 + blockInBottomRow - inaccessibleSpace * 3 - highestRow + highestRow2 * 1.5 + filledRow * 4 + ghost.y_coordinate;
+    return (ghost.y_coordinate + lowestRow) * 3 + blockInBottomRow - inaccessibleSpace * 4 - highestRow + highestRow2 * 1.5 + filledRow * 1.5 + ghost.y_coordinate;
 
     // return {0, 0};
 }

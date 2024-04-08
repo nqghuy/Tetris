@@ -27,12 +27,11 @@ public:
 
     //handle events from queue
     void handleEvents(SDL_Renderer *renderer, SDL_Event &e);
-
+    
+    //handle event when pausing
     void handlePausedEvent(SDL_Event &e);
 
-    //play music during the game
-    void play_music();
-
+    //display when pausing
     void display_paused_board(SDL_Renderer *renderer, Theme theme);
 
     //draw game

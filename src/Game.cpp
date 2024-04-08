@@ -160,14 +160,6 @@ void Game :: update(){
     }
 }
 
-void Game :: play_music()
-{   
-    //play music when starting playing game
-    if(Mix_PlayingMusic() == 0){
-        Mix_PlayMusic(gPlayingMusic, -1);
-    }
-}
-
 int Game :: get_current_score(){
     return well.get_current_score();
 }
