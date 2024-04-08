@@ -1,6 +1,7 @@
 #include "Tetromino.h"
 #include "Playing_field.h"
 #include <cstring>
+#include <math.h>
 using namespace std;
 
 Tetromino :: Tetromino (Tetro_Type _TetrominoType, int x, int y, Well &well, GameMode _gameMode)
@@ -775,7 +776,7 @@ int Tetromino :: get_expected_value(int x, int _angle, Well &well){
             filledRow++;
         }
     }
-    return (ghost.y_coordinate + lowestRow) * 3 + blockInBottomRow - inaccessibleSpace * 4 - highestRow + highestRow2 * 1.5 + filledRow * 1.5 + ghost.y_coordinate;
+    return (ghost.y_coordinate + lowestRow) * 3 + blockInBottomRow - sqrt(inaccessibleSpace * 10) * 3 - highestRow + highestRow2 * 1.5 + filledRow * 1.5 + ghost.y_coordinate;
 
     // return {0, 0};
 }

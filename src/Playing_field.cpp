@@ -19,6 +19,7 @@ Well :: Well (SDL_Renderer *renderer, int _x, int _y, int _topScore, int _level)
         }
     }
     lose = false;
+    filledLineFrame = 0;
 };
 
 Well :: ~Well()
@@ -71,6 +72,57 @@ void Well :: draw (SDL_Renderer *renderer, GameMode gameMode)
             SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
             SDL_RenderDrawPoint(renderer, i * TILE_SIZE + x, j * TILE_SIZE + y);
         }
+    }
+    if(filledLineFrame != 0) {
+        filledLineFrame--;
+        if(filledLineFrame == 0){
+            for (int i : filledLine)
+            deleted_line(i);
+        }
+    }
+    if (filledLineFrame != 0){
+        for (int line : filledLine){
+            for (int i = 0; i < WIDE_CELLS; i++){
+                if ((filledLineFrame / 8) % 2 == 0){
+                    //get the tetromino color
+                    SDL_Color curColor = cell_colors[i][line];
+
+                    //set color
+                    SDL_SetRenderDrawColor(renderer, max(curColor.r - 50,0 ) , max(curColor.g - 50, 0), max(curColor.b - 50, 0), 50);
+
+                    //the rect of each tile
+                    SDL_Rect tileRect = {x + i * TILE_SIZE, y + line * TILE_SIZE, TILE_SIZE, TILE_SIZE};
+
+                    //file rect
+                    SDL_RenderFillRect(renderer, &tileRect);
+
+                    //draw black color
+                    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 100);
+                    SDL_RenderDrawRect(renderer, &tileRect);
+                }
+                else{
+                    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+
+                    //the rect of each tile
+                    SDL_Rect tileRect = {x + i * TILE_SIZE, y + line * TILE_SIZE, TILE_SIZE, TILE_SIZE};
+
+                    //file rect
+                    SDL_RenderFillRect(renderer, &tileRect);
+
+                    //draw black color
+                    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+                    SDL_RenderDrawRect(renderer, &tileRect);
+
+                }
+            }
+        }
+    }
+    if(filledLineFrame == 1){
+        for (int i : filledLine){
+            deleted_line(i);
+        }
+        filledLineFrame--;
+        filledLine.clear();
     }
     score.draw(renderer, *this, ScoreFont);
 }
@@ -136,11 +188,13 @@ void Well :: Unite(Tetromino *t)
     int line = 0;
 
     //check each row
-    for (int j = HEIGHT_CELLS - 1; j >= 0; j--){
+    for (int j = 0; j <= HEIGHT_CELLS - 1; j++){
         if (filled_line(j)){
-            deleted_line(j);
+            filledLineFrame = 32;
+            filledLine.push_back(j);
+            // deleted_line(j);
             line++;
-            j++;
+            // j++;
             sound = true;
         }
     }
@@ -200,6 +254,10 @@ int Well :: get_top_score()
 int Well :: get_current_score()
 {
     return score.get_current_score();
+}
+
+bool Well :: isDeletingLine(){
+    return filledLineFrame;
 }
 
 void Well :: draw_lose_background(SDL_Renderer *renderer){

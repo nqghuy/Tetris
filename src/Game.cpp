@@ -87,7 +87,7 @@ void Game :: handleEvents(SDL_Renderer *renderer, SDL_Event &e)
     }
     //handle tetromino
     if (!get_lose()){
-        if(tetromino.get_active()){
+        if(tetromino.get_active() && !well.isDeletingLine()){
             if(gameMode != Bot){
                 tetromino.handle_events(e, well, gameMode);
                 tetromino.Move(well);
@@ -140,7 +140,7 @@ void Game :: update(){
     //free fall
     if (currentTime > moveTime){
         moveTime += 1000 - level * 150;
-        if(!paused)tetromino.free_fall(well);
+        if(!paused && !well.isDeletingLine())tetromino.free_fall(well);
     }
 
     if (!tetromino.get_active()){
@@ -186,8 +186,14 @@ void Game :: display(SDL_Renderer *renderer, Theme theme)
     gScoreFrame.render(renderer, well.get_right_border(), well.get_y() + TILE_SIZE + gScoreFrame.getHeight()* 2- TILE_SIZE * 2);
     nextTetromino.draw(renderer, well.get_right_border() + TILE_SIZE  * 2, well.get_y() + TILE_SIZE + gScoreFrame.getHeight()* 2);
 
+    bool isDeleting = well.isDeletingLine();
+
     //draw well and tetromino
     well.draw(renderer, gameMode);
+
+    if (isDeleting && !well.isDeletingLine() && gameMode == Bot){
+        tetromino.greedy(well);
+    }
 
     if(paused){
         display_paused_board(renderer, theme);

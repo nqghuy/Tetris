@@ -6,6 +6,7 @@
 #include "Data.h"
 #include "Score.h"
 #include "fstream"
+#include <vector>
 class Well
 {
 public:
@@ -73,6 +74,8 @@ public:
 
     //save game
     void save_file(fstream &saveFile);
+
+    bool isDeletingLine();
 private:
     //the higher level, the faster tetro falls
     int level;
@@ -95,6 +98,10 @@ private:
 
     //cannot play
     bool lose;
+
+    int filledLineFrame;
+
+    vector <int> filledLine;
 };
 
 #endif

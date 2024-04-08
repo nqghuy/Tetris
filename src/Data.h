@@ -27,8 +27,6 @@ const int menuButtonDistance = 125;
 //max_level
 const int MAX_LEVEL = 6;
 
-const double PI = 3.14159265;
-
 const int MAX_ANIMATION = 50;
 
 //the number of tile in a tile shape matrix
