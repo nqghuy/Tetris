@@ -701,22 +701,39 @@ int Tetromino :: get_expected_value(int x, int _angle, Well &well){
     }
 
     //calculate inaccessible spaces
-    int inaccessibleSpace = 0;
-    for (int i = 0; i < TETRAD_SIZE; i++){
-        for (int j = 0; j < TETRAD_SIZE; j++){
-            if (ghost.TetrominoShape[i][j]){
-                if ((i < TETRAD_SIZE - 1 && !ghost.TetrominoShape[i + 1][j]) || i == TETRAD_SIZE){
-                    int row = ghost.y_coordinate + i + 1;
-                    
-                    //the number of cell that is not true(in virtual well) behind [i][j] is inaccessible
-                    while(row < HEIGHT_CELLS && !virtualWell[ghost.x_coordinate + j][row]){
-                        inaccessibleSpace++;
-                        row++;
-                    }
+    int old_innaccessible_space = 0;
+    for (int i = 0; i < WIDE_CELLS; i++){
+        for (int j = 0; j < HEIGHT_CELLS; j++){
+            if(virtualWell[i][j] == true){
+                j++;
+                int space_tmp = 0;
+                while(j < HEIGHT_CELLS && virtualWell[i][j] == false){
+                    space_tmp++;
+                    j++;
                 }
+                j--;
+                old_innaccessible_space += -space_tmp * space_tmp + 8 * space_tmp;
             }
         }
     }
+
+    // //calculate inaccessible spaces
+    // int inaccessibleSpace = 0;
+    // for (int i = 0; i < TETRAD_SIZE; i++){
+    //     for (int j = 0; j < TETRAD_SIZE; j++){
+    //         if (ghost.TetrominoShape[i][j]){
+    //             if ((i < TETRAD_SIZE - 1 && !ghost.TetrominoShape[i + 1][j]) || i == TETRAD_SIZE){
+    //                 int row = ghost.y_coordinate + i + 1;
+                    
+    //                 //the number of cell that is not true(in virtual well) behind [i][j] is inaccessible
+    //                 while(row < HEIGHT_CELLS && !virtualWell[ghost.x_coordinate + j][row]){
+    //                     inaccessibleSpace++;
+    //                     row++;
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 
     //unite ghost tetromino
     for (int i = 0; i < TETRAD_SIZE; i++){
@@ -729,6 +746,39 @@ int Tetromino :: get_expected_value(int x, int _angle, Well &well){
 
                 //update cell x, y and color
                 virtualWell[x][y] = true;
+            }
+        }
+    }
+
+    //delete filled line
+    for (int i = HEIGHT_CELLS - 1; i >= 1; i--){
+        bool filled = true;
+        for (int j = 0; j < WIDE_CELLS ; j++){
+            if (virtualWell[j][i] == false) filled = false;
+        }
+        if (filled){
+            for (int line = i; line >= 1; line--){
+                for (int k = 0; k < WIDE_CELLS; k++){
+                    virtualWell[k][line] = virtualWell[k][line - 1];
+                }
+            }
+            i++;
+        }
+    } 
+
+    //calculate inaccessible spaces
+    int new_innaccessible_space = 0;
+    for (int i = 0; i < WIDE_CELLS; i++){
+        for (int j = 0; j < HEIGHT_CELLS; j++){
+            if(virtualWell[i][j] == true){
+                j++;
+                int space_tmp = 0;
+                while(j < HEIGHT_CELLS && virtualWell[i][j] == false){
+                    space_tmp++;
+                    j++;
+                }
+                j--;
+                new_innaccessible_space += -space_tmp * space_tmp + 8 * space_tmp;
             }
         }
     }
@@ -750,7 +800,7 @@ int Tetromino :: get_expected_value(int x, int _angle, Well &well){
     }
 
     //the highest row which has the block in virtual well
-    int highestRow2 = 0;
+    int highestRow2 = 20;
     for (int i = 0; i < HEIGHT_CELLS; i++){
         for (int j = 0; j < WIDE_CELLS; j++){
             if (virtualWell[j][i]){
@@ -776,6 +826,7 @@ int Tetromino :: get_expected_value(int x, int _angle, Well &well){
             filledRow++;
         }
     }
+    int inaccessibleSpace = max(0, new_innaccessible_space - old_innaccessible_space);
     return (ghost.y_coordinate + lowestRow) * 3 + blockInBottomRow - sqrt(inaccessibleSpace * 10) * 3 - highestRow + highestRow2 * 1.5 + filledRow * 1.5 + ghost.y_coordinate;
 
     // return {0, 0};
