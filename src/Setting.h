@@ -29,13 +29,19 @@ public:
 
     void display_theme(SDL_Renderer *renderer, Theme theme);
 
+    void display_effect(SDL_Renderer *renderer, Effect effect);
+
     bool click_change_theme(SDL_Event &e);
 
     bool click_autumn_theme(SDL_Event &e);
 
     bool click_winter_theme(SDL_Event &e);
 
-    void display(SDL_Renderer *renderer, int level, bool ghostTetromino, Theme theme);
+    bool click_right_change_effect(SDL_Event &e);
+
+    bool click_left_change_effect(SDL_Event &e);
+
+    void display(SDL_Renderer *renderer, int level, bool ghostTetromino, Theme theme, Effect effect);
 
 private:
     //button in setting
@@ -50,6 +56,8 @@ private:
     LTexture ThemeText;
     LTexture WinterText;
     LTexture AutumnText;
+    LTexture EffectText;
+    LTexture EffectChoice;
 
 
     bool active;

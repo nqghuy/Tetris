@@ -25,9 +25,11 @@ const int buttonDistance = 100;
 const int menuButtonDistance = 125;
 
 //max_level
-const int MAX_LEVEL = 6;
+const int MAX_LEVEL = 4;
 
 const int MAX_ANIMATION = 50;
+
+const int MAX_EFFECT = 3;
 
 //the number of tile in a tile shape matrix
 const int TETRAD_SIZE = 4;
@@ -101,6 +103,13 @@ extern LTexture resumeButton;
 extern LTexture gWinterBackground;
 
 extern LTexture gAutumnBackground;
+
+enum Effect{
+     None,
+     Capcut,
+     Fade
+};
+
 enum GameMode{
      SinglePlay,
      Player1,
@@ -114,7 +123,9 @@ enum Theme{
 };
 
 //ascending level text 
-const string LevelText[MAX_LEVEL] = {"EASY", "MEDIUM", "HARD", "ULTRA HARD", "ASIAN", "BLACK PEOPLE"};
+const string LevelText[MAX_LEVEL] = {"EASY", "MEDIUM", "HARD", "ULTRA HARD"};
+
+const string EffectChoice[MAX_EFFECT] = {"NONE", "CAPCUT", "FADE"};
 
 //ascending level color
-const SDL_Color LevelColor[MAX_LEVEL] = {{255, 255, 255}, {150,100, 200}, {100, 135, 237}, {177, 135, 85}, {255, 0, 0}, {0, 0, 0}};
+const SDL_Color LevelColor[MAX_LEVEL] = {{255, 255, 255},  {100, 135, 237},  {255, 0, 0}, {0, 0, 0}};

@@ -25,6 +25,8 @@ public:
      //draw on the screen
      void display(SDL_Renderer *renderer, Theme theme);
 
+     void set_effect(Effect _effect);
+
      void free_memory();
 
      //load and save file

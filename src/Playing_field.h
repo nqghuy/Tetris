@@ -78,7 +78,13 @@ public:
     bool isDeletingLine();
 
     void draw_fade_effect(SDL_Renderer *renderer);
+
+    void draw_capcut_effect(SDL_Renderer *renderer);
+
+    void set_effect(Effect _effect);
 private:
+    Effect effect;
+
     //the higher level, the faster tetro falls
     int level;
 

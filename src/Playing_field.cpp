@@ -20,6 +20,7 @@ Well :: Well (SDL_Renderer *renderer, int _x, int _y, int _topScore, int _level)
     }
     lose = false;
     filledLineFrame = 0;
+    effect = None;
 };
 
 Well :: ~Well()
@@ -73,58 +74,12 @@ void Well :: draw (SDL_Renderer *renderer, GameMode gameMode)
             SDL_RenderDrawPoint(renderer, i * TILE_SIZE + x, j * TILE_SIZE + y);
         }
     }
-    // if(filledLineFrame != 0) {
-    //     filledLineFrame--;
-    //     if(filledLineFrame == 0){
-    //         for (int i : filledLine)
-    //         deleted_line(i);
-    //     }
-    // }
-    // if (filledLineFrame != 0){
-    //     for (int line : filledLine){
-    //         for (int i = 0; i < WIDE_CELLS; i++){
-    //             if ((filledLineFrame / 8) % 2 == 0){
-    //                 //get the tetromino color
-    //                 SDL_Color curColor = cell_colors[i][line];
-
-    //                 //set color
-    //                 SDL_SetRenderDrawColor(renderer, max(curColor.r - 50,0 ) , max(curColor.g - 50, 0), max(curColor.b - 50, 0), 50);
-
-    //                 //the rect of each tile
-    //                 SDL_Rect tileRect = {x + i * TILE_SIZE, y + line * TILE_SIZE, TILE_SIZE, TILE_SIZE};
-
-    //                 //file rect
-    //                 SDL_RenderFillRect(renderer, &tileRect);
-
-    //                 //draw black color
-    //                 SDL_SetRenderDrawColor(renderer, 0, 0, 0, 100);
-    //                 SDL_RenderDrawRect(renderer, &tileRect);
-    //             }
-    //             else{
-    //                 SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-
-    //                 //the rect of each tile
-    //                 SDL_Rect tileRect = {x + i * TILE_SIZE, y + line * TILE_SIZE, TILE_SIZE, TILE_SIZE};
-
-    //                 //file rect
-    //                 SDL_RenderFillRect(renderer, &tileRect);
-
-    //                 //draw black color
-    //                 SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-    //                 SDL_RenderDrawRect(renderer, &tileRect);
-
-    //             }
-    //         }
-    //     }
-    // }
-    // if(filledLineFrame == 1){
-    //     for (int i : filledLine){
-    //         deleted_line(i);
-    //     }
-    //     filledLineFrame--;
-    //     filledLine.clear();
-    // }
-    draw_fade_effect(renderer);
+    if(effect == Capcut){
+        draw_capcut_effect(renderer);
+    }
+    else if (effect == Fade){
+        draw_fade_effect(renderer);
+    }
     score.draw(renderer, *this, ScoreFont);
 }
 
@@ -172,6 +127,60 @@ void Well :: draw_fade_effect(SDL_Renderer* renderer){
                 }
                 else{
                     SDL_SetRenderDrawColor(renderer, curColor.r, curColor.g, curColor.b, 255);
+
+                    //the rect of each tile
+                    SDL_Rect tileRect = {x + i * TILE_SIZE, y + line * TILE_SIZE, TILE_SIZE, TILE_SIZE};
+
+                    //file rect
+                    SDL_RenderFillRect(renderer, &tileRect);
+
+                    //draw black color
+                    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+                    SDL_RenderDrawRect(renderer, &tileRect);
+
+                }
+            }
+        }
+    }
+    if(filledLineFrame == 1){
+        for (int i : filledLine){
+            deleted_line(i);
+        }
+        filledLineFrame--;
+        filledLine.clear();
+    }
+}
+
+void Well :: draw_capcut_effect(SDL_Renderer *renderer){
+    if(filledLineFrame != 0) {
+        filledLineFrame--;
+        if(filledLineFrame == 0){
+            for (int i : filledLine)
+            deleted_line(i);
+        }
+    }
+    if (filledLineFrame != 0){
+        for (int line : filledLine){
+            for (int i = 0; i < WIDE_CELLS; i++){
+                if ((filledLineFrame / 8) % 2 == 0){
+                    //get the tetromino color
+                    SDL_Color curColor = cell_colors[i][line];
+
+                    //set color
+                    SDL_SetRenderDrawColor(renderer, max(curColor.r - 50,0 ) , max(curColor.g - 50, 0), max(curColor.b - 50, 0), 50);
+
+                    //the rect of each tile
+                    SDL_Rect tileRect = {x + i * TILE_SIZE, y + line * TILE_SIZE, TILE_SIZE, TILE_SIZE};
+
+                    //file rect
+                    SDL_RenderFillRect(renderer, &tileRect);
+
+                    //draw black color
+                    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 100);
+                    SDL_RenderDrawRect(renderer, &tileRect);
+                }
+                else{
+                    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
                     //the rect of each tile
                     SDL_Rect tileRect = {x + i * TILE_SIZE, y + line * TILE_SIZE, TILE_SIZE, TILE_SIZE};
@@ -259,11 +268,15 @@ void Well :: Unite(Tetromino *t)
     //check each row
     for (int j = 0; j <= HEIGHT_CELLS - 1; j++){
         if (filled_line(j)){
-            filledLineFrame = 33;
-            filledLine.push_back(j);
-            // deleted_line(j);
+            if (effect != None){
+                filledLineFrame = 33;
+                filledLine.push_back(j);
+            }
+            else{
+                deleted_line(j);
+                j++;
+            }
             line++;
-            // j++;
             sound = true;
         }
     }
@@ -370,6 +383,10 @@ bool Well :: return_home(SDL_Event &e){
         return true;
     }
     return false;
+}
+
+void Well :: set_effect(Effect _effect){
+    effect = _effect;
 }
 
 void Well :: load_file(fstream &saveFile){

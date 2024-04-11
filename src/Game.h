@@ -57,6 +57,8 @@ public:
 
     //load lastest game
     void load_file(fstream &saveFile);
+
+    void set_effect(Effect _effect);
 private:
     //true if present ghost tetromino
     bool ghostTetromino;

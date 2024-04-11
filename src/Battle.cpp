@@ -57,6 +57,11 @@ void Battle :: handle_event(SDL_Renderer *renderer, SDL_Event &e){
      }
 }
 
+void Battle :: set_effect(Effect _effect){
+     player1->set_effect(_effect);
+     player2->set_effect(_effect);
+}
+
 void Battle :: display(SDL_Renderer *renderer, Theme theme){
      //update 
      if(!player1->get_lose())     player1->update();

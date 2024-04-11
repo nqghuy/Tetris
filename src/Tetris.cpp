@@ -69,6 +69,7 @@ Tetris :: Tetris(int _level, Theme _theme)
     ghostTetromino = true;
     setting = new Setting;
     theme = _theme;
+    effect = None;
     for (int i = 0; i < MAX_ANIMATION; i++){
         animation[i].set_theme(_theme);
     }
@@ -418,7 +419,7 @@ void Tetris :: display()
     }
 
     else if(setting->get_active()){
-        setting->display(renderer, level, ghostTetromino, theme);
+        setting->display(renderer, level, ghostTetromino, theme, effect);
     }
 
     //else show game
@@ -550,22 +551,53 @@ void Tetris :: setting_handle_event(SDL_Event &e){
             animation[i].set_theme(theme);
         }
     }
+    else if (setting->click_left_change_effect(e)){
+        switch (effect)
+        {
+        case None:
+            effect = Fade;
+            break;
+        case Capcut:
+            effect = None;
+            break;
+        case Fade:
+            effect = Capcut;
+            break;
+        }
+    }
+    else if (setting->click_right_change_effect(e)){
+        switch (effect)
+        {
+        case None:
+            effect = Capcut;
+            break;
+        case Capcut:
+            effect = Fade;
+            break;
+        case Fade:
+            effect = None;
+            break;
+        }
+    }
 }
 
 void Tetris :: menu_handle_event(SDL_Event &e){
     //single play
     if(menu->click_play(e)){
         game->set_active(level, ghostTetromino);
+        game->set_effect(effect);
     }
 
     //ready to a hot battle
     else if(menu->click_battle(e)){
         battle->set_active(level, ghostTetromino);
+        battle->set_effect(effect);
     }
 
     //bot is very intelligent
     else if (menu->click_vsCom(e)){
         vsCom->set_active(level, ghostTetromino);
+        vsCom->set_effect(effect);
     }
     //click setting
     else if(menu->click_setting(e)){

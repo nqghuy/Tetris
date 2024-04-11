@@ -58,6 +58,8 @@ public:
     void save_file();
     
 private:
+    Effect effect;
+
     Theme theme;
 
     //present ghost tetromino or not

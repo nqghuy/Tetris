@@ -234,14 +234,15 @@ void Game :: display(SDL_Renderer *renderer, Theme theme)
             gOneTexture.render(renderer, well.get_x() + (well.get_width() - gThreeTexture.getWidth()) / 2 , well.get_y() + (well.get_height() - gOneTexture.getHeight()) / 2 );
         }
     }
-
-    
-
 }
 
 bool Game :: get_lose()
 {
     return (well.get_lose());
+}
+
+void Game :: set_effect(Effect _effect){
+    well.set_effect(_effect);
 }
 
 void Game :: set_active(int _level, bool _ghostTetromino)

@@ -55,6 +55,14 @@ bool Setting :: load_media(SDL_Renderer *renderer){
           cout << "failed to load autumn text\n";
           success = false;
      }
+     if(!EffectText.loadFromRenderedText(renderer, SettingFont, "Effect", {0, 255, 100})){
+          cout << "failed to load effect text\n";
+          success = false;
+     }
+     if(!EffectChoice.loadFromRenderedText(renderer, SettingFont, "NONE", {0, 255, 0})){
+          cout << "failed to load effect choice text\n";
+          success = false;
+     }
      return success;
 }
 
@@ -211,6 +219,48 @@ bool Setting :: click_autumn_theme(SDL_Event &e){
      return false;
 }
 
+bool Setting :: click_left_change_effect(SDL_Event &e){
+     //get x, y menu rect
+    SDL_Rect menuRect = {(SCREEN_WIDTH - MenuBackground.getWidth()) / 2, (SCREEN_HEIGHT - MenuBackground.getHeight()) / 2, MenuBackground.getWidth(), MenuBackground.getHeight()};
+
+    //get x, y leftButton rext
+    int leftButtonX = menuRect.x + menuRect.w / 2 - LeftButton.getWidth() ;
+    int leftButtonY = menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2 + LevelButton.getHeight() * 3;
+
+    //the position of mouse
+    int x, y;
+
+    //get mouse position
+    SDL_GetMouseState(&x, &y);
+
+    //if player choses level down
+    if (x >= leftButtonX && x <= leftButtonX + LeftButton.getWidth() && y >= leftButtonY && y <= leftButtonY + LeftButton.getHeight() && e.type == SDL_MOUSEBUTTONDOWN){
+        return true;
+    }
+    return false;
+}
+
+bool Setting :: click_right_change_effect(SDL_Event &e){
+     //get x, y menu rect
+    SDL_Rect menuRect = {(SCREEN_WIDTH - MenuBackground.getWidth()) / 2, (SCREEN_HEIGHT - MenuBackground.getHeight()) / 2, MenuBackground.getWidth(), MenuBackground.getHeight()};
+
+    //get x, y right Button rext
+    int rightButtonX = menuRect.x + menuRect.w - RightButton.getWidth();
+    int rightButtonY = menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2 + + LevelButton.getHeight() * 3;
+
+    //the position of mouse
+    int x, y;
+
+    //get mouse position
+    SDL_GetMouseState(&x, &y);
+
+    //if player choses level up
+    if (x >= rightButtonX && x <= rightButtonX + RightButton.getWidth() && y >= rightButtonY && y <= rightButtonY + RightButton.getHeight() && e.type == SDL_MOUSEBUTTONDOWN){
+        return true;
+    }
+    return false;
+}
+
 void Setting :: display_level(SDL_Renderer *renderer, int level){
      difficulty.loadFromRenderedText(renderer, SettingFont, LevelText[level - 1], LevelColor[level - 1]);
 
@@ -278,21 +328,50 @@ void Setting :: display_theme(SDL_Renderer *renderer, Theme theme){
 
      //draw right button(change theme)
      RightButton.render(renderer, menuRect.x + menuRect.w - RightButton.getWidth(), menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2 + LevelButton.getHeight() * 2);
-
 }
 
-void Setting :: display(SDL_Renderer *renderer, int level, bool ghostTetromino, Theme theme){
+void Setting :: display_effect(SDL_Renderer *renderer, Effect effect){
+     int margin = 50;
+
+     SDL_Rect menuRect = {(SCREEN_WIDTH - MenuBackground.getWidth()) / 2, (SCREEN_HEIGHT - MenuBackground.getHeight()) / 2, MenuBackground.getWidth(), MenuBackground.getHeight()};
+
+     //draw theme
+     EffectText.render(renderer, menuRect.x + margin, menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2 + LevelButton.getHeight() * 3);
+
+     if(effect == None){
+          EffectChoice.loadFromRenderedText(renderer, SettingFont, "NONE", {75, 125, 180});
+     }
+     else if (effect == Capcut)
+     {
+          EffectChoice.loadFromRenderedText(renderer, SettingFont, "CAPCUT", {200, 125, 255});
+     }
+     else{
+          EffectChoice.loadFromRenderedText(renderer, SettingFont, "FADE", {75, 255, 100});
+     }
+     EffectChoice.render(renderer, menuRect.x + menuRect.w / 2  + (menuRect.w / 2 - EffectChoice.getWidth()) / 2 , menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2 + EffectChoice.getHeight() * 3);
+
+
+     //draw left button(change theme)
+     LeftButton.render(renderer, menuRect.x + menuRect.w / 2 - LeftButton.getWidth(), menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2 + LevelButton.getHeight() * 3);
+
+     //draw right button(change theme)
+     RightButton.render(renderer, menuRect.x + menuRect.w - RightButton.getWidth(), menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2 + LevelButton.getHeight() * 3);
+}
+
+
+void Setting :: display(SDL_Renderer *renderer, int level, bool ghostTetromino, Theme theme, Effect effect){
 
      SDL_Rect menuRect = {(SCREEN_WIDTH - MenuBackground.getWidth()) / 2, (SCREEN_HEIGHT - MenuBackground.getHeight()) / 2, MenuBackground.getWidth(), MenuBackground.getHeight()};
 
      display_level(renderer, level);
      display_ghostTetromino(renderer, ghostTetromino);
      display_theme(renderer, theme);
-
+     display_effect(renderer, effect);
 
      //draw back button
      backButton.render(renderer, menuRect.x, menuRect.y);
 }
+
 
 bool Setting :: get_active(){
      return active;
