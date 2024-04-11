@@ -59,15 +59,18 @@ void Well :: draw (SDL_Renderer *renderer, GameMode gameMode)
                 //set color
                 SDL_SetRenderDrawColor(renderer, curColor.r, curColor.g, curColor.b, 255);
 
-                //the rect of each tile
-                SDL_Rect tileRect = {x + i * TILE_SIZE, y + j * TILE_SIZE, TILE_SIZE, TILE_SIZE};
+                if(level != MAX_LEVEL || (SDL_GetTicks() / 3000) % 2 == 0){
+                    //the rect of each tile
+                    SDL_Rect tileRect = {x + i * TILE_SIZE, y + j * TILE_SIZE, TILE_SIZE, TILE_SIZE};
 
-                //file rect
-                SDL_RenderFillRect(renderer, &tileRect);
+                    //file rect
+                    SDL_RenderFillRect(renderer, &tileRect);
 
-                //draw black color
-                SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-                SDL_RenderDrawRect(renderer, &tileRect);
+                    //draw black color
+                    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+                    SDL_RenderDrawRect(renderer, &tileRect);
+                }
+
             }
             //draw white point
             SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
@@ -205,6 +208,10 @@ void Well :: draw_capcut_effect(SDL_Renderer *renderer){
     }
 }
 
+void Well :: set_level(int _level){
+    level = _level;
+}
+
 int Well :: get_x()
 {
     return x;
@@ -274,7 +281,7 @@ void Well :: Unite(Tetromino *t)
             }
             else{
                 deleted_line(j);
-                j++;
+                j--;
             }
             line++;
             sound = true;

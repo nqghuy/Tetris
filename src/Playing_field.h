@@ -82,6 +82,8 @@ public:
     void draw_capcut_effect(SDL_Renderer *renderer);
 
     void set_effect(Effect _effect);
+
+    void set_level(int _level);
 private:
     Effect effect;
 

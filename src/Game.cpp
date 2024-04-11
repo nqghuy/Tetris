@@ -139,7 +139,7 @@ void Game :: update(){
 
     //free fall
     if (currentTime > moveTime){
-        moveTime += 1000 - level * 150;
+        moveTime += 1000 - level * 225;
         if(!paused && !well.isDeletingLine())tetromino.free_fall(well);
     }
 
@@ -252,6 +252,8 @@ void Game :: set_active(int _level, bool _ghostTetromino)
 
     level = _level;
     ghostTetromino = _ghostTetromino;
+
+    well.set_level(_level);
 
     //ready to play
     quit = false;
