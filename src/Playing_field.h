@@ -76,6 +76,8 @@ public:
     void save_file(fstream &saveFile);
 
     bool isDeletingLine();
+
+    void draw_fade_effect(SDL_Renderer *renderer);
 private:
     //the higher level, the faster tetro falls
     int level;

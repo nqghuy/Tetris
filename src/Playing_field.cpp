@@ -73,6 +73,62 @@ void Well :: draw (SDL_Renderer *renderer, GameMode gameMode)
             SDL_RenderDrawPoint(renderer, i * TILE_SIZE + x, j * TILE_SIZE + y);
         }
     }
+    // if(filledLineFrame != 0) {
+    //     filledLineFrame--;
+    //     if(filledLineFrame == 0){
+    //         for (int i : filledLine)
+    //         deleted_line(i);
+    //     }
+    // }
+    // if (filledLineFrame != 0){
+    //     for (int line : filledLine){
+    //         for (int i = 0; i < WIDE_CELLS; i++){
+    //             if ((filledLineFrame / 8) % 2 == 0){
+    //                 //get the tetromino color
+    //                 SDL_Color curColor = cell_colors[i][line];
+
+    //                 //set color
+    //                 SDL_SetRenderDrawColor(renderer, max(curColor.r - 50,0 ) , max(curColor.g - 50, 0), max(curColor.b - 50, 0), 50);
+
+    //                 //the rect of each tile
+    //                 SDL_Rect tileRect = {x + i * TILE_SIZE, y + line * TILE_SIZE, TILE_SIZE, TILE_SIZE};
+
+    //                 //file rect
+    //                 SDL_RenderFillRect(renderer, &tileRect);
+
+    //                 //draw black color
+    //                 SDL_SetRenderDrawColor(renderer, 0, 0, 0, 100);
+    //                 SDL_RenderDrawRect(renderer, &tileRect);
+    //             }
+    //             else{
+    //                 SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+
+    //                 //the rect of each tile
+    //                 SDL_Rect tileRect = {x + i * TILE_SIZE, y + line * TILE_SIZE, TILE_SIZE, TILE_SIZE};
+
+    //                 //file rect
+    //                 SDL_RenderFillRect(renderer, &tileRect);
+
+    //                 //draw black color
+    //                 SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    //                 SDL_RenderDrawRect(renderer, &tileRect);
+
+    //             }
+    //         }
+    //     }
+    // }
+    // if(filledLineFrame == 1){
+    //     for (int i : filledLine){
+    //         deleted_line(i);
+    //     }
+    //     filledLineFrame--;
+    //     filledLine.clear();
+    // }
+    draw_fade_effect(renderer);
+    score.draw(renderer, *this, ScoreFont);
+}
+
+void Well :: draw_fade_effect(SDL_Renderer* renderer){
     if(filledLineFrame != 0) {
         filledLineFrame--;
         if(filledLineFrame == 0){
@@ -83,12 +139,12 @@ void Well :: draw (SDL_Renderer *renderer, GameMode gameMode)
     if (filledLineFrame != 0){
         for (int line : filledLine){
             for (int i = 0; i < WIDE_CELLS; i++){
-                if ((filledLineFrame / 8) % 2 == 0){
-                    //get the tetromino color
-                    SDL_Color curColor = cell_colors[i][line];
+                //get the tetromino color
+                SDL_Color curColor = cell_colors[i][line];
 
+                if (((33 - filledLineFrame) / 3) >= i){
                     //set color
-                    SDL_SetRenderDrawColor(renderer, max(curColor.r - 50,0 ) , max(curColor.g - 50, 0), max(curColor.b - 50, 0), 50);
+                    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
                     //the rect of each tile
                     SDL_Rect tileRect = {x + i * TILE_SIZE, y + line * TILE_SIZE, TILE_SIZE, TILE_SIZE};
@@ -96,12 +152,26 @@ void Well :: draw (SDL_Renderer *renderer, GameMode gameMode)
                     //file rect
                     SDL_RenderFillRect(renderer, &tileRect);
 
-                    //draw black color
-                    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 100);
-                    SDL_RenderDrawRect(renderer, &tileRect);
+                    if ((33 - filledLineFrame) <= 3 * i + 6 ){
+                        int dimension = TILE_SIZE / (max(1, (33 - 3 * i - filledLineFrame) % 7));
+                        int centerX = x + i * TILE_SIZE + TILE_SIZE / 2;
+                        int centerY = y + line * TILE_SIZE + TILE_SIZE / 2;
+                        int newx = centerX - dimension / 2;
+                        int newy = centerY - dimension / 2;
+                        SDL_Rect newTileRect = {newx, newy, dimension, dimension};
+
+                        SDL_SetRenderDrawColor(renderer, curColor.r, curColor.g, curColor.b, 255);
+                        SDL_RenderFillRect(renderer, &newTileRect);
+
+                        //draw black color
+                        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 100);
+                        SDL_RenderDrawRect(renderer, &newTileRect);
+                        // SDL_Delay(100);
+                    }
+
                 }
                 else{
-                    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+                    SDL_SetRenderDrawColor(renderer, curColor.r, curColor.g, curColor.b, 255);
 
                     //the rect of each tile
                     SDL_Rect tileRect = {x + i * TILE_SIZE, y + line * TILE_SIZE, TILE_SIZE, TILE_SIZE};
@@ -124,7 +194,6 @@ void Well :: draw (SDL_Renderer *renderer, GameMode gameMode)
         filledLineFrame--;
         filledLine.clear();
     }
-    score.draw(renderer, *this, ScoreFont);
 }
 
 int Well :: get_x()
@@ -190,7 +259,7 @@ void Well :: Unite(Tetromino *t)
     //check each row
     for (int j = 0; j <= HEIGHT_CELLS - 1; j++){
         if (filled_line(j)){
-            filledLineFrame = 32;
+            filledLineFrame = 33;
             filledLine.push_back(j);
             // deleted_line(j);
             line++;

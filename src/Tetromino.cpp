@@ -708,11 +708,10 @@ int Tetromino :: get_expected_value(int x, int _angle, Well &well){
                 j++;
                 int space_tmp = 0;
                 while(j < HEIGHT_CELLS && virtualWell[i][j] == false){
-                    space_tmp++;
+                    old_innaccessible_space ++;
                     j++;
                 }
                 j--;
-                old_innaccessible_space += -space_tmp * space_tmp + 8 * space_tmp;
             }
         }
     }
@@ -774,11 +773,10 @@ int Tetromino :: get_expected_value(int x, int _angle, Well &well){
                 j++;
                 int space_tmp = 0;
                 while(j < HEIGHT_CELLS && virtualWell[i][j] == false){
-                    space_tmp++;
+                    new_innaccessible_space++;
                     j++;
                 }
                 j--;
-                new_innaccessible_space += -space_tmp * space_tmp + 8 * space_tmp;
             }
         }
     }
