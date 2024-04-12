@@ -191,7 +191,7 @@ bool Tetris :: load_texture(){
         cout << "failed to load snow texture\n";
         success = false;
     }
-    if (!gLeafTexture.loadFromFile(renderer, "Assets/Pictures/leaf.png")){
+    if (!gLeafTexture.loadFromFile(renderer, "Assets/Pictures/leaf.png", {255, 255, 255})){
         cout << "failed to load leaf texture\n";
         success = false;
     }
@@ -213,7 +213,7 @@ bool Tetris :: load_texture(){
         success = false;
     }
 
-    if(!gWinterBoard.loadFromFile(renderer, "Assets/Pictures/winter_board.jpg", {195, 195, 195})){
+    if(!gWinterBoard.loadFromFile(renderer, "Assets/Pictures/winter_board.jpg", {255, 255, 255})){
         cout << "failed to load winter board\n";
         success = false;
     }

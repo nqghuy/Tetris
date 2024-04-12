@@ -36,12 +36,21 @@ public:
     //free memory
     void free_memory();
 private:
+    TTF_Font *menuFont;
 
     //button in menu
     LTexture PlayButton;
+    LTexture PlayButton2;
+
     LTexture BattleButton;
+    LTexture BattleButton2;
+
     LTexture SettingButton;
+    LTexture SettingButton2;
+
     LTexture VsComButton;
+    LTexture VsComButton2;
+
 
     //true if we are in menu
     bool active;

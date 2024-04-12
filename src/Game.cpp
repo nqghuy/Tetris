@@ -126,8 +126,9 @@ void Game :: update(){
     int currentTime;
 
     //up level if get enough score
-    if (level < MAX_LEVEL && this->get_current_score() > level * 500){
-        level = level++;
+    if (level < MAX_LEVEL && this->get_current_score() > level * 1000){
+        level++;
+        well.set_level(level);
     }
 
     if (gameMode == Bot){
@@ -139,9 +140,18 @@ void Game :: update(){
 
     //free fall
     if (currentTime > moveTime){
-        moveTime += 1000 - level * 225;
-        if(!paused && !well.isDeletingLine())tetromino.free_fall(well);
+        if(!paused && !well.isDeletingLine()) tetromino.free_fall(well);
+        if (level == 1){
+            moveTime += 500;
+        }
+        else if (level == 2){
+            moveTime += 300;
+        }
+        else{
+            moveTime += 200;
+        }
     }
+
 
     if (!tetromino.get_active()){
         //new tetrimino

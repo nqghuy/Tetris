@@ -20,7 +20,15 @@ bool Menu :: load_media(SDL_Renderer *renderer)
         cout << "failed to load play button\n";
         success = false;
     }
+    if (!PlayButton2.loadFromFile(renderer, "Assets/Pictures/PLAYBUTTON2.png")){
+        cout << "failed to load play button\n";
+        success = false;
+    }
     if (!BattleButton.loadFromFile(renderer, "Assets/Pictures/BATTLE.png")){
+        cout << "failed to load battle button\n";
+        success = false;
+    }
+    if (!BattleButton2.loadFromFile(renderer, "Assets/Pictures/BATTLE2.png")){
         cout << "failed to load battle button\n";
         success = false;
     }
@@ -28,7 +36,15 @@ bool Menu :: load_media(SDL_Renderer *renderer)
         cout << "failed to load setting button\n";
         success = false;
     }
+    if(!SettingButton2.loadFromFile(renderer, "Assets/Pictures/SETTING2.png")){
+        cout << "failed to load setting button\n";
+        success = false;
+    }
     if(!VsComButton.loadFromFile(renderer, "Assets/Pictures/VsCom.png")){
+        cout << "failed to load VsCom button\n";
+        success = false;
+    }
+    if(!VsComButton2.loadFromFile(renderer, "Assets/Pictures/VsCom2.png")){
         cout << "failed to load VsCom button\n";
         success = false;
     }
@@ -44,10 +60,19 @@ void Menu :: display(SDL_Renderer *renderer, int level, bool ghostTetromino)
     //draw menu background
     MenuBackground.render(renderer, menuRect.x, menuRect.y);
 
+    int x, y;
+    SDL_GetMouseState(&x, &y);
+
     //draw button texture
 
     //draw play button
-    PlayButton.render(renderer, (SCREEN_WIDTH - PlayButton.getWidth()) / 2, (SCREEN_HEIGHT - PlayButton.getHeight()) / 2 - menuButtonDistance / 2);
+    int playButtonX = (SCREEN_WIDTH - PlayButton.getWidth()) / 2;
+    int playButtonY = (SCREEN_HEIGHT - PlayButton.getHeight()) / 2 - menuButtonDistance / 2;
+    PlayButton.render(renderer, playButtonX, playButtonY);
+
+    if (x >= playButtonX && x <= playButtonX + PlayButton.getWidth() & y >= playButtonY && y <= playButtonY + PlayButton.getHeight()){
+        PlayButton2.render(renderer, playButtonX, playButtonY);
+    }
 
     //the battle button coordinate
     int battleButtonX = (SCREEN_WIDTH - PlayButton.getWidth()) / 2;
@@ -56,16 +81,26 @@ void Menu :: display(SDL_Renderer *renderer, int level, bool ghostTetromino)
     //draw battle button
     BattleButton.render(renderer, battleButtonX , battleButtonY);
 
+    if (x >= battleButtonX && x <= battleButtonX + BattleButton.getWidth() & y >= battleButtonY && y <= battleButtonY + BattleButton.getHeight()){
+        BattleButton2.render(renderer, battleButtonX, battleButtonY);
+    }
+
     //the vs com button coordinate
     int VsComButtonX = (SCREEN_WIDTH - PlayButton.getWidth()) / 2;
     int VsComButtonY = (SCREEN_HEIGHT - PlayButton.getHeight()) / 2 + menuButtonDistance * 3 /2;
     VsComButton.render(renderer, VsComButtonX, VsComButtonY);
+    if (x >= VsComButtonX && x <= VsComButtonX + VsComButton.getWidth() & y >= VsComButtonY && y <= VsComButtonY + VsComButton.getHeight()){
+        VsComButton2.render(renderer, VsComButtonX, VsComButtonY);
+    }
 
     //setting button coordinate
     int settingButtonX = (SCREEN_WIDTH - PlayButton.getWidth()) / 2;
     int settingButtonY =  (SCREEN_HEIGHT - PlayButton.getHeight()) / 2 + menuButtonDistance * 5 / 2;
     //draw setting button
     SettingButton.render(renderer, settingButtonX, settingButtonY);
+    if (x >= settingButtonX && x <= settingButtonX + SettingButton.getWidth() & y >= settingButtonY && y <= settingButtonY + SettingButton.getHeight()){
+        SettingButton2.render(renderer, settingButtonX, settingButtonY);
+    }
 }
 
 bool Menu:: click_play(SDL_Event &e)
