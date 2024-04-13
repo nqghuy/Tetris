@@ -17,7 +17,7 @@ class Game
 {
 public:
     //constructor
-    Game(SDL_Renderer *renderer, GameMode _gameMode = SinglePlay, int _level = 1, bool _ghostTetromino = true);
+    Game(SDL_Renderer *renderer, GameMode _gameMode = SinglePlay, int _level = 1, bool _ghostTetromino = true, Effect _effect = None);
 
     //destructor
     ~Game();
@@ -41,7 +41,7 @@ public:
     bool get_lose();
 
     //game is ready to play
-    void set_active(int _level, bool ghostTetromino);
+    void set_active(int _level, bool ghostTetromino, Effect _effect);
 
     //set move time equal to current time
     void set_time();
@@ -58,7 +58,7 @@ public:
     //load lastest game
     void load_file(fstream &saveFile);
 
-    void set_effect(Effect _effect);
+    void reset();
 private:
     //true if present ghost tetromino
     bool ghostTetromino;
@@ -95,5 +95,7 @@ private:
 
     //if player press p
     bool paused;
+
+    Effect effect;
 };
 #endif

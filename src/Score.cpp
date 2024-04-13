@@ -2,7 +2,7 @@
 #include <string>
 #include "Playing_field.h"
 
-Score :: Score(SDL_Renderer *renderer, int _topScore)
+Score :: Score(int _topScore)
 {
     topScore = _topScore;
     currentScore = 0;

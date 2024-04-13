@@ -3,9 +3,9 @@
 #include <algorithm>
 using namespace std;
 
-Game::Game(SDL_Renderer *renderer, GameMode _gameMode, int _level, bool _ghostTetromino)
+Game::Game(SDL_Renderer *renderer, GameMode _gameMode, int _level, bool _ghostTetromino, Effect _effect)
     :   //initialize well
-    well(renderer, (SCREEN_WIDTH - TILE_SIZE * WIDE_CELLS) / 2, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2, 0, _level),
+    well((SCREEN_WIDTH - TILE_SIZE * WIDE_CELLS) / 2, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2, 0, _level),
 
       //initialize tetromino
     tetromino(Tetro_Type(rand() % 7), WIDE_CELLS / 2 - 1, 0, well, _gameMode), quit(true),
@@ -19,10 +19,10 @@ Game::Game(SDL_Renderer *renderer, GameMode _gameMode, int _level, bool _ghostTe
 
         //set well corresponding to game mode
         if (_gameMode == Player1){
-            well = Well(renderer, SCREEN_WIDTH / 11 , (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2, 0, _level);
+            well = Well(SCREEN_WIDTH / 11 , (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2, 0, _level);
         }
         else if (_gameMode == Player2 || _gameMode == Bot){
-            well = Well(renderer, SCREEN_WIDTH / 11  * 6, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2, 0, _level);
+            well = Well(SCREEN_WIDTH / 11  * 6, (SCREEN_HEIGHT - TILE_SIZE * HEIGHT_CELLS) / 2, 0, _level);
         }
         if(_gameMode == Bot){
             tetromino.greedy(well);
@@ -35,6 +35,7 @@ Game::Game(SDL_Renderer *renderer, GameMode _gameMode, int _level, bool _ghostTe
         timer = SDL_GetTicks64();
 
         paused = false;
+        effect = _effect;
 }
 
 Game :: ~Game(){}
@@ -44,29 +45,55 @@ bool Game :: running()
     return (!quit);
 }
 
+void Game :: reset(){
+    moveTime = SDL_GetTicks();
+
+    preparation = true;
+    timer = SDL_GetTicks();
+
+    //new top score
+    int _topScore = max(well.get_current_score(), well.get_top_score());
+
+    //reset well
+    well = Well(well.get_x(), well.get_y(), _topScore, this->level, effect);
+
+    //reset tetromino
+    tetromino = Tetromino(nextTetromino.get_tetro_type(), WIDE_CELLS / 2 - 1, 0, well, gameMode);
+    nextTetromino = Tetromino(nextTetromino.get_random_type(tetromino), WIDE_CELLS / 2 - 1, 0, well, gameMode);
+}
+
 void Game :: handlePausedEvent(SDL_Event &e){
     //mouse position
     int x, y;
     SDL_GetMouseState(&x, &y);
 
     //resume button position
-    int resumeButtonX = (SCREEN_WIDTH  - resumeButton.getWidth()) / 2 + resumeButton.getWidth();
+    int resumeButtonX = (SCREEN_WIDTH  - resumeButton.getWidth()) / 2;
     int resumeButtonY = (SCREEN_HEIGHT - resumeButton.getHeight()) / 2;
     
     //home button position
-    int gHomeButtonX = (SCREEN_WIDTH - gHomeButton.getWidth()) / 2 - gHomeButton.getWidth();
+    int gHomeButtonX = (SCREEN_WIDTH - gHomeButton.getWidth()) / 2 - buttonDistance;
     int gHomeButtonY = (SCREEN_HEIGHT - gHomeButton.getHeight()) / 2;
+
+    int gReplayButtonX = (SCREEN_WIDTH - gHomeButton.getWidth()) / 2 + buttonDistance;
+    int gReplayButtonY = (SCREEN_HEIGHT - gHomeButton.getHeight()) / 2;
+
 
     //if click resume
     if (e.type == SDL_MOUSEBUTTONDOWN && x >= resumeButtonX && x <= resumeButtonX + resumeButton.getWidth() && y >= resumeButtonY && y <= resumeButtonY + resumeButton.getHeight()){
         moveTime = SDL_GetTicks();
-        set_active(level, ghostTetromino);
+        set_active(level, ghostTetromino, effect);
         paused = false;
     }
 
     //click return home
     else if (e.type == SDL_MOUSEBUTTONDOWN && x >= gHomeButtonX && x <= gHomeButtonX + gHomeButton.getWidth() && y >= gHomeButtonY && y <= gHomeButtonY + gHomeButton.getHeight()){
         quit = true;
+    }
+
+    else if (e.type == SDL_MOUSEBUTTONDOWN && x >= gReplayButtonX && x <= gReplayButtonX + gReplayButton.getWidth() && y >= gReplayButtonY && y <= gReplayButtonY + gReplayButton.getHeight()){
+        reset();
+        paused = false;
     }
 }
 
@@ -97,20 +124,7 @@ void Game :: handleEvents(SDL_Renderer *renderer, SDL_Event &e)
 
     else{//if lose, press enter to reset game, get top score
         if (well.press_play_again(e)){
-            moveTime = SDL_GetTicks();
-
-            preparation = true;
-            timer = SDL_GetTicks();
-
-            //new top score
-            int _topScore = max(well.get_current_score(), well.get_top_score());
-
-            //reset well
-            well = Well(renderer, well.get_x(), well.get_y(), _topScore, this->level);
-
-            //reset tetromino
-            tetromino = Tetromino(nextTetromino.get_tetro_type(), WIDE_CELLS / 2 - 1, 0, well, gameMode);
-            nextTetromino = Tetromino(nextTetromino.get_random_type(tetromino), WIDE_CELLS / 2 - 1, 0, well, gameMode);
+            reset();
         }
         //if click return home
         else if(well.return_home(e)){
@@ -184,10 +198,12 @@ void Game :: display_paused_board(SDL_Renderer *renderer, Theme theme){
     }
 
     //draw resume button
-    resumeButton.render(renderer, (SCREEN_WIDTH  - resumeButton.getWidth()) / 2 + resumeButton.getWidth(), (SCREEN_HEIGHT - resumeButton.getHeight()) / 2);
+    resumeButton.render(renderer, (SCREEN_WIDTH  - resumeButton.getWidth()) / 2 , (SCREEN_HEIGHT - resumeButton.getHeight()) / 2);
 
     //draw home button
-    gHomeButton.render(renderer, (SCREEN_WIDTH - gHomeButton.getWidth()) / 2 - gHomeButton.getWidth(), (SCREEN_HEIGHT - gHomeButton.getHeight()) / 2);
+    gHomeButton.render(renderer, (SCREEN_WIDTH - gHomeButton.getWidth()) / 2 - buttonDistance, (SCREEN_HEIGHT - gHomeButton.getHeight()) / 2);
+
+    gReplayButton.render(renderer, (SCREEN_WIDTH - gHomeButton.getWidth()) / 2 + buttonDistance, (SCREEN_HEIGHT - gHomeButton.getHeight()) / 2);
 }
 
 void Game :: display(SDL_Renderer *renderer, Theme theme)
@@ -251,11 +267,8 @@ bool Game :: get_lose()
     return (well.get_lose());
 }
 
-void Game :: set_effect(Effect _effect){
-    well.set_effect(_effect);
-}
 
-void Game :: set_active(int _level, bool _ghostTetromino)
+void Game :: set_active(int _level, bool _ghostTetromino, Effect _effect)
 {   
     timer = SDL_GetTicks();
     preparation = true;
@@ -264,6 +277,8 @@ void Game :: set_active(int _level, bool _ghostTetromino)
     ghostTetromino = _ghostTetromino;
 
     well.set_level(_level);
+    effect = _effect;
+    well.set_effect(_effect);
 
     //ready to play
     quit = false;

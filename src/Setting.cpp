@@ -14,7 +14,15 @@ bool Setting :: load_media(SDL_Renderer *renderer){
           cout << "failed to load left button\n";
           success = false;
      }
-     if (!RightButton.loadFromFile(renderer, "Assets/Pictures/right_button.jpg")){
+     if(!LeftButton2.loadFromFile(renderer, "Assets/Pictures/left_button2.png")){
+          cout << "failed to load left button\n";
+          success = false;
+     }
+     if (!RightButton.loadFromFile(renderer, "Assets/Pictures/right_button.png", {255, 255, 255})){
+          cout << "failed to load right button\n";
+          success = false;
+     }
+     if (!RightButton2.loadFromFile(renderer, "Assets/Pictures/right_button2.png", {255, 255, 255})){
           cout << "failed to load right button\n";
           success = false;
      }
@@ -274,10 +282,15 @@ void Setting :: display_level(SDL_Renderer *renderer, int level){
      difficulty.render(renderer, menuRect.x + menuRect.w / 2  + (menuRect.w / 2 - difficulty.getWidth()) / 2 , menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2);
 
      //draw left button(decrease level)
-     LeftButton.render(renderer, menuRect.x + menuRect.w / 2 - LeftButton.getWidth() , menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2);
+     int leftButtonX = menuRect.x + menuRect.w / 2 - LeftButton.getWidth();
+     int leftButtonY = menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2;
+     LeftButton.render(renderer, leftButtonX , leftButtonY);
 
+     int rightButtonX =  menuRect.x + menuRect.w - RightButton.getWidth();
+     int rightButtonY = menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2;
      //draw right button(increase level)
-     RightButton.render(renderer, menuRect.x + menuRect.w - RightButton.getWidth(), menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2);
+     RightButton.render(renderer, rightButtonX, rightButtonY);
+
 }
 
 void Setting :: display_ghostTetromino(SDL_Renderer *renderer, bool ghostTetromino){
@@ -358,6 +371,25 @@ void Setting :: display_effect(SDL_Renderer *renderer, Effect effect){
      RightButton.render(renderer, menuRect.x + menuRect.w - RightButton.getWidth(), menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2 + LevelButton.getHeight() * 3);
 }
 
+void Setting :: display_bold_button(SDL_Renderer* renderer){
+     SDL_Rect menuRect = {(SCREEN_WIDTH - MenuBackground.getWidth()) / 2, (SCREEN_HEIGHT - MenuBackground.getHeight()) / 2, MenuBackground.getWidth(), MenuBackground.getHeight()};
+
+     int x, y;
+     SDL_GetMouseState(&x, &y);
+
+     int leftButtonX = menuRect.x + menuRect.w / 2 - LeftButton.getWidth();
+     int leftButtonY = menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2;
+     int dimension = LevelButton.getHeight();
+     if (x >= leftButtonX && x <= leftButtonX + dimension && y >= leftButtonY && y < leftButtonY + dimension * 4){
+          LeftButton2.render(renderer, leftButtonX, leftButtonY + (y - leftButtonY) / dimension * dimension );
+     }
+
+     int rightButtonX = menuRect.x + menuRect.w - RightButton.getWidth();
+     int rightButtonY = menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2;
+     if (x >= rightButtonX && x <= rightButtonX + dimension && y >= rightButtonY && y < rightButtonY + dimension * 4){
+          RightButton2.render(renderer, rightButtonX, rightButtonY + (y - rightButtonY) / dimension * dimension );
+     }
+}
 
 void Setting :: display(SDL_Renderer *renderer, int level, bool ghostTetromino, Theme theme, Effect effect){
 
@@ -367,6 +399,8 @@ void Setting :: display(SDL_Renderer *renderer, int level, bool ghostTetromino, 
      display_ghostTetromino(renderer, ghostTetromino);
      display_theme(renderer, theme);
      display_effect(renderer, effect);
+
+     display_bold_button(renderer);
 
      //draw back button
      backButton.render(renderer, menuRect.x, menuRect.y);

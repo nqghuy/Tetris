@@ -17,7 +17,7 @@ public:
      bool get_active();
 
      //ready to battle
-     void set_active(int _level, bool _ghostTetromino);
+     void set_active(int _level, bool _ghostTetromino, Effect _effect);
 
      //handle event
      void handle_event(SDL_Renderer *renderer, SDL_Event &e);
@@ -25,7 +25,6 @@ public:
      //draw on the screen
      void display(SDL_Renderer *renderer, Theme theme);
 
-     void set_effect(Effect _effect);
 
      void free_memory();
 

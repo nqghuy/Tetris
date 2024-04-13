@@ -6,7 +6,7 @@ class Score
 {
 public:
     //constructor
-    Score(SDL_Renderer *renderer, int topScore);
+    Score(int topScore);
 
     //destructor
     ~Score();

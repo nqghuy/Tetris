@@ -1,8 +1,8 @@
 #include "Playing_field.h"
 #include <bits/stdc++.h>
 
-Well :: Well (SDL_Renderer *renderer, int _x, int _y, int _topScore, int _level)
-:   score(renderer, _topScore)
+Well :: Well (int _x, int _y, int _topScore, int _level, Effect _effect)
+:   score(_topScore)
 {
     x = _x;
     y = _y;
@@ -20,7 +20,7 @@ Well :: Well (SDL_Renderer *renderer, int _x, int _y, int _topScore, int _level)
     }
     lose = false;
     filledLineFrame = 0;
-    effect = None;
+    effect = _effect;
 };
 
 Well :: ~Well()
@@ -346,7 +346,7 @@ int Well :: get_current_score()
 }
 
 bool Well :: isDeletingLine(){
-    return filledLineFrame;
+    return filledLineFrame != 0;
 }
 
 void Well :: draw_lose_background(SDL_Renderer *renderer){

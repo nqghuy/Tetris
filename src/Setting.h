@@ -43,10 +43,15 @@ public:
 
     void display(SDL_Renderer *renderer, int level, bool ghostTetromino, Theme theme, Effect effect);
 
+    void display_bold_button(SDL_Renderer *renderer);
+
 private:
     //button in setting
     LTexture RightButton;
+    LTexture RightButton2;
     LTexture LeftButton;
+    LTexture LeftButton2;
+
     LTexture LevelButton;
     LTexture difficulty;
     LTexture backButton;

@@ -213,7 +213,7 @@ bool Tetris :: load_texture(){
         success = false;
     }
 
-    if(!gWinterBoard.loadFromFile(renderer, "Assets/Pictures/winter_board.jpg", {255, 255, 255})){
+    if(!gWinterBoard.loadFromFile(renderer, "Assets/Pictures/winter_board.jpg", {100, 200, 170})){
         cout << "failed to load winter board\n";
         success = false;
     }
@@ -584,20 +584,17 @@ void Tetris :: setting_handle_event(SDL_Event &e){
 void Tetris :: menu_handle_event(SDL_Event &e){
     //single play
     if(menu->click_play(e)){
-        game->set_active(level, ghostTetromino);
-        game->set_effect(effect);
+        game->set_active(level, ghostTetromino, effect);
     }
 
     //ready to a hot battle
     else if(menu->click_battle(e)){
-        battle->set_active(level, ghostTetromino);
-        battle->set_effect(effect);
+        battle->set_active(level, ghostTetromino, effect);
     }
 
     //bot is very intelligent
     else if (menu->click_vsCom(e)){
-        vsCom->set_active(level, ghostTetromino);
-        vsCom->set_effect(effect);
+        vsCom->set_active(level, ghostTetromino, effect);
     }
     //click setting
     else if(menu->click_setting(e)){
@@ -635,6 +632,18 @@ void Tetris :: load_file(){
 
     //load level
     saveFile >> level;
+
+    string _effect;
+    saveFile >> _effect;
+    if (_effect == "None"){
+        effect = None;
+    }
+    else if (_effect == "Capcut"){
+        effect = Capcut;
+    }
+    else if (_effect == "Fade"){
+        effect = Fade;
+    }
 
     //sload state(menu, game, battle)
     string state;
@@ -676,6 +685,17 @@ void Tetris :: save_file(){
     //save level
     saveFile << level << '\n';
 
+    switch(effect){
+        case None:
+            saveFile << "None\n";
+            break;
+        case Capcut:
+            saveFile << "Capcut\n";
+            break;
+        case Fade:
+            saveFile << "Fade\n";
+            break;
+    }
     //save state
     if (menu->get_active() || setting->get_active()){
         saveFile << "menu\n";
