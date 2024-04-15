@@ -3,12 +3,21 @@
 Menu :: Menu()
 {
     active = true;
+    menuXCoordinate = 0;
 }
 
 Menu :: ~Menu()
 {
     MenuBackground.free();
     PlayButton.free();
+    PlayButton2.free();
+    BattleButton.free();
+    BattleButton2.free();
+    SettingButton.free();
+    SettingButton2.free();
+    VsComButton.free();
+    VsComButton2.free();
+    About.free();
 }
 
 bool Menu :: load_media(SDL_Renderer *renderer)
@@ -52,10 +61,73 @@ bool Menu :: load_media(SDL_Renderer *renderer)
         cout << "failed to load about me text\n";
         success = false;
     }
+    menuXCoordinate = (SCREEN_WIDTH - PlayButton.getWidth()) / 2;
+    menuYCoordinate = (SCREEN_HEIGHT - PlayButton.getHeight()) / 2;
     return success;
 }
 
-void Menu :: display(SDL_Renderer *renderer, int level, bool ghostTetromino)
+void Menu :: display_Play_button(SDL_Renderer *renderer){
+    int x, y;
+    SDL_GetMouseState(&x, &y);
+
+    //draw play button
+    int playButtonX = menuXCoordinate;
+    int playButtonY = menuYCoordinate - menuButtonDistance / 2;
+    PlayButton.render(renderer, playButtonX, playButtonY);
+
+    //if the mouse is in the play button 
+    if (x >= playButtonX && x <= playButtonX + PlayButton.getWidth() & y >= playButtonY && y <= playButtonY + PlayButton.getHeight()){
+        PlayButton2.render(renderer, playButtonX, playButtonY);
+    }
+}
+
+void Menu :: display_Battle_button(SDL_Renderer *renderer){
+    int x, y;
+    SDL_GetMouseState(&x, &y);
+
+    //the battle button coordinate
+    int battleButtonX = menuXCoordinate;
+    int battleButtonY = menuYCoordinate + menuButtonDistance /2;
+
+    //draw battle button
+    BattleButton.render(renderer, battleButtonX , battleButtonY);
+
+    //if the mouse is in battle button
+    if (x >= battleButtonX && x <= battleButtonX + BattleButton.getWidth() & y >= battleButtonY && y <= battleButtonY + BattleButton.getHeight()){
+        BattleButton2.render(renderer, battleButtonX, battleButtonY);
+    }
+}
+
+void Menu :: display_VsCom_button(SDL_Renderer *renderer){
+    int x, y;
+    SDL_GetMouseState(&x, &y);
+    
+    //the vs com button coordinate
+    int VsComButtonX = menuXCoordinate;
+    int VsComButtonY = menuYCoordinate + menuButtonDistance * 3 / 2;
+
+    VsComButton.render(renderer, VsComButtonX, VsComButtonY);
+    if (x >= VsComButtonX && x <= VsComButtonX + VsComButton.getWidth() & y >= VsComButtonY && y <= VsComButtonY + VsComButton.getHeight()){
+        VsComButton2.render(renderer, VsComButtonX, VsComButtonY);
+    }
+}
+
+void Menu :: display_Setting_button(SDL_Renderer *renderer){
+    int x, y;
+    SDL_GetMouseState(&x, &y);
+
+    //setting button coordinate
+    int settingButtonX = menuXCoordinate;
+    int settingButtonY =  menuYCoordinate + menuButtonDistance * 5 / 2;
+    //draw setting button
+    SettingButton.render(renderer, settingButtonX, settingButtonY);
+    if (x >= settingButtonX && x <= settingButtonX + SettingButton.getWidth() & y >= settingButtonY && y <= settingButtonY + SettingButton.getHeight()){
+        SettingButton2.render(renderer, settingButtonX, settingButtonY);
+    }
+
+}
+
+void Menu :: display(SDL_Renderer *renderer)
 {   
 
     //the position and dimension of menu
@@ -64,56 +136,21 @@ void Menu :: display(SDL_Renderer *renderer, int level, bool ghostTetromino)
     //draw menu background
     MenuBackground.render(renderer, menuRect.x, menuRect.y);
 
-    int x, y;
-    SDL_GetMouseState(&x, &y);
+    //display button    
+    display_Play_button(renderer);
+    display_Battle_button(renderer);
+    display_Setting_button(renderer);
+    display_VsCom_button(renderer);
 
-    //draw button texture
-
-    //draw play button
-    int playButtonX = (SCREEN_WIDTH - PlayButton.getWidth()) / 2;
-    int playButtonY = (SCREEN_HEIGHT - PlayButton.getHeight()) / 2 - menuButtonDistance / 2;
-    PlayButton.render(renderer, playButtonX, playButtonY);
-
-    if (x >= playButtonX && x <= playButtonX + PlayButton.getWidth() & y >= playButtonY && y <= playButtonY + PlayButton.getHeight()){
-        PlayButton2.render(renderer, playButtonX, playButtonY);
-    }
-
-    //the battle button coordinate
-    int battleButtonX = (SCREEN_WIDTH - PlayButton.getWidth()) / 2;
-    int battleButtonY = (SCREEN_HEIGHT - PlayButton.getHeight()) / 2 + menuButtonDistance /2;
-
-    //draw battle button
-    BattleButton.render(renderer, battleButtonX , battleButtonY);
-
-    if (x >= battleButtonX && x <= battleButtonX + BattleButton.getWidth() & y >= battleButtonY && y <= battleButtonY + BattleButton.getHeight()){
-        BattleButton2.render(renderer, battleButtonX, battleButtonY);
-    }
-
-    //the vs com button coordinate
-    int VsComButtonX = (SCREEN_WIDTH - PlayButton.getWidth()) / 2;
-    int VsComButtonY = (SCREEN_HEIGHT - PlayButton.getHeight()) / 2 + menuButtonDistance * 3 /2;
-    VsComButton.render(renderer, VsComButtonX, VsComButtonY);
-    if (x >= VsComButtonX && x <= VsComButtonX + VsComButton.getWidth() & y >= VsComButtonY && y <= VsComButtonY + VsComButton.getHeight()){
-        VsComButton2.render(renderer, VsComButtonX, VsComButtonY);
-    }
-
-    //setting button coordinate
-    int settingButtonX = (SCREEN_WIDTH - PlayButton.getWidth()) / 2;
-    int settingButtonY =  (SCREEN_HEIGHT - PlayButton.getHeight()) / 2 + menuButtonDistance * 5 / 2;
-    //draw setting button
-    SettingButton.render(renderer, settingButtonX, settingButtonY);
-    if (x >= settingButtonX && x <= settingButtonX + SettingButton.getWidth() & y >= settingButtonY && y <= settingButtonY + SettingButton.getHeight()){
-        SettingButton2.render(renderer, settingButtonX, settingButtonY);
-    }
-
+    //display "About"
     About.render(renderer, 0, SCREEN_HEIGHT - About.getHeight());
 }
 
 bool Menu:: click_play(SDL_Event &e)
 {   
     //get x, y PlayButton rext
-    int PlayButtonX = (SCREEN_WIDTH - PlayButton.getWidth()) / 2;
-    int PlayButtonY = (SCREEN_HEIGHT - PlayButton.getHeight()) / 2 - menuButtonDistance / 2;
+    int PlayButtonX = menuXCoordinate;
+    int PlayButtonY = menuYCoordinate - menuButtonDistance / 2;
 
     //the position of mouse
     int x, y;
@@ -131,8 +168,8 @@ bool Menu:: click_play(SDL_Event &e)
 
 bool Menu :: click_battle(SDL_Event &e){
     //the battle button coordinate
-    int battleButtonX = (SCREEN_WIDTH - PlayButton.getWidth()) / 2;
-    int battleButtonY = (SCREEN_HEIGHT - PlayButton.getHeight()) / 2 + menuButtonDistance /2;
+    int battleButtonX = menuXCoordinate;
+    int battleButtonY = menuYCoordinate + menuButtonDistance /2;
 
     //the position of mouse
     int x, y;
@@ -150,8 +187,8 @@ bool Menu :: click_battle(SDL_Event &e){
 
 bool Menu :: click_setting(SDL_Event &e){
     //setting button coordinate
-    int settingButtonX = (SCREEN_WIDTH - PlayButton.getWidth()) / 2;
-    int settingButtonY =  (SCREEN_HEIGHT - PlayButton.getHeight()) / 2 + menuButtonDistance * 5 / 2;
+    int settingButtonX = menuXCoordinate;
+    int settingButtonY =  menuYCoordinate + menuButtonDistance * 5 / 2;
 
     //the position of mouse
     int x, y;
@@ -169,8 +206,8 @@ bool Menu :: click_setting(SDL_Event &e){
 
 bool Menu :: click_vsCom(SDL_Event &e){
     //the vs com button coordinate
-    int VsComButtonX = (SCREEN_WIDTH - PlayButton.getWidth()) / 2;
-    int VsComButtonY = (SCREEN_HEIGHT - PlayButton.getHeight()) / 2 + menuButtonDistance * 3 /2;
+    int VsComButtonX = menuXCoordinate;
+    int VsComButtonY = menuYCoordinate + menuButtonDistance * 3 /2;
 
     //the position of mouse
     int x, y;
@@ -188,8 +225,11 @@ bool Menu :: click_vsCom(SDL_Event &e){
 }
 
 bool Menu :: click_About(SDL_Event &e){
+    //get mouse position
     int x, y;
     SDL_GetMouseState(&x, &y);
+    
+    //click about
     if (e.type == SDL_MOUSEBUTTONDOWN && x >= 0 && x <= About.getWidth() && y >= SCREEN_HEIGHT - About.getHeight() && y <= SCREEN_HEIGHT){
         return true;
     }
@@ -211,7 +251,14 @@ void Menu :: set_not_active(){
 }
 
 void Menu :: free_memory(){
+    MenuBackground.free();
     PlayButton.free();
-    SettingButton.free();
+    PlayButton2.free();
     BattleButton.free();
+    BattleButton2.free();
+    SettingButton.free();
+    SettingButton2.free();
+    VsComButton.free();
+    VsComButton2.free();
+    About.free();
 }

@@ -75,14 +75,19 @@ public:
     //save game
     void save_file(fstream &saveFile);
 
+    //true if line(s) are deleting
     bool isDeletingLine();
 
+    //if effect is fade
     void draw_fade_effect(SDL_Renderer *renderer);
 
+    //if effect is capcut
     void draw_capcut_effect(SDL_Renderer *renderer);
 
+    //change effect
     void set_effect(Effect _effect);
 
+    //change level
     void set_level(int _level);
 private:
     Effect effect;
@@ -109,8 +114,10 @@ private:
     //cannot play
     bool lose;
 
+    //the frames to delete line
     int filledLineFrame;
 
+    //the line need deleting
     vector <int> filledLine;
 };
 

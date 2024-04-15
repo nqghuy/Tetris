@@ -151,7 +151,7 @@ bool Tetris :: load_texture(){
         success = false;
     }
 
-    if(!gAutumnBackground.loadFromFile(renderer, "Assets/Pictures/Autumn.png")){
+    if(!gAutumnBackground.loadFromFile(renderer, "Assets/Pictures/Autumn.png", {0, 255, 255})){
         cout << "failed to load autumn background\n";
         success = false;
     }
@@ -409,20 +409,22 @@ void Tetris :: display()
     }
     else gWinterBackground.render(renderer, 0, 0);
 
+    //show animation
     for (int i = 0; i < MAX_ANIMATION; i++){
         animation[i].render(renderer);
     }
 
     //if not play, show menu
     if (menu->get_active()){
-        menu->display(renderer, level, ghostTetromino);
+        menu->display(renderer);
     }
 
+    //show setting
     else if(setting->get_active()){
         setting->display(renderer, level, ghostTetromino, theme, effect);
     }
 
-    //else show game
+    //show game
     else if(game->running()) {
         if(!game->get_lose()){
             game->update();
@@ -430,6 +432,7 @@ void Tetris :: display()
         game->display(renderer, theme);
     }
 
+    //display vscom 
     else if (vsCom->get_active()){
         vsCom->display(renderer, theme);
     }
@@ -445,7 +448,6 @@ void Tetris :: free_texture(){
     //free score texture
     gWellFrame.free();
     gScoreFrame.free();
-
 
     gLoseBackground.free();
 
@@ -552,6 +554,7 @@ void Tetris :: setting_handle_event(SDL_Event &e){
             animation[i].set_theme(theme);
         }
     }
+    //change effect
     else if (setting->click_left_change_effect(e)){
         switch (effect)
         {
@@ -602,6 +605,7 @@ void Tetris :: menu_handle_event(SDL_Event &e){
         setting->set_active();
         menu->set_not_active();
     }
+    //click "About"
     else if (menu->click_About(e)){
         SDL_OpenURL("https://github.com/nqghuy/Tetris");
     }
@@ -619,6 +623,7 @@ void Tetris :: load_file(){
     else {
         theme = Autumn;
     }
+    //update animation theme
     set_animation_theme();
 
     saveFile.ignore();
@@ -638,6 +643,8 @@ void Tetris :: load_file(){
     saveFile >> level;
 
     string _effect;
+
+    //load effect
     saveFile >> _effect;
     if (_effect == "None"){
         effect = None;
@@ -649,7 +656,7 @@ void Tetris :: load_file(){
         effect = Fade;
     }
 
-    //sload state(menu, game, battle)
+    //load state(menu, game, battle)
     string state;
     saveFile >> state;
     saveFile.ignore();

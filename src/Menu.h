@@ -16,7 +16,14 @@ public:
     bool load_media(SDL_Renderer *renderer);
 
     //display into screen
-    void display(SDL_Renderer *renderer, int level, bool ghostTetromino);
+    void display(SDL_Renderer *renderer);
+
+    //display button
+    void display_Play_button(SDL_Renderer *renderer);
+    void display_Battle_button(SDL_Renderer *renderer);
+    void display_VsCom_button(SDL_Renderer *renderer);
+    void display_Setting_button(SDL_Renderer *renderer);
+
 
     //handle event
     bool click_play(SDL_Event &e);
@@ -36,6 +43,7 @@ public:
 
     //free memory
     void free_memory();
+
 private:
     TTF_Font *menuFont;
 
@@ -56,4 +64,7 @@ private:
 
     //true if we are in menu
     bool active;
+
+    int menuXCoordinate;
+    int menuYCoordinate;
 };

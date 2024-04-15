@@ -21,16 +21,16 @@ public:
     bool load_media();
 
     bool load_texture();
-
     bool load_music();
-
     bool load_font();
 
     //if game is running
     bool running();
 
+    //when we are in menu
     void menu_handle_event(SDL_Event &e);
 
+    //when we are in setting
     void setting_handle_event(SDL_Event &e);
 
     //handle event
@@ -58,8 +58,10 @@ public:
     void save_file();
     
 private:
+    //effect when deleting line(s)
     Effect effect;
 
+    //theme in game(autumn or winter)
     Theme theme;
 
     //present ghost tetromino or not

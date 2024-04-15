@@ -77,18 +77,25 @@ void Well :: draw (SDL_Renderer *renderer, GameMode gameMode)
             SDL_RenderDrawPoint(renderer, i * TILE_SIZE + x, j * TILE_SIZE + y);
         }
     }
+
+    //draw deleting line according to effect
     if(effect == Capcut){
         draw_capcut_effect(renderer);
     }
     else if (effect == Fade){
         draw_fade_effect(renderer);
     }
+
+    //draw score
     score.draw(renderer, *this, ScoreFont);
 }
 
 void Well :: draw_fade_effect(SDL_Renderer* renderer){
+    //is deleting line
     if(filledLineFrame != 0) {
         filledLineFrame--;
+
+        //if finish
         if(filledLineFrame == 0){
             for (int i : filledLine)
             deleted_line(i);
@@ -111,24 +118,28 @@ void Well :: draw_fade_effect(SDL_Renderer* renderer){
                     SDL_RenderFillRect(renderer, &tileRect);
 
                     if ((33 - filledLineFrame) <= 3 * i + 6 ){
+                        //shrink the block
                         int dimension = TILE_SIZE / (max(1, (33 - 3 * i - filledLineFrame) % 7));
                         int centerX = x + i * TILE_SIZE + TILE_SIZE / 2;
                         int centerY = y + line * TILE_SIZE + TILE_SIZE / 2;
                         int newx = centerX - dimension / 2;
                         int newy = centerY - dimension / 2;
+
+                        //new tile rect is shrinked
                         SDL_Rect newTileRect = {newx, newy, dimension, dimension};
 
+                        //draw
                         SDL_SetRenderDrawColor(renderer, curColor.r, curColor.g, curColor.b, 255);
                         SDL_RenderFillRect(renderer, &newTileRect);
 
-                        //draw black color
+                        //draw black color border
                         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 100);
                         SDL_RenderDrawRect(renderer, &newTileRect);
                         // SDL_Delay(100);
                     }
-
                 }
                 else{
+                    //if the block is not deleting
                     SDL_SetRenderDrawColor(renderer, curColor.r, curColor.g, curColor.b, 255);
 
                     //the rect of each tile
@@ -150,14 +161,18 @@ void Well :: draw_fade_effect(SDL_Renderer* renderer){
             deleted_line(i);
         }
         filledLineFrame--;
+
+        //clear line vector
         filledLine.clear();
     }
 }
 
 void Well :: draw_capcut_effect(SDL_Renderer *renderer){
+    //is deleting line
     if(filledLineFrame != 0) {
         filledLineFrame--;
         if(filledLineFrame == 0){
+            //is finish
             for (int i : filledLine)
             deleted_line(i);
         }

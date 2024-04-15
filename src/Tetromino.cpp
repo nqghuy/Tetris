@@ -34,6 +34,7 @@ Tetromino :: Tetromino (Tetro_Type _TetrominoType, int x, int y, Well &well, Gam
     finalX = 0;
     finalAngle = 0;
 
+    //find final state
     if (gameMode == Bot){
         this->greedy(well);
     }
@@ -335,6 +336,7 @@ void Tetromino :: handle_event1(SDL_Event &e, Well &well){
 }
 
 void Tetromino :: bot_move(Well &well){
+    //move x coordinate
     if (x_coordinate < finalX){
         VelX = 1;
     }
@@ -345,6 +347,8 @@ void Tetromino :: bot_move(Well &well){
         VelX = 0;
     }
     x_coordinate += VelX;
+
+    //rotate
     if (angle < finalAngle){
         this->Rotate(well);
     }
@@ -716,24 +720,6 @@ int Tetromino :: get_expected_value(int x, int _angle, Well &well){
         }
     }
 
-    // //calculate inaccessible spaces
-    // int inaccessibleSpace = 0;
-    // for (int i = 0; i < TETRAD_SIZE; i++){
-    //     for (int j = 0; j < TETRAD_SIZE; j++){
-    //         if (ghost.TetrominoShape[i][j]){
-    //             if ((i < TETRAD_SIZE - 1 && !ghost.TetrominoShape[i + 1][j]) || i == TETRAD_SIZE){
-    //                 int row = ghost.y_coordinate + i + 1;
-                    
-    //                 //the number of cell that is not true(in virtual well) behind [i][j] is inaccessible
-    //                 while(row < HEIGHT_CELLS && !virtualWell[ghost.x_coordinate + j][row]){
-    //                     inaccessibleSpace++;
-    //                     row++;
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
-
     //unite ghost tetromino
     for (int i = 0; i < TETRAD_SIZE; i++){
         for (int j = 0; j < TETRAD_SIZE; j++){
@@ -824,7 +810,9 @@ int Tetromino :: get_expected_value(int x, int _angle, Well &well){
             filledRow++;
         }
     }
+    //the final inaccessible space
     int inaccessibleSpace = max(0, new_innaccessible_space - old_innaccessible_space);
+
     return (ghost.y_coordinate + lowestRow) * 3 + blockInBottomRow - sqrt(inaccessibleSpace * 10) * 3 - highestRow + highestRow2 * 1.5 + filledRow * 1.5 + ghost.y_coordinate;
 
     // return {0, 0};

@@ -75,6 +75,7 @@ void Game :: handlePausedEvent(SDL_Event &e){
     int gHomeButtonX = (SCREEN_WIDTH - gHomeButton.getWidth()) / 2 - buttonDistance;
     int gHomeButtonY = (SCREEN_HEIGHT - gHomeButton.getHeight()) / 2;
 
+    //replay button
     int gReplayButtonX = (SCREEN_WIDTH - gHomeButton.getWidth()) / 2 + buttonDistance;
     int gReplayButtonY = (SCREEN_HEIGHT - gHomeButton.getHeight()) / 2;
 

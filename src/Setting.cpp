@@ -379,9 +379,11 @@ void Setting :: display_effect(SDL_Renderer *renderer, Effect effect){
 void Setting :: display_bold_button(SDL_Renderer* renderer){
      SDL_Rect menuRect = {(SCREEN_WIDTH - MenuBackground.getWidth()) / 2, (SCREEN_HEIGHT - MenuBackground.getHeight()) / 2, MenuBackground.getWidth(), MenuBackground.getHeight()};
 
+     //mouse position
      int x, y;
      SDL_GetMouseState(&x, &y);
 
+     // if mouse is in any left button
      int leftButtonX = menuRect.x + menuRect.w / 2 - LeftButton.getWidth();
      int leftButtonY = menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2;
      int dimension = LevelButton.getHeight();
@@ -389,6 +391,7 @@ void Setting :: display_bold_button(SDL_Renderer* renderer){
           LeftButton2.render(renderer, leftButtonX, leftButtonY + (y - leftButtonY) / dimension * dimension );
      }
 
+     //if mouse is in any right button
      int rightButtonX = menuRect.x + menuRect.w - RightButton.getWidth();
      int rightButtonY = menuRect.y + (menuRect.h - LevelButton.getHeight()) / 2;
      if (x >= rightButtonX && x <= rightButtonX + dimension && y >= rightButtonY && y < rightButtonY + dimension * 4){
@@ -397,16 +400,18 @@ void Setting :: display_bold_button(SDL_Renderer* renderer){
 }
 
 void Setting :: display(SDL_Renderer *renderer, int level, bool ghostTetromino, Theme theme, Effect effect){
-
      SDL_Rect menuRect = {(SCREEN_WIDTH - MenuBackground.getWidth()) / 2, (SCREEN_HEIGHT - MenuBackground.getHeight()) / 2, MenuBackground.getWidth(), MenuBackground.getHeight()};
 
+     //display all setting
      display_level(renderer, level);
      display_ghostTetromino(renderer, ghostTetromino);
      display_theme(renderer, theme);
      display_effect(renderer, effect);
 
+     //and bold button
      display_bold_button(renderer);
 
+     //display volume with volume text, canon, ...
      volume.display(renderer);
 
      //draw back button

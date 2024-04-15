@@ -250,10 +250,13 @@ public:
     //save game
     void save_file(fstream &saveFile);
 
+    //calculate expected value
     int get_expected_value(int x, int _angle, Well& well);
 
+    //greedy to find all expected values
     void greedy(Well& well);
 
+    //change x coordinate
     void set_x_coordinate(int x);
 
 private:
@@ -284,6 +287,7 @@ private:
     bool dropped;
     bool rotate;
 
+    //final state of tetromino bot
     int finalX, finalAngle;
 };
 
