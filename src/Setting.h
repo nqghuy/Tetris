@@ -1,15 +1,17 @@
 #pragma once
 #include "Texture.h"
 #include "Data.h"
+#include "Volume.h"
+
 class Setting{
 public:
-     Setting();
+    Setting();
 
-     ~Setting();
+    ~Setting();
 
-     bool load_media(SDL_Renderer *renderer);
+    bool load_media(SDL_Renderer *renderer);
 
-     bool click_up_level_button(SDL_Event &e);
+    bool click_up_level_button(SDL_Event &e);
 
     bool click_down_level_button(SDL_Event &e);
 
@@ -45,6 +47,8 @@ public:
 
     void display_bold_button(SDL_Renderer *renderer);
 
+    void handle_event (SDL_Event &e);
+
 private:
     //button in setting
     LTexture RightButton;
@@ -64,6 +68,7 @@ private:
     LTexture EffectText;
     LTexture EffectChoice;
 
+    Volume volume;
 
     bool active;
 

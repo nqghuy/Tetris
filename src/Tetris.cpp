@@ -127,7 +127,7 @@ bool Tetris :: init(const char *title, int x, int y, int w, int h)
                 }
 
                 //initialize SDL mixer
-                if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0){
+                if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 3, 2048) < 0){
                     cout << "failed to initialize sdl mixed. ERROR: " << Mix_GetError() << endl;
                     success = false;
                 }
@@ -523,6 +523,7 @@ void Tetris :: close_game(){
 }
 
 void Tetris :: setting_handle_event(SDL_Event &e){
+    setting->handle_event(e);
     //setting level, ghost piece,...
     if (setting->click_up_level_button(e)){
         if (level < MAX_LEVEL) level++;
@@ -600,6 +601,9 @@ void Tetris :: menu_handle_event(SDL_Event &e){
     else if(menu->click_setting(e)){
         setting->set_active();
         menu->set_not_active();
+    }
+    else if (menu->click_About(e)){
+        SDL_OpenURL("https://github.com/nqghuy/Tetris");
     }
 }
 

@@ -48,6 +48,10 @@ bool Menu :: load_media(SDL_Renderer *renderer)
         cout << "failed to load VsCom button\n";
         success = false;
     }
+    if (!About.loadFromRenderedText(renderer, SettingFont, "About", {0, 0, 0})){
+        cout << "failed to load about me text\n";
+        success = false;
+    }
     return success;
 }
 
@@ -101,6 +105,8 @@ void Menu :: display(SDL_Renderer *renderer, int level, bool ghostTetromino)
     if (x >= settingButtonX && x <= settingButtonX + SettingButton.getWidth() & y >= settingButtonY && y <= settingButtonY + SettingButton.getHeight()){
         SettingButton2.render(renderer, settingButtonX, settingButtonY);
     }
+
+    About.render(renderer, 0, SCREEN_HEIGHT - About.getHeight());
 }
 
 bool Menu:: click_play(SDL_Event &e)
@@ -179,6 +185,15 @@ bool Menu :: click_vsCom(SDL_Event &e){
     }
     return false;
 
+}
+
+bool Menu :: click_About(SDL_Event &e){
+    int x, y;
+    SDL_GetMouseState(&x, &y);
+    if (e.type == SDL_MOUSEBUTTONDOWN && x >= 0 && x <= About.getWidth() && y >= SCREEN_HEIGHT - About.getHeight() && y <= SCREEN_HEIGHT){
+        return true;
+    }
+    return false;
 }
 
 bool Menu :: get_active()

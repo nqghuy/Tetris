@@ -16,7 +16,7 @@ const int HEIGHT_CELLS = 22;
 const int HIDDEN_ROWS = 2;
 
 //screen dimensions
-const int SCREEN_HEIGHT = 900;
+const int SCREEN_HEIGHT = 870;
 const int SCREEN_WIDTH = 1520;
 
 //the distance between 2 small buttons

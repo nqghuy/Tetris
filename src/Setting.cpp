@@ -2,6 +2,7 @@
 
 Setting :: Setting(){
      active = false;
+     volume = Volume();
 }
 
 Setting :: ~Setting(){
@@ -69,6 +70,10 @@ bool Setting :: load_media(SDL_Renderer *renderer){
      }
      if(!EffectChoice.loadFromRenderedText(renderer, SettingFont, "NONE", {0, 255, 0})){
           cout << "failed to load effect choice text\n";
+          success = false;
+     }
+     if (!volume.load_media(renderer)){
+          cout << "failed to load volume media\n";
           success = false;
      }
      return success;
@@ -402,10 +407,15 @@ void Setting :: display(SDL_Renderer *renderer, int level, bool ghostTetromino, 
 
      display_bold_button(renderer);
 
+     volume.display(renderer);
+
      //draw back button
      backButton.render(renderer, menuRect.x, menuRect.y);
 }
 
+void Setting :: handle_event (SDL_Event &e){
+     volume.handle_event(e);
+}
 
 bool Setting :: get_active(){
      return active;
