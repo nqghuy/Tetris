@@ -39,6 +39,8 @@ Tetromino :: Tetromino (Tetro_Type _TetrominoType, int x, int y, Well &well, Gam
         this->greedy(well);
     }
 
+    UpsideDown = false;
+
 }
 
 Tetromino ::~Tetromino(){}
@@ -60,6 +62,10 @@ void Tetromino :: draw(SDL_Renderer *renderer, Well &well)
 
                 //rect of each tile
                 SDL_Rect rect = {well.get_pos_x(this->x_coordinate) + j * TILE_SIZE, well.get_pos_y(this->y_coordinate) + i * TILE_SIZE , TILE_SIZE, TILE_SIZE};
+
+                if (UpsideDown){
+                    rect.y = SCREEN_HEIGHT - rect.y;
+                }
 
                 //fill rect
                 SDL_RenderFillRect(renderer, &rect);
@@ -92,7 +98,11 @@ void Tetromino :: draw_ghost_tetromino(SDL_Renderer *renderer, Well &well){
                 }
 
                 //rect of each tile
-                SDL_Rect rect = {well.get_pos_x(ghost.x_coordinate) + j * TILE_SIZE, well.get_pos_y(ghost.y_coordinate) + i * TILE_SIZE, TILE_SIZE, TILE_SIZE};
+                SDL_Rect rect = {well.get_pos_x(ghost.x_coordinate) + j * TILE_SIZE, well.get_pos_y(ghost.y_coordinate) + i * TILE_SIZE, TILE_SIZE, TILE_SIZE};\
+
+                if (UpsideDown){
+                    rect.y = SCREEN_HEIGHT - rect.y;
+                }
 
                 //color of this tetromino
                 SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);

@@ -260,6 +260,8 @@ public:
     void set_x_coordinate(int x);
 
 private:
+    bool UpsideDown;
+
     GameMode gameMode;
 
     //false if cannot move down

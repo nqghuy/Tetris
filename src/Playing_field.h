@@ -88,6 +88,8 @@ public:
     //change level
     void set_level(int _level);
 private:
+    bool UpsideDown;
+
     Effect effect;
 
     //the higher level, the faster tetro falls

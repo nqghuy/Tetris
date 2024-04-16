@@ -21,6 +21,7 @@ Well :: Well (int _x, int _y, int _topScore, int _level, Effect _effect)
     lose = false;
     filledLineFrame = 0;
     effect = _effect;
+    UpsideDown = false;
 };
 
 Well :: ~Well()
@@ -40,8 +41,11 @@ void Well :: draw (SDL_Renderer *renderer, GameMode gameMode)
 
    //the well rect
    SDL_Rect rect = {x, y + HIDDEN_ROWS * TILE_SIZE, width, height - HIDDEN_ROWS * TILE_SIZE};
-
-    gWellFrame.render(renderer, x - TILE_SIZE, y + TILE_SIZE);
+    if (UpsideDown){
+        gWellFrame.render(renderer, x - TILE_SIZE, y);
+        rect.h -= TILE_SIZE;
+    }
+    else gWellFrame.render(renderer, x - TILE_SIZE, y + TILE_SIZE);
 
    //fill well with black
    SDL_RenderFillRect(renderer, &rect);
@@ -62,6 +66,10 @@ void Well :: draw (SDL_Renderer *renderer, GameMode gameMode)
                 if(level != MAX_LEVEL || (SDL_GetTicks() / 3000) % 2 == 0){
                     //the rect of each tile
                     SDL_Rect tileRect = {x + i * TILE_SIZE, y + j * TILE_SIZE, TILE_SIZE, TILE_SIZE};
+
+                    if (UpsideDown){
+                        tileRect.y = SCREEN_HEIGHT - tileRect.y;
+                    }
 
                     //file rect
                     SDL_RenderFillRect(renderer, &tileRect);
@@ -114,16 +122,30 @@ void Well :: draw_fade_effect(SDL_Renderer* renderer){
                     //the rect of each tile
                     SDL_Rect tileRect = {x + i * TILE_SIZE, y + line * TILE_SIZE, TILE_SIZE, TILE_SIZE};
 
+                    if (UpsideDown){
+                        tileRect.y = SCREEN_HEIGHT - tileRect.y;
+                    }
+
                     //file rect
                     SDL_RenderFillRect(renderer, &tileRect);
 
-                    lineText[filledLine.size() - 1].render(renderer, x + (width - lineText[filledLine.size() - 1].getWidth()) / 2, y + line * TILE_SIZE);
+                    if (UpsideDown){
+                        lineText[filledLine.size() - 1].render(renderer, x + (width - lineText[filledLine.size() - 1].getWidth()) / 2, SCREEN_HEIGHT - y - line * TILE_SIZE);
+                    }
+                    else {
+                        lineText[filledLine.size() - 1].render(renderer, x + (width - lineText[filledLine.size() - 1].getWidth()) / 2, y + line * TILE_SIZE);
+                    }
                     
                     if ((33 - filledLineFrame) <= 3 * i + 6 ){
                         //shrink the block
                         int dimension = TILE_SIZE / (max(1, (33 - 3 * i - filledLineFrame) % 7));
                         int centerX = x + i * TILE_SIZE + TILE_SIZE / 2;
                         int centerY = y + line * TILE_SIZE + TILE_SIZE / 2;
+
+                        if (UpsideDown){
+                            centerY = SCREEN_HEIGHT - centerY + TILE_SIZE;
+                        }
+
                         int newx = centerX - dimension / 2;
                         int newy = centerY - dimension / 2;
 
@@ -137,7 +159,6 @@ void Well :: draw_fade_effect(SDL_Renderer* renderer){
                         //draw black color border
                         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 100);
                         SDL_RenderDrawRect(renderer, &newTileRect);
-                        // SDL_Delay(100);
                     }
                 }
                 else{
@@ -146,6 +167,10 @@ void Well :: draw_fade_effect(SDL_Renderer* renderer){
 
                     //the rect of each tile
                     SDL_Rect tileRect = {x + i * TILE_SIZE, y + line * TILE_SIZE, TILE_SIZE, TILE_SIZE};
+
+                    if (UpsideDown){
+                        tileRect.y = SCREEN_HEIGHT - tileRect.y;
+                    }
 
                     //file rect
                     SDL_RenderFillRect(renderer, &tileRect);
@@ -191,6 +216,9 @@ void Well :: draw_capcut_effect(SDL_Renderer *renderer){
 
                     //the rect of each tile
                     SDL_Rect tileRect = {x + i * TILE_SIZE, y + line * TILE_SIZE, TILE_SIZE, TILE_SIZE};
+                    if (UpsideDown){
+                        tileRect.y = SCREEN_HEIGHT - tileRect.y;
+                    }
 
                     //file rect
                     SDL_RenderFillRect(renderer, &tileRect);
@@ -205,6 +233,10 @@ void Well :: draw_capcut_effect(SDL_Renderer *renderer){
                     //the rect of each tile
                     SDL_Rect tileRect = {x + i * TILE_SIZE, y + line * TILE_SIZE, TILE_SIZE, TILE_SIZE};
 
+                    if (UpsideDown){
+                        tileRect.y = SCREEN_HEIGHT - tileRect.y;
+                    }
+
                     //file rect
                     SDL_RenderFillRect(renderer, &tileRect);
 
@@ -212,7 +244,13 @@ void Well :: draw_capcut_effect(SDL_Renderer *renderer){
                     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
                     SDL_RenderDrawRect(renderer, &tileRect);
 
-                    lineText[filledLine.size() - 1].render(renderer, x + (width - lineText[filledLine.size() - 1].getWidth()) / 2, y + line * TILE_SIZE);
+                    if (UpsideDown){
+                        lineText[filledLine.size() - 1].render(renderer, x + (width - lineText[filledLine.size() - 1].getWidth()) / 2,SCREEN_HEIGHT - y - line * TILE_SIZE);
+
+                    }
+                    else{
+                        lineText[filledLine.size() - 1].render(renderer, x + (width - lineText[filledLine.size() - 1].getWidth()) / 2, y + line * TILE_SIZE);
+                    }
 
 
                 }
