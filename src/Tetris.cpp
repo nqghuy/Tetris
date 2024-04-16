@@ -54,6 +54,8 @@ LTexture gWinterBackground;
 
 LTexture gAutumnBackground;
 
+LTexture lineText[4];
+
 Tetris :: Tetris(int _level, Theme _theme)
 :   animation()
 {
@@ -236,7 +238,25 @@ bool Tetris :: load_texture(){
         cout << "failed to load setting media\n";
         success = false;
     }
-    
+
+    if (!lineText[0].loadFromRenderedText(renderer, SettingFont, "SINGLE LINE", {255, 255, 255, 255})){
+        cout << "failed to load single line\n";
+        success = false;
+    }
+    if (!lineText[1].loadFromRenderedText(renderer, SettingFont, "DOUBLE LINE", {0, 255, 0, 255})){
+        cout << "failed to load single line\n";
+        success = false;
+    }
+    if (!lineText[2].loadFromRenderedText(renderer, SettingFont, "TRIPLE LINE", {0, 255, 255, 255})){
+        cout << "failed to load single line\n";
+        success = false;
+    }
+    if (!lineText[3].loadFromRenderedText(renderer, SettingFont, "TETRIS", {255, 0, 0, 255})){
+        cout << "failed to load single line\n";
+        success = false;
+    }
+
+
     return success;
 }
 

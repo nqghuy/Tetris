@@ -104,6 +104,8 @@ extern LTexture gWinterBackground;
 
 extern LTexture gAutumnBackground;
 
+extern LTexture lineText[4];
+
 enum Effect{
      None,
      Capcut,

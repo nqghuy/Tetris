@@ -117,6 +117,8 @@ void Well :: draw_fade_effect(SDL_Renderer* renderer){
                     //file rect
                     SDL_RenderFillRect(renderer, &tileRect);
 
+                    lineText[filledLine.size() - 1].render(renderer, x + (width - lineText[filledLine.size() - 1].getWidth()) / 2, y + line * TILE_SIZE);
+                    
                     if ((33 - filledLineFrame) <= 3 * i + 6 ){
                         //shrink the block
                         int dimension = TILE_SIZE / (max(1, (33 - 3 * i - filledLineFrame) % 7));
@@ -210,6 +212,9 @@ void Well :: draw_capcut_effect(SDL_Renderer *renderer){
                     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
                     SDL_RenderDrawRect(renderer, &tileRect);
 
+                    lineText[filledLine.size() - 1].render(renderer, x + (width - lineText[filledLine.size() - 1].getWidth()) / 2, y + line * TILE_SIZE);
+
+
                 }
             }
         }
@@ -294,6 +299,7 @@ void Well :: Unite(Tetromino *t)
                 filledLineFrame = 33;
                 filledLine.push_back(j);
             }
+            
             else{
                 deleted_line(j);
                 j--;

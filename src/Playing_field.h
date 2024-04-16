@@ -16,8 +16,6 @@ public:
     //destructor
     ~Well();
 
-    void load_media(SDL_Renderer *renderer);
-
     //draw the well in the screen
     void draw(SDL_Renderer *renderer, GameMode gameMode = SinglePlay);
 

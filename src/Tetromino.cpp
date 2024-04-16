@@ -59,7 +59,7 @@ void Tetromino :: draw(SDL_Renderer *renderer, Well &well)
                 SDL_SetRenderDrawColor(renderer, TetrominoColor.r, TetrominoColor. g, TetrominoColor.b, 255);
 
                 //rect of each tile
-                SDL_Rect rect = {well.get_pos_x(this->x_coordinate) + j * TILE_SIZE, well.get_pos_y(this->y_coordinate) + i * TILE_SIZE, TILE_SIZE, TILE_SIZE};
+                SDL_Rect rect = {well.get_pos_x(this->x_coordinate) + j * TILE_SIZE, well.get_pos_y(this->y_coordinate) + i * TILE_SIZE , TILE_SIZE, TILE_SIZE};
 
                 //fill rect
                 SDL_RenderFillRect(renderer, &rect);
