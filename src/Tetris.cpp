@@ -56,6 +56,8 @@ LTexture gAutumnBackground;
 
 LTexture lineText[4];
 
+LTexture MysteryBoxTexture;
+
 Tetris :: Tetris(int _level, Theme _theme)
 :   animation()
 {
@@ -256,8 +258,11 @@ bool Tetris :: load_texture(){
         cout << "failed to load single line\n";
         success = false;
     }
-
-
+    if (!MysteryBoxTexture.loadFromFile(renderer, "Assets/Pictures/mystery_box.png", {0, 255, 255})){
+        cout << "failed to load MysteryBox";
+        success = false;
+    }
+    
     return success;
 }
 

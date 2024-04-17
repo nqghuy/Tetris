@@ -106,6 +106,8 @@ extern LTexture gAutumnBackground;
 
 extern LTexture lineText[4];
 
+extern LTexture MysteryBoxTexture;
+
 enum Effect{
      None,
      Capcut,
@@ -127,6 +129,15 @@ enum Theme{
 enum Mode{
      Normal,
      UpsideDown
+};
+
+const int MAX_MYSTERY_BOX_TYPE = 4;
+
+enum Mystery_Box{
+     Nothing,
+     SpeedUp,
+     SlowDown,
+     Erosion
 };
 
 //ascending level text 

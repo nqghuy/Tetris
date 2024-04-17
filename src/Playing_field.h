@@ -89,6 +89,18 @@ public:
     void set_level(int _level);
 
     void set_mode (Mode _mode);
+
+    void setBoxPosition();
+
+    bool check_box_appearance_condition();
+
+    bool get_speed_up();
+
+    bool get_slow_down();
+
+    void erosion();
+
+    bool get_erosion();
 private:
     Mode mode;
 
@@ -121,6 +133,13 @@ private:
 
     //the line need deleting
     vector <int> filledLine;
+
+    int BoxX, BoxY;
+    int BoxStartTime;
+    int BoxLiveTime;
+    bool BoxActive;
+    int effectivenessTime;
+    Mystery_Box mystery_box;
 };
 
 #endif

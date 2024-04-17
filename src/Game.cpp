@@ -10,7 +10,6 @@ Game::Game(SDL_Renderer *renderer, GameMode _gameMode, int _level, bool _ghostTe
       //initialize tetromino
     tetromino(Tetro_Type(rand() % 7), WIDE_CELLS / 2 - 1, 0, well, _gameMode), quit(true),
     nextTetromino(Tetro_Type(rand() % 7), WIDE_CELLS / 2 - 1, 0, well, _gameMode), lose(false)
-
       {
         mode = Normal;
         gameMode = _gameMode;
@@ -28,6 +27,7 @@ Game::Game(SDL_Renderer *renderer, GameMode _gameMode, int _level, bool _ghostTe
         if(_gameMode == Bot){
             tetromino.greedy(well);
         }
+
         //random next tetro type
         nextTetromino = Tetromino(nextTetromino.get_random_type(tetromino), WIDE_CELLS / 2 - 1, 0, well, _gameMode, mode);
 
@@ -166,8 +166,14 @@ void Game :: update(){
         else{
             moveTime += 200;
         }
+        if (well.get_speed_up()){
+            moveTime -= (MAX_LEVEL - level) * 100;
+        }
+        else if (well.get_slow_down()){
+            moveTime += level * 200;
+        }
     }
-
+    
 
     if (!tetromino.get_active()){
         //new tetrimino

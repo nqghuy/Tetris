@@ -22,6 +22,13 @@ Well :: Well (int _x, int _y, int _topScore, int _level, Effect _effect, Mode _m
     filledLineFrame = 0;
     effect = _effect;
     mode = _mode;
+
+    BoxX = BoxY = 0;
+    BoxLiveTime = 20000;
+    BoxStartTime = effectivenessTime = SDL_GetTicks();
+    BoxActive = false;
+
+    mystery_box = Nothing;
 };
 
 Well :: ~Well()
@@ -86,6 +93,16 @@ void Well :: draw (SDL_Renderer *renderer, GameMode gameMode)
         }
     }
 
+    if (!BoxActive){
+        this->check_box_appearance_condition();
+    }
+    else{
+        MysteryBoxTexture.render(renderer, this->get_pos_x(BoxX), this->get_pos_y(BoxY));
+        if (SDL_GetTicks() - BoxStartTime >= 20000){
+            BoxActive = false;
+        }
+    }
+
     //draw deleting line according to effect
     if(effect == Capcut){
         draw_capcut_effect(renderer);
@@ -93,6 +110,14 @@ void Well :: draw (SDL_Renderer *renderer, GameMode gameMode)
     else if (effect == Fade){
         draw_fade_effect(renderer);
     }
+    
+    if (filledLineFrame == 0 && get_erosion()){
+        erosion();
+        cout << "hello\n";
+    }
+    // if (get_erosion() && filledLineFrame == 0){
+    //     erosion();
+    // }
 
     //draw score
     score.draw(renderer, *this, ScoreFont);
@@ -109,6 +134,7 @@ void Well :: draw_fade_effect(SDL_Renderer* renderer){
             deleted_line(i);
         }
     }
+
     if (filledLineFrame != 0){
         for (int line : filledLine){
             for (int i = 0; i < WIDE_CELLS; i++){
@@ -337,7 +363,6 @@ void Well :: Unite(Tetromino *t)
                 filledLineFrame = 33;
                 filledLine.push_back(j);
             }
-            
             else{
                 deleted_line(j);
                 j--;
@@ -380,7 +405,18 @@ void Well :: deleted_line(int line)
         for (int i = 0; i < WIDE_CELLS; i++){
             matrix[i][j] = matrix[i][j - 1];
             cell_colors[i][j] = cell_colors[i][j - 1];
+        }   
+    }
+    if (line == BoxY){
+        BoxActive = false;
+        mystery_box = Mystery_Box(rand() % (MAX_MYSTERY_BOX_TYPE - 1) + 1);
+        effectivenessTime = SDL_GetTicks();
+    }
+    if (line >= BoxY){
+            BoxY++;
         }
+    if (!matrix[BoxX][BoxY]){
+        BoxActive = false;
     }
 }
 
@@ -524,4 +560,54 @@ void Well :: save_file(fstream &saveFile){
 
     //save score
     saveFile << score.get_current_score() << " " << score.get_top_score();
+}
+
+bool Well :: check_box_appearance_condition(){
+    vector <pair <int, int>> blocks;
+    for (int i = 0; i < WIDE_CELLS; i++){
+        for (int j = 0; j < HEIGHT_CELLS; j++){
+            if (matrix[i][j]){
+                blocks.push_back({i, j});
+            }
+        }
+    }
+    if (blocks.size() >= 20){
+        BoxActive = true;
+        pair <int, int> coordinate = blocks[rand() % blocks.size()];
+        BoxX = coordinate.first;
+        BoxY = coordinate.second;
+        BoxStartTime = SDL_GetTicks();
+        return true;
+    }
+    return false;
+}
+
+bool Well :: get_speed_up(){
+    return mystery_box == SpeedUp && (SDL_GetTicks() - effectivenessTime) <= 5000; 
+}
+
+bool Well :: get_slow_down(){
+    return mystery_box == SlowDown && (SDL_GetTicks() - effectivenessTime) <= 5000; 
+}
+
+bool Well :: get_erosion(){
+    return mystery_box == Erosion && (SDL_GetTicks() - effectivenessTime) <= 5000; 
+}
+
+void Well :: erosion(){
+    vector <pair <int, int>> blocks;
+    for (int i = 0; i < WIDE_CELLS; i++){
+        for (int j = 0; j < HEIGHT_CELLS; j++){
+            if (matrix[i][j]){
+                blocks.push_back({i, j});
+            }
+        }
+    }
+    for (int i = 0; i < min(5, (int)blocks.size()); i++){
+        pair <int, int> block = blocks[rand() % blocks.size()];
+        matrix[block.first][block.second] = false;
+        cell_colors[block.first][block.second] = {0, 0, 0};
+
+    }
+    mystery_box = Nothing;
 }
