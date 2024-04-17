@@ -1,7 +1,7 @@
 #include "Playing_field.h"
 #include <bits/stdc++.h>
 
-Well :: Well (int _x, int _y, int _topScore, int _level, Effect _effect)
+Well :: Well (int _x, int _y, int _topScore, int _level, Effect _effect, Mode _mode)
 :   score(_topScore)
 {
     x = _x;
@@ -21,7 +21,7 @@ Well :: Well (int _x, int _y, int _topScore, int _level, Effect _effect)
     lose = false;
     filledLineFrame = 0;
     effect = _effect;
-    UpsideDown = false;
+    mode = _mode;
 };
 
 Well :: ~Well()
@@ -41,7 +41,7 @@ void Well :: draw (SDL_Renderer *renderer, GameMode gameMode)
 
    //the well rect
    SDL_Rect rect = {x, y + HIDDEN_ROWS * TILE_SIZE, width, height - HIDDEN_ROWS * TILE_SIZE};
-    if (UpsideDown){
+    if (mode == UpsideDown){
         gWellFrame.render(renderer, x - TILE_SIZE, y);
         rect.h -= TILE_SIZE;
     }
@@ -67,7 +67,7 @@ void Well :: draw (SDL_Renderer *renderer, GameMode gameMode)
                     //the rect of each tile
                     SDL_Rect tileRect = {x + i * TILE_SIZE, y + j * TILE_SIZE, TILE_SIZE, TILE_SIZE};
 
-                    if (UpsideDown){
+                    if (mode == UpsideDown){
                         tileRect.y = SCREEN_HEIGHT - tileRect.y;
                     }
 
@@ -122,14 +122,14 @@ void Well :: draw_fade_effect(SDL_Renderer* renderer){
                     //the rect of each tile
                     SDL_Rect tileRect = {x + i * TILE_SIZE, y + line * TILE_SIZE, TILE_SIZE, TILE_SIZE};
 
-                    if (UpsideDown){
+                    if (mode == UpsideDown){
                         tileRect.y = SCREEN_HEIGHT - tileRect.y;
                     }
 
                     //file rect
                     SDL_RenderFillRect(renderer, &tileRect);
 
-                    if (UpsideDown){
+                    if (mode == UpsideDown){
                         lineText[filledLine.size() - 1].render(renderer, x + (width - lineText[filledLine.size() - 1].getWidth()) / 2, SCREEN_HEIGHT - y - line * TILE_SIZE);
                     }
                     else {
@@ -142,7 +142,7 @@ void Well :: draw_fade_effect(SDL_Renderer* renderer){
                         int centerX = x + i * TILE_SIZE + TILE_SIZE / 2;
                         int centerY = y + line * TILE_SIZE + TILE_SIZE / 2;
 
-                        if (UpsideDown){
+                        if (mode == UpsideDown){
                             centerY = SCREEN_HEIGHT - centerY + TILE_SIZE;
                         }
 
@@ -168,7 +168,7 @@ void Well :: draw_fade_effect(SDL_Renderer* renderer){
                     //the rect of each tile
                     SDL_Rect tileRect = {x + i * TILE_SIZE, y + line * TILE_SIZE, TILE_SIZE, TILE_SIZE};
 
-                    if (UpsideDown){
+                    if (mode == UpsideDown){
                         tileRect.y = SCREEN_HEIGHT - tileRect.y;
                     }
 
@@ -216,7 +216,7 @@ void Well :: draw_capcut_effect(SDL_Renderer *renderer){
 
                     //the rect of each tile
                     SDL_Rect tileRect = {x + i * TILE_SIZE, y + line * TILE_SIZE, TILE_SIZE, TILE_SIZE};
-                    if (UpsideDown){
+                    if (mode == UpsideDown){
                         tileRect.y = SCREEN_HEIGHT - tileRect.y;
                     }
 
@@ -233,7 +233,7 @@ void Well :: draw_capcut_effect(SDL_Renderer *renderer){
                     //the rect of each tile
                     SDL_Rect tileRect = {x + i * TILE_SIZE, y + line * TILE_SIZE, TILE_SIZE, TILE_SIZE};
 
-                    if (UpsideDown){
+                    if (mode == UpsideDown){
                         tileRect.y = SCREEN_HEIGHT - tileRect.y;
                     }
 
@@ -244,7 +244,7 @@ void Well :: draw_capcut_effect(SDL_Renderer *renderer){
                     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
                     SDL_RenderDrawRect(renderer, &tileRect);
 
-                    if (UpsideDown){
+                    if (mode == UpsideDown){
                         lineText[filledLine.size() - 1].render(renderer, x + (width - lineText[filledLine.size() - 1].getWidth()) / 2,SCREEN_HEIGHT - y - line * TILE_SIZE);
 
                     }
@@ -453,6 +453,10 @@ bool Well :: return_home(SDL_Event &e){
 
 void Well :: set_effect(Effect _effect){
     effect = _effect;
+}
+
+void Well :: set_mode (Mode _mode){
+    mode = _mode;
 }
 
 void Well :: load_file(fstream &saveFile){

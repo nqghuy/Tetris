@@ -17,7 +17,7 @@ public:
      bool get_active();
 
      //ready to battle
-     void set_active(int _level, bool _ghostTetromino, Effect _effect);
+     void set_active(int _level, bool _ghostTetromino, Effect _effect, Mode _mode);
 
      //handle event
      void handle_event(SDL_Renderer *renderer, SDL_Event &e);

@@ -124,6 +124,11 @@ enum Theme{
      Autumn
 };
 
+enum Mode{
+     Normal,
+     UpsideDown
+};
+
 //ascending level text 
 const string LevelText[MAX_LEVEL] = {"EASY", "MEDIUM", "HARD", "ULTRA HARD"};
 

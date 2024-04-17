@@ -4,7 +4,7 @@
 #include <math.h>
 using namespace std;
 
-Tetromino :: Tetromino (Tetro_Type _TetrominoType, int x, int y, Well &well, GameMode _gameMode)
+Tetromino :: Tetromino (Tetro_Type _TetrominoType, int x, int y, Well &well, GameMode _gameMode, Mode _mode)
 {
     gameMode = gameMode;
 
@@ -39,7 +39,7 @@ Tetromino :: Tetromino (Tetro_Type _TetrominoType, int x, int y, Well &well, Gam
         this->greedy(well);
     }
 
-    UpsideDown = false;
+    mode = _mode;
 
 }
 
@@ -63,7 +63,7 @@ void Tetromino :: draw(SDL_Renderer *renderer, Well &well)
                 //rect of each tile
                 SDL_Rect rect = {well.get_pos_x(this->x_coordinate) + j * TILE_SIZE, well.get_pos_y(this->y_coordinate) + i * TILE_SIZE , TILE_SIZE, TILE_SIZE};
 
-                if (UpsideDown){
+                if (mode == UpsideDown){
                     rect.y = SCREEN_HEIGHT - rect.y;
                 }
 
@@ -100,7 +100,7 @@ void Tetromino :: draw_ghost_tetromino(SDL_Renderer *renderer, Well &well){
                 //rect of each tile
                 SDL_Rect rect = {well.get_pos_x(ghost.x_coordinate) + j * TILE_SIZE, well.get_pos_y(ghost.y_coordinate) + i * TILE_SIZE, TILE_SIZE, TILE_SIZE};\
 
-                if (UpsideDown){
+                if (mode == UpsideDown){
                     rect.y = SCREEN_HEIGHT - rect.y;
                 }
 
@@ -664,6 +664,10 @@ void Tetromino :: greedy(Well& well){
 
 void Tetromino :: set_x_coordinate(int x){
     x_coordinate = x;
+}
+
+void Tetromino :: set_mode(Mode _mode){
+    mode = _mode;
 }
 
 int Tetromino :: get_expected_value(int x, int _angle, Well &well){

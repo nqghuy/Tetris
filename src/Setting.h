@@ -32,6 +32,9 @@ public:
     //set active
     void set_active();
 
+    //show mode setting
+    void display_mode(SDL_Renderer *renderer, Mode mode);
+
     //show level setting
     void display_level(SDL_Renderer *renderer, int level);
 
@@ -52,9 +55,12 @@ public:
     //change effect
     bool click_right_change_effect(SDL_Event &e);
     bool click_left_change_effect(SDL_Event &e);
+
+    //change mode
+    bool click_change_mode(SDL_Event &e);
     
     //display all
-    void display(SDL_Renderer *renderer, int level, bool ghostTetromino, Theme theme, Effect effect);
+    void display(SDL_Renderer *renderer, int level, bool ghostTetromino, Theme theme, Effect effect, Mode mode);
 
     //show bold button if mouse is in any button
     void display_bold_button(SDL_Renderer *renderer);
@@ -79,8 +85,15 @@ private:
     LTexture AutumnText;
     LTexture EffectText;
     LTexture EffectChoice;
+    LTexture ModeText;
+    LTexture ModeChoice;
 
     Volume volume;
+
+    int TextX;
+    int LeftButtonX;
+    int RightButtonX;
+    int y_coordinate;
 
     bool active;
 

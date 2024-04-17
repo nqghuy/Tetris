@@ -41,7 +41,7 @@ public:
     bool get_lose();
 
     //game is ready to play
-    void set_active(int _level, bool ghostTetromino, Effect _effect);
+    void set_active(int _level, bool ghostTetromino, Effect _effect, Mode _mode);
 
     //set move time equal to current time
     void set_time();
@@ -60,6 +60,9 @@ public:
 
     void reset();
 private:
+    //do you want to play upside down world
+    Mode mode;
+
     //true if present ghost tetromino
     bool ghostTetromino;
 

@@ -181,7 +181,7 @@ class Tetromino
 {
 public:
     //constructor, x, y is the position
-    Tetromino(Tetro_Type _TetrominoType, int x, int y, Well &well, GameMode _gameMode = SinglePlay);
+    Tetromino(Tetro_Type _TetrominoType, int x, int y, Well &well, GameMode _gameMode = SinglePlay, Mode _mode = Normal);
 
     //destructor
     ~Tetromino();
@@ -259,8 +259,10 @@ public:
     //change x coordinate
     void set_x_coordinate(int x);
 
+    void set_mode(Mode _mode);
+
 private:
-    bool UpsideDown;
+    Mode mode;
 
     GameMode gameMode;
 

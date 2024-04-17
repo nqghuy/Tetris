@@ -11,7 +11,7 @@ class Well
 {
 public:
     //constructor
-    Well(int _x, int _y, int _topScore, int _level, Effect _effect = None);
+    Well(int _x, int _y, int _topScore, int _level, Effect _effect = None, Mode _mode = Normal);
 
     //destructor
     ~Well();
@@ -87,8 +87,10 @@ public:
 
     //change level
     void set_level(int _level);
+
+    void set_mode (Mode _mode);
 private:
-    bool UpsideDown;
+    Mode mode;
 
     Effect effect;
 

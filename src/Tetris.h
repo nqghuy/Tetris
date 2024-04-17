@@ -58,6 +58,8 @@ public:
     void save_file();
     
 private:
+    Mode mode;
+
     //effect when deleting line(s)
     Effect effect;
 
