@@ -113,7 +113,6 @@ void Well :: draw (SDL_Renderer *renderer, GameMode gameMode)
     
     if (filledLineFrame == 0 && get_erosion()){
         erosion();
-        cout << "hello\n";
     }
     // if (get_erosion() && filledLineFrame == 0){
     //     erosion();
@@ -563,6 +562,9 @@ void Well :: save_file(fstream &saveFile){
 }
 
 bool Well :: check_box_appearance_condition(){
+    if (mode != MindBender){
+        return false;
+    }
     vector <pair <int, int>> blocks;
     for (int i = 0; i < WIDE_CELLS; i++){
         for (int j = 0; j < HEIGHT_CELLS; j++){

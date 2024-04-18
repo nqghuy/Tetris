@@ -57,7 +57,8 @@ public:
     bool click_left_change_effect(SDL_Event &e);
 
     //change mode
-    bool click_change_mode(SDL_Event &e);
+    bool click_right_change_mode(SDL_Event &e);
+    bool click_left_change_mode(SDL_Event &e);
     
     //display all
     void display(SDL_Renderer *renderer, int level, bool ghostTetromino, Theme theme, Effect effect, Mode mode);

@@ -270,10 +270,25 @@ bool Setting :: click_right_change_effect(SDL_Event &e){
     return false;
 }
 
-bool Setting :: click_change_mode(SDL_Event &e){
+bool Setting :: click_right_change_mode(SDL_Event &e){
      //right button
      int rightButtonX = RightButtonX;
      int rightButtonY = y_coordinate + LevelButton.getHeight() * 4;
+
+     //the position of mouse
+     int x, y;
+
+     //get mouse position
+     SDL_GetMouseState(&x, &y);
+
+     //if player choses changeing ghost tetromino
+     if (x >= rightButtonX && x <= rightButtonX + RightButton.getWidth() && y >= rightButtonY && y <= rightButtonY + RightButton.getHeight() && e.type == SDL_MOUSEBUTTONDOWN){
+        return true;
+     }
+     return false;
+}
+
+bool Setting :: click_left_change_mode(SDL_Event &e){
 
      //left button
      int leftButtonX = LeftButtonX - LeftButton.getWidth();
@@ -285,11 +300,7 @@ bool Setting :: click_change_mode(SDL_Event &e){
      //get mouse position
      SDL_GetMouseState(&x, &y);
 
-    //if player choses changeing ghost tetromino
-     if (x >= rightButtonX && x <= rightButtonX + RightButton.getWidth() && y >= rightButtonY && y <= rightButtonY + RightButton.getHeight() && e.type == SDL_MOUSEBUTTONDOWN){
-        return true;
-     }
-     else if (x >= leftButtonX && x <= leftButtonX + LeftButton.getWidth() && y >= leftButtonY && y <= leftButtonY + LeftButton.getHeight() && e.type == SDL_MOUSEBUTTONDOWN){
+     if (x >= leftButtonX && x <= leftButtonX + LeftButton.getWidth() && y >= leftButtonY && y <= leftButtonY + LeftButton.getHeight() && e.type == SDL_MOUSEBUTTONDOWN){
           return true;
      }
      return false;
@@ -390,7 +401,10 @@ void Setting :: display_mode(SDL_Renderer *renderer, Mode mode){
           ModeChoice.loadFromRenderedText(renderer, SettingFont, "NORMAL", {50, 50, 50});
      }
      else if (mode == UpsideDown){
-          ModeChoice.loadFromRenderedText(renderer, SettingFont, "UPSIDE DOWN", {25, 50, 75});
+          ModeChoice.loadFromRenderedText(renderer, SettingFont, "UPSIDE DOWN", {125, 50, 75});
+     }
+     else if (mode == MindBender){
+          ModeChoice.loadFromRenderedText(renderer, SettingFont, "MIND BENDER", {0, 150, 250});
      }
 
      ModeChoice.render(renderer, LeftButtonX  + (MenuBackground.getWidth() / 2 - ModeChoice.getWidth()) / 2 , y_coordinate + EffectChoice.getHeight() * 4);

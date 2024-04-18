@@ -609,11 +609,27 @@ void Tetris :: setting_handle_event(SDL_Event &e){
             break;
         }
     }
-    else if (setting->click_change_mode(e)){
+    else if (setting->click_left_change_mode(e)){
+        if (mode == Normal){
+            mode = MindBender;
+        }
+        else if (mode == UpsideDown){
+            mode = Normal;
+        }
+        else if (mode == MindBender){
+            mode = UpsideDown;
+        }
+    }
+    else if (setting->click_right_change_mode(e)){
         if (mode == Normal){
             mode = UpsideDown;
         }
-        else mode = Normal;
+        else if (mode == UpsideDown){
+            mode = MindBender;
+        }
+        else if (mode == MindBender){
+            mode = Normal;
+        }
     }
 }
 

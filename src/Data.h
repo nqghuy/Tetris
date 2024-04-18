@@ -128,7 +128,8 @@ enum Theme{
 
 enum Mode{
      Normal,
-     UpsideDown
+     UpsideDown,
+     MindBender
 };
 
 const int MAX_MYSTERY_BOX_TYPE = 4;
