@@ -58,6 +58,8 @@ LTexture lineText[4];
 
 LTexture MysteryBoxTexture;
 
+LTexture MysteryBoxType;
+
 Tetris :: Tetris(int _level, Theme _theme)
 :   animation()
 {
@@ -260,6 +262,10 @@ bool Tetris :: load_texture(){
     }
     if (!MysteryBoxTexture.loadFromFile(renderer, "Assets/Pictures/mystery_box.png", {0, 255, 255})){
         cout << "failed to load MysteryBox";
+        success = false;
+    }
+    if (!MysteryBoxType.loadFromRenderedText(renderer, SettingFont, "Speep Up", {255, 0, 0})){
+        cout << "failed to load mystery box type text\n";
         success = false;
     }
     

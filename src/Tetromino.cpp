@@ -827,7 +827,7 @@ int Tetromino :: get_expected_value(int x, int _angle, Well &well){
     //the final inaccessible space
     int inaccessibleSpace = max(0, new_innaccessible_space - old_innaccessible_space);
 
-    return (ghost.y_coordinate + lowestRow) * 3 + blockInBottomRow - sqrt(inaccessibleSpace * 10) * 3 - highestRow + highestRow2 * 1.5 + filledRow * 1.5 + ghost.y_coordinate;
+    return (ghost.y_coordinate + lowestRow) * 3 + blockInBottomRow - sqrt(inaccessibleSpace * 10) * 3 - highestRow + highestRow2 * 1.5 + filledRow * 3 + ghost.y_coordinate;
 
     // return {0, 0};
 }

@@ -108,6 +108,8 @@ extern LTexture lineText[4];
 
 extern LTexture MysteryBoxTexture;
 
+extern LTexture MysteryBoxType;
+
 enum Effect{
      None,
      Capcut,
@@ -132,14 +134,19 @@ enum Mode{
      MindBender
 };
 
-const int MAX_MYSTERY_BOX_TYPE = 4;
+const int MAX_MYSTERY_BOX_TYPE = 7;
 
 enum Mystery_Box{
      Nothing,
      SpeedUp,
      SlowDown,
-     Erosion
+     Erosion,
+     Twist,
+     Fission,
+     Turn
 };
+
+const string MysteryBoxTypeText[MAX_MYSTERY_BOX_TYPE] = {"NOTHING", "SPEED UP", "SLOW DOWN", "EROSION", "TWIST", "FISSION", "TURN"};
 
 //ascending level text 
 const string LevelText[MAX_LEVEL] = {"EASY", "MEDIUM", "HARD", "ULTRA HARD"};

@@ -56,7 +56,7 @@ void Game :: reset(){
     int _topScore = max(well.get_current_score(), well.get_top_score());
 
     //reset well
-    well = Well(well.get_x(), well.get_y(), _topScore, this->level, effect);
+    well = Well(well.get_x(), well.get_y(), _topScore, this->level, effect, mode);
 
     //reset tetromino
     tetromino = Tetromino(nextTetromino.get_tetro_type(), WIDE_CELLS / 2 - 1, 0, well, gameMode, mode);
@@ -170,7 +170,7 @@ void Game :: update(){
             moveTime -= (MAX_LEVEL - level) * 100;
         }
         else if (well.get_slow_down()){
-            moveTime += level * 200;
+            moveTime += level * 300;
         }
     }
     

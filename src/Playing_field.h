@@ -100,7 +100,19 @@ public:
 
     void erosion();
 
+    void twist();
+
     bool get_erosion();
+
+    bool get_twist();
+
+    bool get_fission();
+
+    void fission();
+
+    bool get_turn();
+
+    void turn();
 private:
     Mode mode;
 
@@ -140,6 +152,8 @@ private:
     bool BoxActive;
     int effectivenessTime;
     Mystery_Box mystery_box;
+
+    int type;
 };
 
 #endif
