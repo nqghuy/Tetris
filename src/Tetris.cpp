@@ -136,7 +136,7 @@ bool Tetris :: init(const char *title, int x, int y, int w, int h)
                 }
 
                 //initialize SDL mixer
-                if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 3, 2048) < 0){
+                if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 4, 2048) < 0){
                     cout << "failed to initialize sdl mixed. ERROR: " << Mix_GetError() << endl;
                     success = false;
                 }
@@ -516,7 +516,13 @@ void Tetris :: free_texture(){
     //free board
     gWinterBoard.free();
     gAutumnBoard.free();
-
+    MysteryBoxTexture.free();
+    MysteryBoxType.free();
+    ScanTexture.free();
+    
+    for (int i = 0; i < 4; i++){
+        lineText[i].free();
+    }
 }
 
 void Tetris :: free_music(){
@@ -608,6 +614,8 @@ void Tetris :: setting_handle_event(SDL_Event &e){
             break;
         }
     }
+    
+    //change effect
     else if (setting->click_right_change_effect(e)){
         switch (effect)
         {
@@ -622,6 +630,8 @@ void Tetris :: setting_handle_event(SDL_Event &e){
             break;
         }
     }
+
+    //change mode
     else if (setting->click_left_change_mode(e)){
         if (mode == Normal){
             mode = MindBender;
@@ -717,6 +727,19 @@ void Tetris :: load_file(){
         effect = Fade;
     }
 
+    //load mode
+    string _mode;
+    saveFile >> _mode;
+    if (_mode == "Normal"){
+        mode = Normal;
+    }
+    else if (_mode == "UpsideDown"){
+        mode = UpsideDown;
+    }
+    else if (_mode == "MindBender"){
+        mode = MindBender;
+    }
+
     //load state(menu, game, battle)
     string state;
     saveFile >> state;
@@ -768,6 +791,21 @@ void Tetris :: save_file(){
             saveFile << "Fade\n";
             break;
     }
+
+    //save mode
+    switch (mode)
+    {
+    case Normal:
+        saveFile << "Normal\n";
+        break;
+    case UpsideDown:
+        saveFile << "UpsideDown\n";
+        break;
+    case MindBender:
+        saveFile << "MindBender\n";
+        break;
+    }
+
     //save state
     if (menu->get_active() || setting->get_active()){
         saveFile << "menu\n";

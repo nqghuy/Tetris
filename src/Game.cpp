@@ -184,6 +184,7 @@ void Game :: update(){
         //if lose game
         if (tetromino.check_bottom_collision(well)){
             well.set_lose();
+            Mix_PlayChannel(-1, gLoseSoundEffect, 0);
         }
 
         //remove all events
@@ -276,17 +277,23 @@ bool Game :: get_lose()
 
 
 void Game :: set_active(int _level, bool _ghostTetromino, Effect _effect, Mode _mode)
-{   
+{      
+    //set timer to drop tetormino
     timer = SDL_GetTicks();
+
+    //3 2 1 before playing
     preparation = true;
 
+    //setting
     level = _level;
     ghostTetromino = _ghostTetromino;
     mode = _mode;
 
+    //setting for well
     well.set_level(_level);
     effect = _effect;
     
+    //set effect and mode for tetromino
     well.set_effect(_effect);
     well.set_mode(_mode);
     tetromino.set_mode(mode);

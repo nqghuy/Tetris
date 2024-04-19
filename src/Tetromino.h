@@ -262,8 +262,10 @@ public:
     void set_mode(Mode _mode);
 
 private:
+    //normal, upside down or mind bender
     Mode mode;
 
+    //single, player1 or 2 or bot
     GameMode gameMode;
 
     //false if cannot move down

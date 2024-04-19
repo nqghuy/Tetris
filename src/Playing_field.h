@@ -88,34 +88,37 @@ public:
     //change level
     void set_level(int _level);
 
+    //change mode
     void set_mode (Mode _mode);
 
-    void setBoxPosition();
-
+    //check if box can appeara and set position
     bool check_box_appearance_condition();
 
+    //check mystery box type
     bool get_speed_up();
-
     bool get_slow_down();
-
-    void erosion();
-
-    void twist();
-
     bool get_erosion();
-
     bool get_twist();
-
     bool get_fission();
-
-    void fission();
-
     bool get_turn();
 
+
+    //delete some random blocks
+    void erosion();
+
+    //swap blocks in two side
+    void twist();
+
+    //blocks will move to two sides
+    void fission();
+
+    //turn the well
     void turn();
 private:
+    //normal, upside down or mind bender
     Mode mode;
 
+    //what type of effect
     Effect effect;
 
     //the higher level, the faster tetro falls
@@ -146,13 +149,25 @@ private:
     //the line need deleting
     vector <int> filledLine;
 
+    //the position of the box
     int BoxX, BoxY;
+
+    //the time box appear
     int BoxStartTime;
+
+    //2s
     int BoxLiveTime;
+
+    //if box appear or not
     bool BoxActive;
+
+    //5s
     int effectivenessTime;
+
+    //simply mysterybox
     Mystery_Box mystery_box;
 
+    //use to rend text
     int type;
 };
 

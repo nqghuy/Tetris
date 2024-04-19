@@ -58,6 +58,7 @@ public:
     //load lastest game
     void load_file(fstream &saveFile);
 
+    //reset game
     void reset();
 private:
     //do you want to play upside down world

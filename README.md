@@ -146,12 +146,12 @@ Việc hoàn thiện 1 dự án lập trình như thế này giúp em mở mang 
 Bên cạnh đó, em xin cảm ơn bạn Nguyễn Lê Minh đã mang đến ý tưởng về thuật toán chạy con tetris bot. Em xin chân thành cảm ơn thầy đã góp ý về hiệu ứng thêm đối với game. 
 
 Với rất nhiều tính năng để chơi đa dạng như 
-- thế giới ngược, hộp bí ẩn
-- các mức độ khó từ dễ đến tàng hình
-- hiệu ứng đồ họa xuất hiện từ background đến trong khi chơi
-- các tính năng tạm dừng, tiếp tục, chơi lại, quay về menu một cách mượt mà
-- hiệu ứng âm thanh xuất hiện liên tục và có thể điều chỉnh bằng cách bắn đại bác một cách sáng tạo
-- theme thay đổi 2 mùa và bảng pause thay đổi theo theme
+- Thế giới ngược, hộp bí ẩn
+- Các mức độ khó từ dễ đến tàng hình
+- Hiệu ứng đồ họa xuất hiện từ background đến trong khi chơi
+- Các tính năng tạm dừng, tiếp tục, chơi lại, quay về menu một cách mượt mà
+- Hiệu ứng âm thanh xuất hiện liên tục và có thể điều chỉnh bằng cách bắn đại bác một cách sáng tạo
+- Theme thay đổi 2 mùa và bảng pause thay đổi theo theme
 - About và save file
 - 1 con bot tương đối khôn
 - Code tương đối clean với comment đầy đủ (mặc dù tiếng anh của em còn hạn chế)

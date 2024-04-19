@@ -116,7 +116,10 @@ void Well :: draw (SDL_Renderer *renderer, GameMode gameMode)
             turn();
         }
     }
-
+    if (BoxActive && !matrix[BoxX][BoxY]){
+        this->check_box_appearance_condition();
+    }
+    
     if (!BoxActive){
         this->check_box_appearance_condition();
     }
@@ -301,6 +304,11 @@ void Well :: draw_capcut_effect(SDL_Renderer *renderer){
         MysteryBoxType.loadFromRenderedText(renderer, SettingFont, MysteryBoxTypeText[type], {255, 0, 0});
         if (type != 0 && SDL_GetTicks() - BoxStartTime <= 1500){
             MysteryBoxType.render(renderer, x + (width - MysteryBoxType.getWidth()) / 2, y + (height - MysteryBoxType.getHeight()) / 2);
+
+            int ScanY = height - (height - y) / 33 * (33 - filledLineFrame);
+            int ScanOpacity = 200 / 33 * (filledLineFrame);
+            ScanTexture.setAlphaMode(ScanOpacity);
+            ScanTexture.render(renderer, x , ScanY);
         }
     }
     
@@ -592,9 +600,12 @@ void Well :: save_file(fstream &saveFile){
 }
 
 bool Well :: check_box_appearance_condition(){
+    //check if mode is mind bender
     if (mode != MindBender){
         return false;
     }
+
+    //contains all of blocks in well
     vector <pair <int, int>> blocks;
     for (int i = 0; i < WIDE_CELLS; i++){
         for (int j = 0; j < HEIGHT_CELLS; j++){
@@ -603,8 +614,12 @@ bool Well :: check_box_appearance_condition(){
             }
         }
     }
+
+    //if there is enough blocks
     if (blocks.size() >= 20){
         BoxActive = true;
+
+        //random block
         pair <int, int> coordinate = blocks[rand() % blocks.size()];
         BoxX = coordinate.first;
         BoxY = coordinate.second;
@@ -639,8 +654,11 @@ bool Well :: get_turn(){
 }
 
 void Well :: fission(){
+    //fission left side
     for (int j = 0; j < HEIGHT_CELLS; j++){
+        //the first position
         int pointer = 0;
+
         for (int i = 0; i < WIDE_CELLS / 2; i++){
             if (matrix[i][j]){
                 SDL_Color tmp = cell_colors[i][j];
@@ -652,8 +670,12 @@ void Well :: fission(){
             }
         }
     }
+
+    //fission right side
     for (int j = 0; j < HEIGHT_CELLS; j++){
+        //the last position
         int pointer = WIDE_CELLS - 1;
+
         for (int i = WIDE_CELLS - 1; i >= WIDE_CELLS / 2; i--){
             if (matrix[i][j]){
                 SDL_Color tmp = cell_colors[i][j];
@@ -665,21 +687,23 @@ void Well :: fission(){
             }
         }
     }
+    //change type box
     mystery_box = Nothing;
 }
 
 void Well :: twist(){
     for (int i = 0; i < WIDE_CELLS / 2; i++){
         for (int j = 0; j < HEIGHT_CELLS; j++){
+            //swap blocks
             swap(matrix[i][j], matrix[WIDE_CELLS - i - 1][j]);
             swap(cell_colors[i][j], cell_colors[WIDE_CELLS - i - 1][j]);
         }
     }
-    // cout << "hello\n";
     mystery_box = Nothing;
 }
 
 void Well :: erosion(){
+    //contains all blocks
     vector <pair <int, int>> blocks;
     for (int i = 0; i < WIDE_CELLS; i++){
         for (int j = 0; j < HEIGHT_CELLS; j++){
@@ -688,6 +712,8 @@ void Well :: erosion(){
             }
         }
     }
+
+    //delete random block
     for (int i = 0; i < min(5, (int)blocks.size()); i++){
         pair <int, int> block = blocks[rand() % blocks.size()];
         matrix[block.first][block.second] = false;
@@ -698,6 +724,7 @@ void Well :: erosion(){
 }
 
 void Well :: turn(){
+    //find highest row
     int peak_row = 0;
     for (int j = 0; j < HEIGHT_CELLS; j++){
         for (int i = 0; i < WIDE_CELLS; i++){
@@ -710,6 +737,7 @@ void Well :: turn(){
         }
     }
 
+    //turn 
     for (int j = peak_row; j <= (HEIGHT_CELLS - 1 + peak_row) / 2; j++){
         for (int i = 0; i < WIDE_CELLS; i++){
             swap(matrix[i][j], matrix[i][HEIGHT_CELLS - 1 - j + peak_row]);
