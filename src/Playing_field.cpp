@@ -94,16 +94,6 @@ void Well :: draw (SDL_Renderer *renderer, GameMode gameMode)
         }
     }
 
-    if (!BoxActive){
-        this->check_box_appearance_condition();
-    }
-    else{
-        MysteryBoxTexture.render(renderer, this->get_pos_x(BoxX), this->get_pos_y(BoxY));
-        if (SDL_GetTicks() - BoxStartTime >= 20000){
-            BoxActive = false;
-        }
-    }
-
     //draw deleting line according to effect
     if(effect == Capcut){
         draw_capcut_effect(renderer);
@@ -124,6 +114,16 @@ void Well :: draw (SDL_Renderer *renderer, GameMode gameMode)
         }
         else if (get_turn()){
             turn();
+        }
+    }
+
+    if (!BoxActive){
+        this->check_box_appearance_condition();
+    }
+    else{
+        MysteryBoxTexture.render(renderer, this->get_pos_x(BoxX), this->get_pos_y(BoxY));
+        if (SDL_GetTicks() - BoxStartTime >= 20000){
+            BoxActive = false;
         }
     }
 
@@ -215,10 +215,15 @@ void Well :: draw_fade_effect(SDL_Renderer* renderer){
                 }
             }
         }
+
         MysteryBoxType.loadFromRenderedText(renderer, SettingFont, MysteryBoxTypeText[type], {255, 0, 0});
-        cout << type << " ";
         if (type != 0 && SDL_GetTicks() - BoxStartTime <= 1500){
             MysteryBoxType.render(renderer, x + (width - MysteryBoxType.getWidth()) / 2, y + (height - MysteryBoxType.getHeight()) / 2);
+
+            int ScanY = height - (height - y) / 33 * (33 - filledLineFrame);
+            int ScanOpacity = 200 / 33 * (filledLineFrame);
+            ScanTexture.setAlphaMode(ScanOpacity);
+            ScanTexture.render(renderer, x , ScanY);
         }
     }
 
@@ -294,10 +299,11 @@ void Well :: draw_capcut_effect(SDL_Renderer *renderer){
             }
         }
         MysteryBoxType.loadFromRenderedText(renderer, SettingFont, MysteryBoxTypeText[type], {255, 0, 0});
-        if (type != 0 && (SDL_GetTicks() - BoxStartTime <= 1500)){
+        if (type != 0 && SDL_GetTicks() - BoxStartTime <= 1500){
             MysteryBoxType.render(renderer, x + (width - MysteryBoxType.getWidth()) / 2, y + (height - MysteryBoxType.getHeight()) / 2);
         }
     }
+    
     if(filledLineFrame == 1){
         for (int i : filledLine){
             deleted_line(i);
@@ -380,6 +386,7 @@ void Well :: Unite(Tetromino *t)
                 if (j == BoxY){
                     BoxActive = false;
                     mystery_box = Mystery_Box(rand() % (MAX_MYSTERY_BOX_TYPE - 1) + 1);
+                   
                     type = mystery_box;
                     effectivenessTime = SDL_GetTicks();
                 }

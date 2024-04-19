@@ -57,6 +57,7 @@ public:
     void load_file();
     void save_file();
     
+
 private:
     Mode mode;
 

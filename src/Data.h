@@ -110,6 +110,8 @@ extern LTexture MysteryBoxTexture;
 
 extern LTexture MysteryBoxType;
 
+extern LTexture ScanTexture;
+
 enum Effect{
      None,
      Capcut,

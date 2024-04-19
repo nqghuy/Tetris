@@ -60,6 +60,8 @@ LTexture MysteryBoxTexture;
 
 LTexture MysteryBoxType;
 
+LTexture ScanTexture;
+
 Tetris :: Tetris(int _level, Theme _theme)
 :   animation()
 {
@@ -266,6 +268,11 @@ bool Tetris :: load_texture(){
     }
     if (!MysteryBoxType.loadFromRenderedText(renderer, SettingFont, "Speep Up", {255, 0, 0})){
         cout << "failed to load mystery box type text\n";
+        success = false;
+    }
+
+    if (!ScanTexture.loadFromFile(renderer, "Assets/Pictures/scan.png", {0, 0, 0})){
+        cout << "failed to load scan texture\n";
         success = false;
     }
     
