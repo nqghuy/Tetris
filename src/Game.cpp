@@ -223,7 +223,7 @@ void Game :: display(SDL_Renderer *renderer, Theme theme)
     bool isDeleting = well.isDeletingLine();
 
     //draw well and tetromino
-    well.draw(renderer, gameMode);
+    well.draw(renderer, gameMode, (preparation || paused));
 
     if (isDeleting && !well.isDeletingLine() && gameMode == Bot){
         tetromino.greedy(well);

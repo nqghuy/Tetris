@@ -17,7 +17,7 @@ public:
     ~Well();
 
     //draw the well in the screen
-    void draw(SDL_Renderer *renderer, GameMode gameMode = SinglePlay);
+    void draw(SDL_Renderer *renderer, GameMode gameMode = SinglePlay, bool pause = false);
 
     //get the coordinate of the well rect
     int get_x();

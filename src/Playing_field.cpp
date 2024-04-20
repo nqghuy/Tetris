@@ -42,7 +42,7 @@ Well :: ~Well()
     }
 }
 
-void Well :: draw (SDL_Renderer *renderer, GameMode gameMode)
+void Well :: draw (SDL_Renderer *renderer, GameMode gameMode, bool pause)
 {    
     //black color
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -57,6 +57,13 @@ void Well :: draw (SDL_Renderer *renderer, GameMode gameMode)
 
    //fill well with black
    SDL_RenderFillRect(renderer, &rect);
+
+    //draw score
+    score.draw(renderer, *this, ScoreFont);
+
+    if (pause){
+        return;
+    }
 
     for (int i = 0; i < WIDE_CELLS; i++){
         for (int j = HIDDEN_ROWS; j < HEIGHT_CELLS; j++){
@@ -126,9 +133,6 @@ void Well :: draw (SDL_Renderer *renderer, GameMode gameMode)
             BoxActive = false;
         }
     }
-
-    //draw score
-    score.draw(renderer, *this, ScoreFont);
 }
 
 void Well :: draw_fade_effect(SDL_Renderer* renderer){
