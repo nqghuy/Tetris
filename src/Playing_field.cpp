@@ -58,9 +58,6 @@ void Well :: draw (SDL_Renderer *renderer, GameMode gameMode)
    //fill well with black
    SDL_RenderFillRect(renderer, &rect);
 
-    //white color
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    
     for (int i = 0; i < WIDE_CELLS; i++){
         for (int j = HIDDEN_ROWS; j < HEIGHT_CELLS; j++){
             //if there is a tetromino uniting with the well

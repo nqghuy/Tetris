@@ -158,7 +158,7 @@ Với rất nhiều tính năng để chơi đa dạng như
 - 1 con bot tương đối khôn
 - Code tương đối clean với comment đầy đủ (mặc dù tiếng anh của em còn hạn chế)
 
-Em mong muốn mình có thể đạt được điểm 10 với game này.
+Em mong muốn mình có thể đạt được điểm 9.5+ với game này.
 
 
 
