@@ -2,7 +2,7 @@
 # **SDL2-TETRIS-GAME-INT2215-51**
 # NGUYỄN QUANG HUY 23020081
 
-Link demo: [Demo](https://www.youtube.com/watch?v=7cCyuuW7rZk)
+Link demo: [Demo](https://www.youtube.com/watch?v=9UAIU1-NCdk)
 
 - [**SDL2-TETRIS-GAME-INT2215-51**](#sdl2-tetris-game-int2215-51)
 - [NGUYỄN QUANG HUY 23020081](#nguyễn-quang-huy-23020081)
